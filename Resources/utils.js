@@ -1,7 +1,15 @@
 /**
- * Returns a hash of params
+ * Utility Class
  */
-function uri_params(uri) {
+
+function Utils()
+{
+}
+
+/**
+ * Returns a hash of params from a url string
+ */ 
+Utils.uri_params = function uri_params(uri) {
 	var result = {};
     var params = (uri.split('?')[1] || '').split('&');
     for(var param in params) {
