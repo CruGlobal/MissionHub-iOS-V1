@@ -4,12 +4,14 @@
  * 2011 C. Roemmich
  */
 
+var MH = {};
+
 Ti.include("settings.js");
-Ti.include("utils.js");
-Ti.include("oauth.js");
+Ti.include("lib/utils.js");
+Ti.include("lib/oauth.js");
 
 //TODO: Remove before production, forces user to login every time.
-Ti.App.Properties.removeProperty("access_token");
+//Ti.App.Properties.removeProperty("access_token");
 
 /* Create the background window */
 /* Keeps the app open during login process */
@@ -19,6 +21,18 @@ var back = Ti.UI.createWindow({
 	exitOnClose: true,
 	fullscreen: false
 });
+
+var button = Ti.UI.createButton({
+	titleid:'login',
+	width: '80%',
+	height: '100'
+});
+
+button.addEventListener('click', function(e) {
+	MH.OAuth.prepareAccessToken();
+})
+back.add(button);
+
 back.open();
 
 /* Global variable for the TabGroup */
@@ -29,11 +43,17 @@ Ti.App.addEventListener("access_token", function(data) {
 	openMain();
 });
 
+/* Listens for events from OAuth */
+Ti.App.addEventListener("close_oauth", function(data) {
+	MH.OAuth.closeLoginPrompt();
+});
+
 /* Opens a modal login window if the access token is invalid or does not exist. */
-OAuth.prepareAccessToken();
+MH.OAuth.prepareAccessToken();
 
 function openMain() {
 	main = Ti.UI.createTabGroup({
+		backgroundColor: '#000000',
 		exitOnClose: true
 	});
 	var win_tab_contacts = Titanium.UI.createWindow({

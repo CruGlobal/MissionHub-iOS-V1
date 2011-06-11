@@ -1,3 +1,5 @@
+// Titanium.UI.currentWindow
+
 
 var l3 = Titanium.UI.createLabel({
     text:'Contacts',
