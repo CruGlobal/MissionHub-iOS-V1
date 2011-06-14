@@ -7,10 +7,10 @@
         <target device="blackberry">false</target>
         <target device="android">true</target>
     </deployment-targets>
-<id>missionhubmobile</id>
+<id>us.ccci.missionhub</id>
 <name>MissionHubMobile</name>
-<version>1.0</version>
-<publisher>chrisroemmich</publisher>
+<version>0.1</version>
+<publisher>Campus Crusade for Christ</publisher>
 <url>http://hub.ccci.us</url>
 <description>No description provided</description>
 <copyright>2011 by Campus Crusade For Christ</copyright>

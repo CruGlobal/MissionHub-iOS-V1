@@ -36,7 +36,7 @@ MH.OAuth.getAccessToken = function() {
  */
 MH.OAuth.openLoginPrompt = function() {
 	if (MH.OAuth.displayed) {
-		MH.OAuth.auth_window.show();
+		MH.OAuth.auth_window.open();
 		return;
 	}
 	
@@ -59,12 +59,6 @@ MH.OAuth.openLoginPrompt = function() {
 			fullscreen: false
 		});
 	}
-	
-	/*
-	OAuth.auth_window.addEventListener('close', function(e) {
-		Ti.API.info('closed');
-	})
-	*/
 	
 	MH.OAuth.auth_webview = Ti.UI.createWebView({
 		canGoBack:false,
@@ -97,11 +91,15 @@ MH.OAuth.openLoginPrompt = function() {
 	});
 	
 	MH.OAuth.auth_webview.addEventListener("beforeload", function(e) {
-		MH.OAuth.auth_indicator.show();
+		if (Titanium.Platform.osname != 'android') {
+			MH.OAuth.auth_indicator.show();
+		}
 	});
 	
 	MH.OAuth.auth_webview.addEventListener("load", function(e) {
-		MH.OAuth.auth_indicator.hide();
+		if (Titanium.Platform.osname != 'android') {
+			MH.OAuth.auth_indicator.hide();
+		}
 		var params = MH.Utils.uri_params(e.url);
 		
 		if (params['authorization']) {
@@ -175,6 +173,7 @@ MH.OAuth.fetchAccessToken = function (code) {
 		var data = JSON.parse(this.responseText)
 		if (data['access_token']) {
 			Ti.App.Properties.setString("access_token", data['access_token']);
+			Ti.App.Properties.setString("person", JSON.stringify(data['person']));
 			Ti.App.fireEvent("access_token", {access_token:Titanium.App.Properties.getString("access_token", null)});
 		} else {
 			Ti.App.Properties.removeProperty("access_token");
