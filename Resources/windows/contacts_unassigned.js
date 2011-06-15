@@ -5,12 +5,6 @@ var unassigned = Titanium.UI.createView({
 });
 
 (function() {
-	/* Loading Indicator */
-	var activityIndicator = Ti.UI.createActivityIndicator({
-		messageid: 'loading'
-	});
-	unassigned.add(activityIndicator);
-	
 	/* Alert Dialog For Errors*/
 	var alertDialog = Titanium.UI.createAlertDialog({
 	    title: 'Error',
@@ -21,24 +15,35 @@ var unassigned = Titanium.UI.createView({
 	
 	/* The TableView and Data */
 	var ids = [];
-	if (isIOS && false) {
-		Ti.API.info("Foo");
-		
-		var tableView = MH.UI.createPulldownTableView({
+	var tableView;
+	if (isIOS()) {
+		tableView = MH.UI.createIOSTableView({
 			data:ids
 		});
 	} else {
-		var tableView = Titanium.UI.createTableView({
+		tableView = MH.UI.createAndroidTableView({
 			data:ids
 		});	
 	}
 	unassigned.add(tableView);
 	
-	firstView = true; // True after this view has been shown
-	loadingData = false; // True when loading remote data
-	lastStart = 0; // last start record
-	defaultLimit = 10; // default number of contacts to fetch per attempt
-	hasLastContact = false; // True when last contact has been feteched
+	var firstView = true; // True after this view has been shown
+	var loadingData = false; // True when loading remote data
+	var lastStart = 0; // last start record
+	var defaultLimit = 20; // default number of contacts to fetch per attempt
+	var hasLastContact = false; // True when last contact has been feteched
+	
+	tableView.addEventListener('click', function(e){
+		if (e.row) {
+			if (e.row.person) {
+				Ti.App.fireEvent("open_contact", {person:e.row.person});
+			}
+		}
+	});
+	
+	tableView.addEventListener('scrolldown', function(e) {
+		fetchTableViewData(lastStart+defaultLimit, defaultLimit);
+	});
 	
 	/* Tab item is clicked */
 	Ti.App.addEventListener('click_contacts_unassigned', function(e) {
@@ -75,7 +80,7 @@ var unassigned = Titanium.UI.createView({
 	}
 	
 	function fetchTableViewData(start, limit) {
-		if (loadingData) { return };
+		if (loadingData || hasLastContact) { return };
 		loadingData = true;
 		
 		var xhr = Ti.Network.createHTTPClient();
@@ -83,7 +88,10 @@ var unassigned = Titanium.UI.createView({
 		xhr.onload = function(e) {
 			loadingData = false;
 			lastStart = start;
-			activityIndicator.hide();
+			if (isIOS()) {
+				tableView.fireEvent('refresh_finished');
+			}
+			contactsLoadingIndicator.hide();
 			if (validResponse(this.responseText)) {
 				appendTableViewData(JSON.parse(this.responseText))
 			}
@@ -92,7 +100,10 @@ var unassigned = Titanium.UI.createView({
 		xhr.onerror = function(e) {
 			loadingData = false;
 			var dialog = false;
-			activityIndicator.hide();
+			if (isIOS()) {
+				tableView.fireEvent('refresh_finished');
+			}
+			contactsLoadingIndicator.hide();
 			validResponse(this.responseText);
 		};
 		
@@ -100,14 +111,21 @@ var unassigned = Titanium.UI.createView({
 		Ti.API.info(MH.Setting.api_url+'/contacts.json?start='+start+'&limit='+limit+'&access_token='+Titanium.Network.encodeURIComponent(Ti.App.Properties.getString("access_token")));
 		xhr.send();
 		
-		activityIndicator.show();
+		if (isIOS()) {
+			contactsLoadingIndicator.show();
+		} else {
+			if (start == 0) {
+				contactsLoadingIndicator.show();
+			}
+		}
 	}
 	
 	/**
 	 * Appends json persons to the tableview
 	 */
 	function appendTableViewData(data) {
-		for (var index in data) {
+		var index = 0;
+		for (index in data) {
 			var person = data[index].person;
 			if (person) {	
 				if (person.id && ids.indexOf(person.id) < 0) {
@@ -116,6 +134,12 @@ var unassigned = Titanium.UI.createView({
 				}
 			}
 		}
+		if (index+1 < defaultLimit) {
+			hasLastContact = true;
+		} else {
+			hasLastContact = false;
+		}
+		
 	}
 	
 	/**
@@ -126,7 +150,7 @@ var unassigned = Titanium.UI.createView({
 		tableView.setData(ids);
 		lastStart = 0;
 		hasLastContact = false;
-		fetchTableViewData(0, 25);
+		fetchTableViewData(0, defaultLimit);
 	}
 	
 	/**
@@ -137,12 +161,12 @@ var unassigned = Titanium.UI.createView({
 			title: person.first_name + " " + person.last_name
 		});
 		row.person = person;
-		
-		row.addEventListener('click', function(e) {
-			if (isAndroid()) {
-				Ti.UI.createNotification({ message : "Clicked: " + this.title}).show();
-			} 
-		});
 		return row;
 	}
+	
+	Ti.App.addEventListener('open_contact', function(e) {
+		var person = e.person;
+		var contact_win = MH.UI.createContactWindow(person);
+		MH.UI.tabContacts.open(contact_win,{animated:true});
+	});
 })();

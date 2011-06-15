@@ -171,7 +171,7 @@ MH.OAuth.resetLoginPrompt = function() {
 				if (Titanium.Platform.osname != 'android') {
 					MH.OAuth.auth_window.setRightNavButton(MH.OAuth.auth_indicator);
 				} else {
-					MH.OAuth.auth_webview.remove(OAuth.auth_indicator);
+					MH.OAuth.auth_webview.remove(MH.OAuth.auth_indicator);
 				}
 				MH.OAuth.auth_indicator = null;
 			}

@@ -1,17 +1,26 @@
 var currentContactsTab = 0;
-var contactsLoadingIndicator = Ti.UI.createActivityIndicator();
+var contactsLoadingIndicator;
 
 createContactsWindow = function() {
-	var win = Titanium.UI.createWindow({
+	MH.UI.winContacts = Titanium.UI.createWindow({
 	    titleid:'win_title_contacts'
 	});
 	
-	win.add(contactsLoadingIndicator);
+	if (isIOS()) {
+		contactsLoadingIndicator = Titanium.UI.createActivityIndicator();
+		MH.UI.winContacts.setRightNavButton(contactsLoadingIndicator);
+	} else {
+		contactsLoadingIndicator = Ti.UI.createActivityIndicator({
+			messageid: 'loading'
+		});
+		MH.UI.winContacts.add(contactsLoadingIndicator);
+	}
 	
 	var tabbar = Titanium.UI.createView({
 		top:0,
 		left:0,
 		height: 40,
+		focusable: true,
 		backgroundColor: 'black',
 	});
 	
@@ -110,12 +119,10 @@ createContactsWindow = function() {
 		unassigned.show();
 	});
 	
-	win.add(tabbar);
-	win.add(inprogress);
-	win.add(completed);
-	win.add(unassigned);
+	MH.UI.winContacts.add(tabbar);
+	MH.UI.winContacts.add(inprogress);
+	MH.UI.winContacts.add(completed);
+	MH.UI.winContacts.add(unassigned);
 	
 	tab1.fireEvent('click', {});
-
-	return win;
 }
