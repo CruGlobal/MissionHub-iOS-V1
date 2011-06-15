@@ -54,6 +54,26 @@ var unassigned = Titanium.UI.createView({
 		}
 	});
 	
+	function validResponse(response) {
+		var dialog = false;
+		if (response) {
+			if (MH.Utils.isJSON(response)) {
+				var data = JSON.parse(response);
+				if (data['error']) {
+					alertDialog.message = Ti.Locale.getString('error_'+data['error'], data['error']);
+					dialog = true;
+				} else {
+					return true;
+				}
+			}
+		}
+		if (!dialog) {
+			alertDialog.message = Ti.Locale.getString('error_could_not_fetch_contacts');
+		}
+		alertDialog.show();
+		return false;
+	}
+	
 	function fetchTableViewData(start, limit) {
 		if (loadingData) { return };
 		loadingData = true;
@@ -64,20 +84,16 @@ var unassigned = Titanium.UI.createView({
 			loadingData = false;
 			lastStart = start;
 			activityIndicator.hide();
-			//TODO check for json errors
-			appendTableViewData(JSON.parse(this.responseText));
+			if (validResponse(this.responseText)) {
+				appendTableViewData(JSON.parse(this.responseText))
+			}
 		};
 		
 		xhr.onerror = function(e) {
 			loadingData = false;
+			var dialog = false;
 			activityIndicator.hide();
-			if (this.responseText) {
-				var data = JSON.parse(this.responseText);
-				alertDialog.message = data['error'];
-			} else {
-				//TODO better errors
-			}
-			alertDialog.show();
+			validResponse(this.responseText);
 		};
 		
 		xhr.open('GET',MH.Setting.api_url+'/contacts.json?start='+start+'&limit='+limit+'&access_token='+Titanium.Network.encodeURIComponent(Ti.App.Properties.getString("access_token")));

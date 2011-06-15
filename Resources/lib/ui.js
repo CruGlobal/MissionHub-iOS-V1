@@ -65,7 +65,7 @@ MH.UI.openMain = function() {
 	    titleid:'controls_title_contacts',
 	    window:MH.UI.winContacts
 	});
-	if (isAndroid) {
+	if (isAndroid()) {
 		MH.UI.winContacts.activity.onCreateOptionsMenu = function(e) {
 		    MH.UI.androidContactsMenu = e.menu;
 		    var refreshMenuItem =  MH.UI.androidContactsMenu.add({
@@ -86,7 +86,7 @@ MH.UI.openMain = function() {
 	    titleid:'controls_title_profile',
 	    window:MH.UI.winProfile
 	});
-	if (isAndroid) {
+	if (isAndroid()) {
 		MH.UI.winProfile.activity.onCreateOptionsMenu = function(e) {
 		    MH.UI.androidProfileMenu = e.menu;
 		};
