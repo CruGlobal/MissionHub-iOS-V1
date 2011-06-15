@@ -2,7 +2,7 @@ createProfileWindow = function() {
 	var win = Titanium.UI.createWindow({
 	    titleid:'win_title_profile'
 	});
-	
+		
 	var person = JSON.parse(Ti.App.Properties.getString("person", "{}"));
 	
 	var name = Ti.UI.createLabel({

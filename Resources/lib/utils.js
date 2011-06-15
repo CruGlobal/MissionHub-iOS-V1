@@ -27,3 +27,38 @@ MH.Utils.mergeJSON = function (json1, json2) {
 		}
 	} return json1;
 }
+
+MH.Utils.isJSON = function (json) {
+	try {
+		var j = json.toString()
+		if (j.charAt(0) == '{' || j.charAt(0) == '[') {
+			return true;
+		}
+	} catch (e) {}
+	return false;
+}
+
+function isAndroid() {
+	if (Titanium.Platform.osname == 'android') {
+		return true;
+	}
+	return false;
+}
+
+function isIOS() {
+	return (isIPad() || isIPhone());
+}
+
+function isIPad() {
+	if (Titanium.Platform.osname == 'ipad') {
+		return true;
+	}
+	return false;
+}
+
+function isIPhone() {
+	if (Titanium.Platform.osname == 'iphone') {
+		return true;
+	}
+	return false;
+}

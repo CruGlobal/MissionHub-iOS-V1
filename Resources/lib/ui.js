@@ -1,18 +1,18 @@
 MH.UI = {};
 
-//Ti.include('/lib/tab.js');
-//Ti.include('/lib/tabbedbar.js');
 Ti.include('/windows/contacts.js');
 Ti.include('/windows/profile.js');
 
 /* Create the background window */
 /* Keeps the app open during login process */
 MH.UI.backWindow =Ti.UI.createWindow({
-	backgroundColor: '#000000',
+	backgroundColor: '#555',
 	titleid:'app',
 	exitOnClose: true,
 	fullscreen: false
 });
+
+MH.UI.activityIndicator;
 
 MH.UI.initGUI = function() {
 	var button = Ti.UI.createButton({
@@ -23,10 +23,31 @@ MH.UI.initGUI = function() {
 	
 	button.addEventListener('click', function(e) {
 		MH.OAuth.prepareAccessToken();
-	})
+	});
+	
+	if (Titanium.Platform.osname != 'android') {
+	    MH.UI.activityIndicator = Titanium.UI.createActivityIndicator({
+	    	top:0,
+	    	left: 0,
+	    	height: 50,
+    		width:Titanium.Platform.displayCaps.platformWidth,
+    		style: Titanium.UI.iPhone.ActivityIndicatorStyle.BIG
+    	});
+    } else {
+    	MH.UI.activityIndicator = Titanium.UI.createActivityIndicator({
+	        message: Ti.Locale.getString('loading')
+	    });
+    }
+    MH.UI.backWindow.add(MH.UI.activityIndicator);
 	MH.UI.backWindow.add(button);
 	MH.UI.backWindow.open();
 }
+
+MH.UI.androidContactsMenu = null;
+MH.UI.androidProfileMenu = null;
+MH.UI.winContacts = null;
+MH.UI.winProfile = null;
+
 
 /* Create the main TabGroup window */
 MH.UI.main = null;
@@ -38,24 +59,42 @@ MH.UI.openMain = function() {
 		editButtonTitle: false
 	});
 	
-	var win_tab_contacts = createContactsWindow();
+	MH.UI.winContacts = createContactsWindow();
 	var tab_contacts = Titanium.UI.createTab({
 		icon: 'images/contacts.png',
 	    titleid:'controls_title_contacts',
-	    window:win_tab_contacts
+	    window:MH.UI.winContacts
 	});
+	if (isAndroid) {
+		MH.UI.winContacts.activity.onCreateOptionsMenu = function(e) {
+		    MH.UI.androidContactsMenu = e.menu;
+		    var refreshMenuItem =  MH.UI.androidContactsMenu.add({
+				itemId : 1,
+				order : 1,
+				title : 'Refresh'
+			});
+			refreshMenuItem.addEventListener('click', function(e){
+				Ti.App.fireEvent('refresh_contacts');
+			});
+		};
+	}
 	MH.UI.main.addTab(tab_contacts);
 	
-	var win_tab_profile = createProfileWindow();
+	MH.UI.winProfile = createProfileWindow();
 	var tab_profile = Titanium.UI.createTab({
 		icon: 'images/profile.png',
 	    titleid:'controls_title_profile',
-	    window:win_tab_profile
+	    window:MH.UI.winProfile
 	});
+	if (isAndroid) {
+		MH.UI.winProfile.activity.onCreateOptionsMenu = function(e) {
+		    MH.UI.androidProfileMenu = e.menu;
+		};
+	}
 	MH.UI.main.addTab(tab_profile);
+	
 	MH.UI.main.open();
 }
-
 
 /* 
 	Developed by Kevin L. Hopkins (http://kevin.h-pk-ns.com)

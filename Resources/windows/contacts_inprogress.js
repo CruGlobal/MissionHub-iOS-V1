@@ -1,4 +1,4 @@
-var win1 = Titanium.UI.createView({
+var inprogress = Titanium.UI.createView({
     backgroundColor: '#333',
     visible: true,
     top: 40,

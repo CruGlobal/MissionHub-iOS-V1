@@ -1,4 +1,4 @@
-var win2 = Titanium.UI.createView({
+var completed = Titanium.UI.createView({
     backgroundColor: '#333',
     visible: false,
     top: 40,

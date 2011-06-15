@@ -11,6 +11,7 @@ MH.OAuth.auth_webview = null;
 MH.OAuth.auth_indicator = null;
 MH.OAuth.displayed = null;
 MH.OAuth.alert = null;
+MH.OAuth.nalAlert = null;
 
 /**
  * Perpare the access_token for use if it is null
@@ -60,6 +61,8 @@ MH.OAuth.openLoginPrompt = function() {
 		});
 	}
 	
+	Ti.App.addEventListener( 'resume', MH.OAuth.reloadWebView);
+	
 	MH.OAuth.auth_webview = Ti.UI.createWebView({
 		canGoBack:false,
 		canGoForward:false,
@@ -77,17 +80,31 @@ MH.OAuth.openLoginPrompt = function() {
     	MH.OAuth.auth_webview.add(MH.OAuth.auth_indicator);
     }
     
+    Ti.Locale.getString('error_no_network');
+    
     MH.OAuth.alert = Titanium.UI.createAlertDialog({
-	    title: 'Login Error',
-	    message: 'The MissionHub server could not be contacted. Please make sure you are connect to the internet and try again.',
-	    buttonNames: ['Cancel', 'Retry']
+	    title: Ti.Locale.getString('error_no_network'),
+	    message: Ti.Locale.getString('error_no_network_msg'),
+	    buttonNames: [Ti.Locale.getString('cancel'), Ti.Locale.getString('retry')]
 	});
 	MH.OAuth.alert.addEventListener("click", function(e){
 		if (e.index == 0) {
 			MH.OAuth.closeLoginPrompt();
 		} else {
+			MH.OAuth.openLoginPrompt();
+			//TODO: make better
 			MH.OAuth.auth_webview.url = MH.Setting.oauth_url + "/authorize?display=touch&simple=true&response_type=code&redirect_uri="+MH.Setting.oauth_url+"/done&client_id="+MH.Setting.oauth_client_id+"&scope="+MH.Setting.oauth_scope;
 		}
+	});
+	
+	MH.OAuth.nalAlert = Titanium.UI.createAlertDialog({
+	    title: Ti.Locale.getString('error_not_a_leader'),
+	    message: Ti.Locale.getString('error_not_a_leader_msg'),
+	    buttonNames: [Ti.Locale.getString('close')]
+	});
+	
+	MH.OAuth.nalAlert.addEventListener("click", function(e){
+		MH.OAuth.closeLoginPrompt();
 	});
 	
 	MH.OAuth.auth_webview.addEventListener("beforeload", function(e) {
@@ -125,6 +142,10 @@ MH.OAuth.openLoginPrompt = function() {
 	MH.OAuth.auth_window.open();
 }
 
+MH.OAuth.reloadWebView = function() {
+	MH.OAuth.auth_webview.reload();
+}
+
 /**
  * Closes and resets the login prompt
  */
@@ -134,9 +155,15 @@ MH.OAuth.closeLoginPrompt = function() {
 
 MH.OAuth.resetLoginPrompt = function() {
 	if (MH.OAuth.auth_window) {
+		Ti.App.removeEventListener( 'resume', MH.OAuth.reloadWebView);
+		
 		if (MH.OAuth.alert) {
 			MH.OAuth.alert.hide();
 			MH.OAuth.alert = null;
+		}
+		if (MH.OAuth.nalAlert) {
+			MH.OAuth.nalAlert.hide();
+			MH.OAuth.nalAlert = null;
 		}
 		if (MH.OAuth.auth_webview) {
 			if (MH.OAuth.auth_indicator) {
@@ -170,22 +197,38 @@ MH.OAuth.fetchAccessToken = function (code) {
 	var xhr = Ti.Network.createHTTPClient();
 	
 	xhr.onload = function() {
-		var data = JSON.parse(this.responseText)
-		if (data['access_token']) {
+		if (!this.responseText) {
+			var data = {error: 'no_reponse'};
+		} else if (!MH.Utils.isJSON(this.responseText)) {
+			var data = {error: this.responseText};
+		} else {
+			var data = JSON.parse(this.responseText)
+		}
+		
+		if (data && data['access_token']) {
 			Ti.App.Properties.setString("access_token", data['access_token']);
 			Ti.App.Properties.setString("person", JSON.stringify(data['person']));
 			Ti.App.fireEvent("access_token", {access_token:Titanium.App.Properties.getString("access_token", null)});
 		} else {
+			var dialog = false;
+			if (data['error']) {
+				if (data['error'] == "not_a_leader") {
+					MH.OAuth.nalAlert.show();
+					dialog = true;
+				}
+			}
+			if (!dialog) {
+				MH.OAuth.alert.show();
+			}
 			Ti.App.Properties.removeProperty("access_token");
 			//TODO: better error?
-			MH.OAuth.alert.show();
-			//Ti.App.fireEvent("access_token", {error:"badtoken"});
 		}
+		MH.UI.activityIndicator.hide();
 	};
 	
 	xhr.onerror = function(e) {
-		//TODO: better error?
 		MH.OAuth.alert.show();
+		MH.UI.activityIndicator.hide();
 	};
 	
 	xhr.open('POST',MH.Setting.oauth_url+'/access_token');
@@ -198,6 +241,8 @@ MH.OAuth.fetchAccessToken = function (code) {
 		scope: MH.Setting.oauth_scope,
 		redirect_uri: MH.Setting.oauth_url+'/done'
 	});
+	
+	MH.UI.activityIndicator.show();
 }
 
 /**
