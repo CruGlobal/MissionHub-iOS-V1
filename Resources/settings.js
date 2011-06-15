@@ -2,8 +2,9 @@
  * Settings for MissionHub Mobile
  */
 
-var debug = false;
-
-var oauth_url = 'http://change.me';
-var client_id = '1';
-var client_secret = 'if.this.was.here...it.wouldnt.be.a.secret';
+MH.Setting = {};
+MH.Setting.oauth_url = '';
+MH.Setting.oauth_client_id = '';
+MH.Setting.oauth_client_secret = '';
+MH.Setting.oauth_scope = '';
+MH.Setting.api_url = '';
