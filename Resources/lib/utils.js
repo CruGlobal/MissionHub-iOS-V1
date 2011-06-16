@@ -41,7 +41,7 @@ MH.Utils.isJSON = function (json) {
 MH.Utils.clearImageCache = function(directory) {
 	var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, directory);
 	if (file.exists()) {
-		file.deleteDirectory();
+		file.deleteDirectory(true);
 	}
 }
 

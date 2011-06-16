@@ -101,7 +101,7 @@ MH.UI.createContactWindow = function(person) {
 	Ti.API.info(person);
 	
 	var w = Ti.UI.createWindow({
-		title: person.first_name + " " + person.last_name,
+		title: person.name,
 		barColor: MH.UI.Colors.navbar
 	});
 	

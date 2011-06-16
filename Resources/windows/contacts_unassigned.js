@@ -205,7 +205,7 @@ var unassigned = Titanium.UI.createView({
 		
 		var name = Ti.UI.createLabel({
 			color: 'black',
-			text: person.first_name + " " + person.last_name,
+			text: person.name,
 			top: 10,
 			left: 60,
 			height: 20,
