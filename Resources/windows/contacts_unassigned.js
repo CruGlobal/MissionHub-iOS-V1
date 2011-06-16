@@ -18,10 +18,14 @@ var unassigned = Titanium.UI.createView({
 	var tableView;
 	if (isIOS()) {
 		tableView = MH.UI.createIOSTableView({
+			separatorColor: MH.UI.Colors.contactsTvSeparator,
+			backgroundColor: MH.UI.Colors.contactsTvBg,
 			data:ids
 		});
 	} else {
 		tableView = MH.UI.createAndroidTableView({
+			separatorColor: MH.UI.Colors.contactsTvSeparator,
+			backgroundColor: MH.UI.Colors.contactsTvBg,
 			data:ids
 		});	
 	}
@@ -30,7 +34,11 @@ var unassigned = Titanium.UI.createView({
 	var firstView = true; // True after this view has been shown
 	var loadingData = false; // True when loading remote data
 	var lastStart = 0; // last start record
-	var defaultLimit = 20; // default number of contacts to fetch per attempt
+	var defaultLimit = 15; // default number of contacts to fetch per attempt
+	if (isIOS()) {
+		defaultLimit = 30;
+	}
+	
 	var hasLastContact = false; // True when last contact has been feteched
 	
 	tableView.addEventListener('click', function(e){
@@ -49,6 +57,7 @@ var unassigned = Titanium.UI.createView({
 	Ti.App.addEventListener('click_contacts_unassigned', function(e) {
 		if (firstView == true) {
 			firstView = false;
+			MH.Utils.clearImageCache('imgcache_unassigned');
 			fetchTableViewData(0, defaultLimit); //fetch 25 records from the beginning
 		}
 	});
@@ -139,13 +148,13 @@ var unassigned = Titanium.UI.createView({
 		} else {
 			hasLastContact = false;
 		}
-		
 	}
 	
 	/**
 	 * Complete refreshes the data in the tableview
 	 */
 	function refreshTableViewData() {
+		MH.Utils.clearImageCache('imgcache_unassigned');
 		ids = [];
 		tableView.setData(ids);
 		lastStart = 0;
@@ -158,11 +167,97 @@ var unassigned = Titanium.UI.createView({
 	 */
 	function createTableRow(person) {
 		var row = Ti.UI.createTableViewRow({
-			title: person.first_name + " " + person.last_name
+			className:"person",
+			color: MH.UI.Colors.contactsTvText,
+			backgroundColor: MH.UI.Colors.contactsTvBg,
+			backgroundDisabledColor: MH.UI.Colors.contactsTvBgDisabled,
+			backgroundFocusedColor: MH.UI.Colors.contactsTvBgFocused,
+			backgroundSelectedColor: MH.UI.Colors.contactsTvBgSelected,
+			selectionStyle: MH.UI.Colors.contactsTvSelStyle,
+			height: 56,
+			hasChild:true
 		});
+		
+		var img;
+		if (isIOS()) {
+			img = Ti.UI.createImageView({
+				defaultImage: '/images/default_contact.jpg',
+				image: person.picture+"?type=square",
+				top: 3,
+				left: 3,
+				width: 50,
+				height: 50
+			});
+		} else {
+			img = Ti.UI.createView({
+				backgroundImage: '/images/default_contact.jpg',
+				top: 3,
+				left: 3,
+				width: 50,
+				height: 50
+			});
+			if (person.picture) {
+				MH.UI.createCachedFBImageView('imgcache_unassigned', person.picture+"?type=square", img, person.id);
+			}
+		}
+		row.image = img;
+		row.add(img);
+		
+		var name = Ti.UI.createLabel({
+			color: 'black',
+			text: person.first_name + " " + person.last_name,
+			top: 10,
+			left: 60,
+			height: 20,
+			width: Ti.Platform.displayCaps.platformWidth - 60
+		})
+		row.add(name);
+		
+		var gender = Ti.UI.createLabel({
+			color: 'black',
+			text: person.gender,
+			top: 30,
+			left: 60,
+			height: 20,
+			width: Ti.Platform.displayCaps.platformWidth - 60
+		})
+		row.add(gender);
+		
 		row.person = person;
 		return row;
 	}
+	
+	/*
+	if (isAndroid() && false) {
+		var firstrow = 0;
+		var viscount = 0;
+		
+		tableView.addEventListener('scroll', function(e) {
+			firstrow = e.firstVisibleItem;
+			viscount = e.visibleItemCount;
+		});
+		
+		tableView.addEventListener('scrollEnd', function(e) {
+			var i = firstrow;
+			var n = i + viscount;
+			
+			Ti.API.info(i + "/" + n);
+			
+			for (i<n; i++;) {
+				var row = tableView.data[0].rows[i];
+				if (row) {
+					var person = row.person;
+					var image = row.image;
+					if (!image.loaded && !image.loading && person.picture) {
+						image.loading = true;
+						Ti.API.info("Load image for " + person.last_name);
+						//MH.UI.createCachedFBImageView('contact', person.picture+"?type=square", image, person.id);
+					}
+				}
+			}
+		});
+	}
+	*/
 	
 	Ti.App.addEventListener('open_contact', function(e) {
 		var person = e.person;

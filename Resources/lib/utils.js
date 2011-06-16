@@ -38,6 +38,13 @@ MH.Utils.isJSON = function (json) {
 	return false;
 }
 
+MH.Utils.clearImageCache = function(directory) {
+	var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, directory);
+	if (file.exists()) {
+		file.deleteDirectory();
+	}
+}
+
 function isAndroid() {
 	if (Titanium.Platform.osname == 'android') {
 		return true;

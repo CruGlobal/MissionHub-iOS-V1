@@ -1,15 +1,16 @@
 MH.UI = {};
 
+Ti.include('/lib/colors.js');
 Ti.include('/windows/contacts.js');
 Ti.include('/windows/profile.js');
 
 /* Create the background window */
 /* Keeps the app open during login process */
 MH.UI.backWindow =Ti.UI.createWindow({
-	backgroundColor: '#555',
 	titleid:'app',
 	exitOnClose: true,
-	fullscreen: false
+	fullscreen: false,
+	barColor: MH.UI.Colors.navbar
 });
 
 MH.UI.activityIndicator;
@@ -100,7 +101,8 @@ MH.UI.createContactWindow = function(person) {
 	Ti.API.info(person);
 	
 	var w = Ti.UI.createWindow({
-		title: person.first_name + " " + person.last_name
+		title: person.first_name + " " + person.last_name,
+		barColor: MH.UI.Colors.navbar
 	});
 	
 	return w;
@@ -141,13 +143,13 @@ MH.UI.createIOSTableView = function(_params) {
 	}
 	
 	var border = Ti.UI.createView({
-		backgroundColor:"#576c89",
+		backgroundColor: MH.UI.Colors.contactsPdBorder,
 		height:2,
 		bottom:0
 	});
 	var tableHeader = Ti.UI.createView({
-		backgroundColor:"#e2e7ed",
-		width:320,
+		backgroundColor: MH.UI.Colors.contactsPdBg,
+		width:Titanium.Platform.displayCaps.platformWidth,
 		height:60
 	});
 	tableHeader.add(border);
@@ -158,36 +160,43 @@ MH.UI.createIOSTableView = function(_params) {
 		bottom:10,
 		left:20
 	});
+	
 	var statusLabel = Ti.UI.createLabel({
 		text:"Pull to reload",
-		left:55,
+		left:65,
 		width:200,
 		bottom:30,
 		height:"auto",
-		color:"#576c89",
+		color: MH.UI.Colors.contactsPdText,
 		textAlign:"center",
 		font:{fontSize:13,fontWeight:"bold"},
-		shadowColor:"#999",
-		shadowOffset:{x:0,y:1}
 	});
+	
 	var lastUpdatedLabel = Ti.UI.createLabel({
 		text:"Last Updated: "+formatDate(),
-		left:55,
+		left:65,
 		width:200,
 		bottom:15,
 		height:"auto",
-		color:"#576c89",
+		color: MH.UI.Colors.contactsPdText,
 		textAlign:"center",
 		font:{fontSize:12},
-		shadowColor:"#999",
-		shadowOffset:{x:0,y:1}
 	});
+	
 	var actInd = Titanium.UI.createActivityIndicator({
 		left:20,
 		bottom:13,
 		width:30,
 		height:30
 	});
+	
+	if (isIPad()) {
+		arrow.left = arrow.left + 224;
+		statusLabel.left = statusLabel.left + 224;
+		lastUpdatedLabel.left = lastUpdatedLabel.left + 224;
+		actInd.left = actInd.left + 224;
+	};
+	
 	tableHeader.add(arrow);
 	tableHeader.add(statusLabel);
 	tableHeader.add(lastUpdatedLabel);
@@ -269,17 +278,14 @@ MH.UI.createAndroidTableView = function(_params) {
 
 /* Expects parameters of the directory name you wish to save it under, the url of the remote image, 
    and the Image View Object its being assigned to. */
-MH.UI.createCachedImageView = function(imageDirectoryName, url, imageViewObject)
+MH.UI.createCachedFBImageView = function(imageDirectoryName, url, imageViewObject, filename)
 {
-	// Grab the filename
-	var filename = url.split('/');
-	filename = filename[filename.length - 1];
 	// Try and get the file that has been previously cached
 	var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, imageDirectoryName, filename);
 	
 	if (file.exists()) {
 		// If it has been cached, assign the local asset path to the image view object.
-		imageViewObject.image = file.nativePath;
+		imageViewObject.backgroundImage = file.nativePath;
 	} else {
 		// If it hasn't been cached, grab the directory it will be stored in.
 		var g = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, imageDirectoryName);
@@ -297,7 +303,7 @@ MH.UI.createCachedImageView = function(imageDirectoryName, url, imageViewObject)
 				// save the remote image data to it.
 				file.write(xhr.responseData);
 				// Assign the local asset path to the image view object.
-				imageViewObject.image = file.nativePath;
+				imageViewObject.backgroundImage = file.nativePath;
 			};
 		};
 		

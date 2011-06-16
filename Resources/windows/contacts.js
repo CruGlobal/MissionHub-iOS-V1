@@ -3,7 +3,8 @@ var contactsLoadingIndicator;
 
 createContactsWindow = function() {
 	MH.UI.winContacts = Titanium.UI.createWindow({
-	    titleid:'win_title_contacts'
+	    titleid:'win_title_contacts',
+	    barColor: MH.UI.Colors.navbar
 	});
 	
 	if (isIOS()) {
@@ -21,7 +22,7 @@ createContactsWindow = function() {
 		left:0,
 		height: 40,
 		focusable: true,
-		backgroundColor: 'black',
+		backgroundColor: MH.UI.Colors.contactsTabBarBack,
 	});
 	
 	/* In-Progress Contacts */
@@ -29,13 +30,13 @@ createContactsWindow = function() {
 		left: 0,
 		width: Titanium.Platform.displayCaps.platformWidth/3,
 		focusable: true,
-		backgroundColor: '#333',
+		backgroundColor: MH.UI.Colors.contactsTabBarItemBackActive,
 	});
 	var tab1label = Titanium.UI.createLabel({
 		textid: 'controls_title_inprogress',
 		textAlign: 'center',
-		color: '#fff',
-		font: {fontSize:15}
+		color: MH.UI.Colors.contactsTabBarTextActive,
+		font: {fontSize:15, fontFamily: 'ArialRoundedMTBold'}
 	})
 	tab1.add(tab1label);
 	tabbar.add(tab1);
@@ -45,13 +46,13 @@ createContactsWindow = function() {
 		left: Titanium.Platform.displayCaps.platformWidth/3,
 		width: Titanium.Platform.displayCaps.platformWidth/3,
 		focusable: true,
-		backgroundColor: '#000',
+		backgroundColor: MH.UI.Colors.contactsTabBarItemBack,
 	});
 	var tab2label = Titanium.UI.createLabel({
 		textid: 'controls_title_completed',
 		textAlign: 'center',
-		color: '#666',
-		font: {fontSize:15}
+		color: MH.UI.Colors.contactsTabBarText,
+		font: {fontSize:15, fontFamily: 'ArialRoundedMTBold'}
 	})
 	tab2.add(tab2label);
 	tabbar.add(tab2);
@@ -61,16 +62,23 @@ createContactsWindow = function() {
 		left: (Titanium.Platform.displayCaps.platformWidth/3) * 2,
 		width: Titanium.Platform.displayCaps.platformWidth/3,
 		focusable: true,
-		backgroundColor: '#000',
+		backgroundColor: MH.UI.Colors.contactsTabBarItemBack,
 	});
 	var tab3label = Titanium.UI.createLabel({
 		textid: 'controls_title_unassigned',
 		textAlign: 'center',
-		color: '#666',
-		font: {fontSize:15}
+		color: MH.UI.Colors.contactsTabBarText,
+		font: {fontSize:15, fontFamily: 'ArialRoundedMTBold'}
 	})
 	tab3.add(tab3label);
 	tabbar.add(tab3);
+
+	var border = Titanium.UI.createView({
+		bottom: 0,
+		height: 2,
+		backgroundColor: MH.UI.Colors.contactsTabBarBorder
+	})
+	tabbar.add(border);
 	
 	/* Includes create views for each tab */
 	Ti.include('/windows/contacts_inprogress.js');
@@ -80,12 +88,12 @@ createContactsWindow = function() {
 	tab1.addEventListener('click', function(e){
 		currentContactsTab = 0;
 		Ti.App.fireEvent('click_contacts_inprogress');
-		tab1.backgroundColor = '#333';
-		tab1.children[0].color = '#fff';
-		tab2.backgroundColor = '#000';
-		tab2.children[0].color = '#666';
-		tab3.backgroundColor = '#000';
-		tab3.children[0].color = '#666';
+		tab1.backgroundColor = MH.UI.Colors.contactsTabBarItemBackActive;
+		tab1.children[0].color = MH.UI.Colors.contactsTabBarTextActive;
+		tab2.backgroundColor = MH.UI.Colors.contactsTabBarItemBack;
+		tab2.children[0].color = MH.UI.Colors.contactsTabBarText;
+		tab3.backgroundColor = MH.UI.Colors.contactsTabBarItemBack;
+		tab3.children[0].color = MH.UI.Colors.contactsTabBarText;
 		inprogress.show();
 		completed.hide();
 		unassigned.hide();
@@ -94,12 +102,12 @@ createContactsWindow = function() {
 	tab2.addEventListener('click', function(e){
 		currentContactsTab = 1;
 		Ti.App.fireEvent('click_contacts_completed');
-		tab1.backgroundColor = '#000';
-		tab1.children[0].color = '#666';
-		tab2.backgroundColor = '#333';
-		tab2.children[0].color = '#fff';
-		tab3.backgroundColor = '#000';
-		tab3.children[0].color = '#666';
+		tab1.backgroundColor = MH.UI.Colors.contactsTabBarItemBack;
+		tab1.children[0].color = MH.UI.Colors.contactsTabBarText;
+		tab2.backgroundColor = MH.UI.Colors.contactsTabBarItemBackActive;
+		tab2.children[0].color = MH.UI.Colors.contactsTabBarTextActive;
+		tab3.backgroundColor = MH.UI.Colors.contactsTabBarItemBack;
+		tab3.children[0].color = MH.UI.Colors.contactsTabBarText;
 		inprogress.hide();
 		completed.show();
 		unassigned.hide();
@@ -108,12 +116,12 @@ createContactsWindow = function() {
 	tab3.addEventListener('click', function(e){
 		currentContactsTab = 2;
 		Ti.App.fireEvent('click_contacts_unassigned');
-		tab1.backgroundColor = '#000';
-		tab1.children[0].color = '#666';
-		tab2.backgroundColor = '#000';
-		tab2.children[0].color = '#666';
-		tab3.backgroundColor = '#333';
-		tab3.children[0].color = '#fff';
+		tab1.backgroundColor = MH.UI.Colors.contactsTabBarItemBack;
+		tab1.children[0].color = MH.UI.Colors.contactsTabBarText;
+		tab2.backgroundColor = MH.UI.Colors.contactsTabBarItemBack;
+		tab2.children[0].color = MH.UI.Colors.contactsTabBarText;
+		tab3.backgroundColor = MH.UI.Colors.contactsTabBarItemBackActive;
+		tab3.children[0].color = MH.UI.Colors.contactsTabBarTextActive;
 		inprogress.hide();
 		completed.hide();
 		unassigned.show();

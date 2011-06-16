@@ -1,6 +1,7 @@
 createProfileWindow = function() {
 	var win = Titanium.UI.createWindow({
-	    titleid:'win_title_profile'
+	    titleid:'win_title_profile',
+	    barColor: MH.UI.Colors.navbar
 	});
 		
 	var person = JSON.parse(Ti.App.Properties.getString("person", "{}"));
@@ -23,9 +24,8 @@ createProfileWindow = function() {
 		width: 50,
 		height: 50
 	});
-	MH.UI.createCachedImageView('contact', person.picture+"?type=square", img);
+	MH.UI.createCachedFBImageView('imgcache_profile', person.picture+"?type=square", img);
 	win.add(img);
-	
 	
 	return win;
 }
