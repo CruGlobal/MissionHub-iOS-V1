@@ -10,6 +10,8 @@ MH.UI.Colors.navbar = MH.UI.Colors.mhBlue;
 /* Contacts Tab Bar */
 MH.UI.Colors.contactsTabBarBorder = '#666';
 MH.UI.Colors.contactsTabBarBack = MH.UI.Colors.mhLtBlue;
+MH.UI.Colors.contactsTabBarItemBackFocused = MH.UI.Colors.mhGreen; // Android
+MH.UI.Colors.contactsTabBarItemBackSelected = MH.UI.Colors.mhGreen; // Android
 MH.UI.Colors.contactsTabBarItemBack = MH.UI.Colors.mhLtBlue;
 MH.UI.Colors.contactsTabBarItemBackActive = MH.UI.Colors.mhBlue;
 MH.UI.Colors.contactsTabBarText = '#000';

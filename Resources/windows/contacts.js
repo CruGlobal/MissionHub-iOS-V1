@@ -21,7 +21,6 @@ createContactsWindow = function() {
 		top:0,
 		left:0,
 		height: 40,
-		focusable: true,
 		backgroundColor: MH.UI.Colors.contactsTabBarBack,
 	});
 	
@@ -31,6 +30,8 @@ createContactsWindow = function() {
 		width: Titanium.Platform.displayCaps.platformWidth/3,
 		focusable: true,
 		backgroundColor: MH.UI.Colors.contactsTabBarItemBackActive,
+		backgroundFocusedColor: MH.UI.Colors.contactsTabBarItemBackFocused,
+		backgroundSelectedColor: MH.UI.Colors.contactsTabBarItemBackSelected,
 	});
 	var tab1label = Titanium.UI.createLabel({
 		textid: 'controls_title_inprogress',
@@ -47,6 +48,8 @@ createContactsWindow = function() {
 		width: Titanium.Platform.displayCaps.platformWidth/3,
 		focusable: true,
 		backgroundColor: MH.UI.Colors.contactsTabBarItemBack,
+		backgroundFocusedColor: MH.UI.Colors.contactsTabBarItemBackFocused,
+		backgroundSelectedColor: MH.UI.Colors.contactsTabBarItemBackSelected,
 	});
 	var tab2label = Titanium.UI.createLabel({
 		textid: 'controls_title_completed',
@@ -63,6 +66,8 @@ createContactsWindow = function() {
 		width: Titanium.Platform.displayCaps.platformWidth/3,
 		focusable: true,
 		backgroundColor: MH.UI.Colors.contactsTabBarItemBack,
+		backgroundFocusedColor: MH.UI.Colors.contactsTabBarItemBackFocused,
+		backgroundSelectedColor: MH.UI.Colors.contactsTabBarItemBackSelected,
 	});
 	var tab3label = Titanium.UI.createLabel({
 		textid: 'controls_title_unassigned',
