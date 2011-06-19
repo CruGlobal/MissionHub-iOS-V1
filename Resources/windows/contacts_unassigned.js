@@ -16,16 +16,16 @@ var unassigned = Titanium.UI.createView({
 	/* The TableView and Data */
 	var ids = [];
 	var tableView;
-	if (isIOS()) {
-		tableView = MH.UI.createIOSTableView({
-			separatorColor: MH.UI.Colors.contactsTvSeparator,
-			backgroundColor: MH.UI.Colors.contactsTvBg,
+	if (ios) {
+		tableView = UI.createIOSTableView({
+			separatorColor: Colors.ctvSep,
+			backgroundColor: Colors.ctvBg,
 			data:ids
 		});
 	} else {
-		tableView = MH.UI.createAndroidTableView({
-			separatorColor: MH.UI.Colors.contactsTvSeparator,
-			backgroundColor: MH.UI.Colors.contactsTvBg,
+		tableView = UI.createAndroidTableView({
+			separatorColor: Colors.ctvSep,
+			backgroundColor: Colors.ctvBg,
 			data:ids
 		});	
 	}
@@ -35,7 +35,7 @@ var unassigned = Titanium.UI.createView({
 	var loadingData = false; // True when loading remote data
 	var lastStart = 0; // last start record
 	var defaultLimit = 15; // default number of contacts to fetch per attempt
-	if (isIOS()) {
+	if (ios) {
 		defaultLimit = 30;
 	}
 	
@@ -54,10 +54,10 @@ var unassigned = Titanium.UI.createView({
 	});
 	
 	/* Tab item is clicked */
-	Ti.App.addEventListener('click_contacts_unassigned', function(e) {
+	w.addEventListener('click_contacts_unassigned', function(e) {
 		if (firstView == true) {
 			firstView = false;
-			MH.Utils.clearImageCache('imgcache_unassigned');
+			//MH.Utils.clearImageCache('imgcache_unassigned');
 			fetchTableViewData(0, defaultLimit); //fetch 25 records from the beginning
 		}
 	});
@@ -71,7 +71,7 @@ var unassigned = Titanium.UI.createView({
 	function validResponse(response) {
 		var dialog = false;
 		if (response) {
-			if (MH.Utils.isJSON(response)) {
+			if (JSON.valid(response)) {
 				var data = JSON.parse(response);
 				if (data['error']) {
 					alertDialog.message = Ti.Locale.getString('error_'+data['error'], data['error']);
@@ -92,15 +92,17 @@ var unassigned = Titanium.UI.createView({
 		if (loadingData || hasLastContact) { return };
 		loadingData = true;
 		
+		w.indicator.show();
+		
 		var xhr = Ti.Network.createHTTPClient();
 		
 		xhr.onload = function(e) {
 			loadingData = false;
 			lastStart = start;
-			if (isIOS()) {
+			if (ios) {
 				tableView.fireEvent('refresh_finished');
 			}
-			contactsLoadingIndicator.hide();
+			w.indicator.hide();
 			if (validResponse(this.responseText)) {
 				appendTableViewData(JSON.parse(this.responseText))
 			}
@@ -109,24 +111,16 @@ var unassigned = Titanium.UI.createView({
 		xhr.onerror = function(e) {
 			loadingData = false;
 			var dialog = false;
-			if (isIOS()) {
+			if (ios) {
 				tableView.fireEvent('refresh_finished');
 			}
-			contactsLoadingIndicator.hide();
+			w.indicator.hide();
 			validResponse(this.responseText);
 		};
 		
-		xhr.open('GET',MH.Setting.api_url+'/contacts.json?start='+start+'&limit='+limit+'&access_token='+Titanium.Network.encodeURIComponent(Ti.App.Properties.getString("access_token")));
-		Ti.API.info(MH.Setting.api_url+'/contacts.json?start='+start+'&limit='+limit+'&access_token='+Titanium.Network.encodeURIComponent(Ti.App.Properties.getString("access_token")));
+		xhr.open('GET',Settings.api_url+'/contacts.json?start='+start+'&limit='+limit+'&access_token='+Titanium.Network.encodeURIComponent(getToken()));
+		Ti.API.info(Settings.api_url+'/contacts.json?start='+start+'&limit='+limit+'&access_token='+Titanium.Network.encodeURIComponent(getToken()));
 		xhr.send();
-		
-		if (isIOS()) {
-			contactsLoadingIndicator.show();
-		} else {
-			if (start == 0) {
-				contactsLoadingIndicator.show();
-			}
-		}
 	}
 	
 	/**
@@ -154,7 +148,7 @@ var unassigned = Titanium.UI.createView({
 	 * Complete refreshes the data in the tableview
 	 */
 	function refreshTableViewData() {
-		MH.Utils.clearImageCache('imgcache_unassigned');
+		//MH.Utils.clearImageCache('imgcache_unassigned');
 		ids = [];
 		tableView.setData(ids);
 		lastStart = 0;
@@ -168,26 +162,32 @@ var unassigned = Titanium.UI.createView({
 	function createTableRow(person) {
 		var row = Ti.UI.createTableViewRow({
 			className:"person",
-			color: MH.UI.Colors.contactsTvText,
-			backgroundColor: MH.UI.Colors.contactsTvBg,
-			backgroundDisabledColor: MH.UI.Colors.contactsTvBgDisabled,
-			backgroundFocusedColor: MH.UI.Colors.contactsTvBgFocused,
-			backgroundSelectedColor: MH.UI.Colors.contactsTvBgSelected,
-			selectionStyle: MH.UI.Colors.contactsTvSelStyle,
+			color: Colors.ctvTxt,
+			backgroundColor: Colors.ctvBg,
+			backgroundDisabledColor: Colors.ctvBgDisabled,
+			backgroundFocusedColor: Colors.ctvBgFocused,
+			backgroundSelectedColor: Colors.ctvBgSelected,
+			selectionStyle: Colors.ctvSelStyle,
 			height: 56,
 			hasChild:true
 		});
 		
 		var img;
-		if (isIOS()) {
-			img = Ti.UI.createImageView({
+		if (ios) {
+			var params = {
 				defaultImage: '/images/default_contact.jpg',
 				image: person.picture+"?type=square",
 				top: 3,
 				left: 3,
 				width: 50,
 				height: 50
-			});
+			};
+			
+			if (person.picture) {
+				img = Ti.UI.createImageView(params);
+			} else {
+				img = Ti.UI.createImageView(JSON.merge(params, {image: '/images/default_contact.jpg'}));
+			}
 		} else {
 			img = Ti.UI.createView({
 				backgroundImage: '/images/default_contact.jpg',
@@ -197,7 +197,7 @@ var unassigned = Titanium.UI.createView({
 				height: 50
 			});
 			if (person.picture) {
-				MH.UI.createCachedFBImageView('imgcache_unassigned', person.picture+"?type=square", img, person.id);
+				UI.createCachedFBImageView('imgcache_unassigned', person.picture+"?type=square", img, person.id);
 			}
 		}
 		row.image = img;
@@ -227,41 +227,11 @@ var unassigned = Titanium.UI.createView({
 		return row;
 	}
 	
-	/*
-	if (isAndroid() && false) {
-		var firstrow = 0;
-		var viscount = 0;
-		
-		tableView.addEventListener('scroll', function(e) {
-			firstrow = e.firstVisibleItem;
-			viscount = e.visibleItemCount;
-		});
-		
-		tableView.addEventListener('scrollEnd', function(e) {
-			var i = firstrow;
-			var n = i + viscount;
-			
-			Ti.API.info(i + "/" + n);
-			
-			for (i<n; i++;) {
-				var row = tableView.data[0].rows[i];
-				if (row) {
-					var person = row.person;
-					var image = row.image;
-					if (!image.loaded && !image.loading && person.picture) {
-						image.loading = true;
-						Ti.API.info("Load image for " + person.last_name);
-						//MH.UI.createCachedFBImageView('contact', person.picture+"?type=square", image, person.id);
-					}
-				}
-			}
-		});
-	}
-	*/
-	
 	Ti.App.addEventListener('open_contact', function(e) {
 		var person = e.person;
-		var contact_win = MH.UI.createContactWindow(person);
-		MH.UI.tabContacts.open(contact_win,{animated:true});
+		Ti.API.info("Click Contact: " + e.name);
+		
+		//var contact_win = MH.UI.createContactWindow(person);
+		//MH.UI.tabContacts.open(contact_win,{animated:true});
 	});
 })();

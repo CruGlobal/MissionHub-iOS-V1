@@ -1,8 +1,8 @@
-#appname:MissionHubMobile
-#publisher:Campus Crusade for Christ
-#url:http://hub.ccci.us
-#image:appicon.png
-#appid:us.ccci.missionhub
-#desc:No description provided
-#type:mobile
-#guid:33da4f53-8db8-443b-9ada-3db2e8ae4dba
+#appname: MissionHub
+#publisher: chrisroemmich
+#url: http://www.ccci.org
+#image: appicon.png
+#appid: us.ccci.hub
+#desc: undefined
+#type: mobile
+#guid: 18826733-a1ff-4bf8-afe5-078eef37d301

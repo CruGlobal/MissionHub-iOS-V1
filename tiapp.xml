@@ -7,16 +7,13 @@
         <target device="blackberry">false</target>
         <target device="android">true</target>
     </deployment-targets>
-<id>us.ccci.missionhub</id>
-<name>MissionHubMobile</name>
-<version>0.1</version>
-<publisher>Campus Crusade for Christ</publisher>
-<url>http://hub.ccci.us</url>
+<id>us.ccci.hub</id>
+<name>MissionHub</name>
+<version>1.0</version>
+<publisher>Campus Crusade for Christ International</publisher>
+<url>http://www.ccci.org</url>
 <description>No description provided</description>
-<copyright>2011 by Campus Crusade For Christ</copyright>
-<property name="ti.deploytype">distribution</property>
-<property name="ti.android.fastdev" type="bool">false</property>
-<property name="ti.android.compilejs" type="bool">true</property>
+<copyright>Campus Crusade for Christ International</copyright>
 <icon>default_app_logo.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
@@ -24,8 +21,8 @@
     <statusbar-hidden>false</statusbar-hidden>
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
-    <analytics>false</analytics>
-<guid>33da4f53-8db8-443b-9ada-3db2e8ae4dba</guid>
+    <analytics>true</analytics>
+<guid>18826733-a1ff-4bf8-afe5-078eef37d301</guid>
 	<iphone>
 		<orientations device="iphone">
 			<orientation>Ti.UI.PORTRAIT</orientation>
