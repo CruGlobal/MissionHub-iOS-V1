@@ -6,11 +6,11 @@
 	<string name="win_title_login">MissionHub Mobile Login</string>
 	<string name="win_title_contacts">Contacts</string>
 	<string name="win_title_profile">Profile</string>
+	<string name="win_title_contact">Contact</string>
 	<string name="controls_title_profile">Profile</string>
 	<string name="controls_title_inprogress">In-Progress</string>
 	<string name="controls_title_completed">Completed</string>
-	<string name="controls_title_unassigned">Unassigned</string>
-	
+	<string name="controls_title_unassigned">Unassigned</string>	
 	
 	<!-- Errors -->
 	<string name="error_unknown">Error</string>
@@ -24,7 +24,7 @@
 	<string name="error_not_a_leader">Not A Leader</string>
 	<string name="error_not_a_leader_msg">You are not a MissionHub leader. To use this application you must be a leader in your organization.</string>
 	<string name="error_could_not_fetch_contacts">Could not fetch contacts from the MissionHub server. Please make sure you are connected to the internet and try again.</string>
-
+	
 	<!-- Actions -->
 	<string name='error'>Error</string>
 	<string name='close'>Close</string>

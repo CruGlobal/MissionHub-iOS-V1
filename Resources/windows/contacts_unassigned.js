@@ -35,7 +35,7 @@ var unassigned = Titanium.UI.createView({
 	var loadingData = false; // True when loading remote data
 	var lastStart = 0; // last start record
 	var defaultLimit = 15; // default number of contacts to fetch per attempt
-	if (ios) {
+	if (ipad) {
 		defaultLimit = 30;
 	}
 	
@@ -197,7 +197,7 @@ var unassigned = Titanium.UI.createView({
 				height: 50
 			});
 			if (person.picture) {
-				UI.createCachedFBImageView('imgcache_unassigned', person.picture+"?type=square", img, person.id);
+				UI.createCachedFBImageView('imgcache_contacts', person.picture+"?type=square", img, person.id);
 			}
 		}
 		row.image = img;
@@ -229,9 +229,11 @@ var unassigned = Titanium.UI.createView({
 	
 	Ti.App.addEventListener('open_contact', function(e) {
 		var person = e.person;
-		Ti.API.info("Click Contact: " + e.name);
-		
-		//var contact_win = MH.UI.createContactWindow(person);
-		//MH.UI.tabContacts.open(contact_win,{animated:true});
+		var contact_win = Ti.UI.createWindow({
+			url: '/windows/contact.js',
+			titleid: 'win_title_contact'
+		});
+		contact_win.person = person;
+		Ti.UI.currentTab.open(contact_win, {animated:true});
 	});
 })();

@@ -34,6 +34,9 @@ function error(msg) {
 }
 
 function getErrorTitle(code, alt) {
+	if (code.code) {
+		code = code.code;
+	}
 	if (alt) {
 		return Ti.Locale.getString('error_'+code, Ti.Locale.getString('error_'+alt));
 	} else {
@@ -42,10 +45,15 @@ function getErrorTitle(code, alt) {
 }
 
 function getErrorMsg(code, alt) {
+	var message = code;
+	if (code.code) {
+		message = code.message;
+		code = code.code;
+	}
 	if (alt) {
 		return Ti.Locale.getString('error_'+code+'_msg', Ti.Locale.getString('error_'+alt+'_msg'));
 	} else {
-		return Ti.Locale.getString('error_'+code+'_msg', Ti.Locale.getString('error_unknown_msg'));
+		return Ti.Locale.getString('error_'+code+'_msg', message);
 	}
 }
 

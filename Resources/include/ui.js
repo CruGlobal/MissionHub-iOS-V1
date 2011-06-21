@@ -21,43 +21,40 @@ var UI = {};
 
 /* Expects parameters of the directory name you wish to save it under, the url of the remote image, 
    and the Image View Object its being assigned to. */
-UI.createCachedFBImageView = function(imageDirectoryName, url, imageViewObject, filename) {
-	Ti.API.info(imageDirectoryName + ":" + url + ":" + imageViewObject + ":" + filename);
-	
-	
-	
+UI.createCachedFBImageView = function(imageDirectoryName, url, imageViewObject, filename, type) {
 	var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, imageDirectoryName, filename);
 	
 	if (file.exists()) {
-		imageViewObject.backgroundImage = file.nativePath;
+		if (type == "img") {
+			imageViewObject.image = file.nativePath;
+		} else {
+			imageViewObject.backgroundImage = file.nativePath;
+		}
 	} else {
 		var g = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, imageDirectoryName);
 		if (!g.exists()) {
 			g.createDirectory();
 		};
-		
 		var xhr = Ti.Network.createHTTPClient();
 		xhr.trys = 0;
 		
 		xhr.onload = function(e) {
-			Ti.API.info(e);
-			
 			if (xhr.status == 200) {
 				file.write(xhr.responseData);
-				imageViewObject.backgroundImage = file.nativePath;
+				if (type == "img") {
+					imageViewObject.image = file.nativePath;
+				} else {
+					imageViewObject.backgroundImage = file.nativePath;
+				}
 			};
 		};
-		
 		xhr.onerror = function(e) {
-			
-			Ti.API.error(e);
 			xhr.trys++;
 			if (xhr.trys < 3) {
 				xhr.open('GET', url);
 				xhr.send();
 			}		
 		};
-		
 		xhr.open('GET', url);
 		xhr.send();
 	};
@@ -225,3 +222,127 @@ UI.createAndroidTableView = function(_params) {
 	
 	return tv;
 }
+
+/**
+ * MagicImage Scaler/Downloader/Cacher
+ */
+UI.MagicImage = function(_params) {
+	var v = Ti.UI.createView(_params);
+	var i = '';
+	v.height = 0;
+	v.width = 0;
+	
+	// Cache expiration
+	if (!_params.expire) {
+		_params.expire = 60*60*24; // 1 day
+	}
+	
+	// Update the View Image and Size
+	v.update = function(e) {
+		// Calculate the image dimensions	
+		var tmpimg = Ti.UI.createImageView({
+			width: 'auto',
+			height: 'auto',
+			image: i
+		});
+		var img = tmpimg.toImage();
+		var dimensions = {height: img.height, width: img.width};
+		
+		var wRatio = dimensions.width/v.maxWidth;
+		var hRadio = dimensions.height/v.maxHeight;
+		
+		if (wRatio > hRadio) {
+			v.width = v.maxWidth;
+			v.height = Math.round(v.maxWidth * (dimensions.height / dimensions.width));
+		} else {
+			v.height = v.maxHeight;
+			v.width = Math.round(v.maxHeight * (dimensions.width / dimensions.height));
+		}
+		
+		//Update the image at the end to avoid flash
+		v.backgroundImage = i;
+		// Fire custom event
+		if (e.fireEvent) {
+			v.fireEvent('updated', {height: v.height, width: v.width, image: i});	
+		}
+	};
+	v.addEventListener('update', v.update);
+	
+	function setup() {
+		var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+		if (regexp.test(_params.image)) {
+			// If File Is Remote
+			var filename = _params.image.toString().replace(/[^A-Za-z0-9_\.]/g,"");
+			var file = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'img_cache', filename);
+			
+			// Keep Cache Fresh
+			if (file.exists()) {
+				var date = new Date(file.modificationTimestamp());
+				date = date.getTime();
+				var now = new Date();
+				now = now.getTime();
+				if (date+(_params.expire) < now) {
+					file.deleteFile();
+				}
+			}
+			
+			if (file.exists()) {
+				// Display Cached File
+				i = file.nativePath;
+				v.fireEvent('update', {fireEvent: true});
+			} else {
+				// Fetch Remote Image
+				if (_params.defaultImage) {
+					i = _params.defaultImage;
+					v.fireEvent('update', {fireEvent: false});
+				}
+				
+				var g = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'img_cache');
+				if (!g.exists()) {
+					g.createDirectory();
+				}
+				var xhr = Ti.Network.createHTTPClient({
+					timeout: 5000
+				});
+				xhr.trys = 0;
+				xhr.onload = function(e) {
+					if (xhr.status == 200) {
+						file.write(xhr.responseData);
+						i = file.nativePath;
+						v.fireEvent('update', {fireEvent: true});
+					} else {
+						xhr.onerror(e);
+					}
+				};
+				xhr.onerror = function(e) {
+					xhr.trys++;
+					if (xhr.trys < 3) {
+						xhr.open('GET', _params.image);
+						xhr.send();
+					}
+				};
+				xhr.open('GET', _params.image);
+				xhr.send();
+			}
+		} else {
+			// If File Is Local
+			v.fireEvent('update', {fireEvent: true});
+		}
+	}
+	
+	setup();
+	
+	v.setImage = function(img) {
+		_params.image = img;
+		setup();
+	};
+	
+	return v;
+};
+
+/**
+ * Creates a MagicImage View
+ */
+UI.createMagicImage = function(_params) {
+	return new UI.MagicImage(_params);
+};
