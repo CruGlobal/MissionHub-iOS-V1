@@ -10,52 +10,56 @@
  */
 
 Ti.include('/include/includes.js');
-var win = Ti.UI.currentWindow;
+var w = Ti.UI.currentWindow;
 
-/* Profile Picture */
-win.picture = Ti.UI.createView({
-	backgroundImage: '/images/default_contact.jpg',
-	top: 0,
-	left: 0,
-	width: 50,
-	height: 50
-});
-win.add(win.picture);
+(function(){ /* Profile Picture */
+	var params;
+	w.picture = UI.createMagicImage(JSON.merge({
+		image: '/images/facebook_question.gif',
+		maxHeight: 150,
+		maxWidth: 110,
+		top: 0,
+		left: 0,
+		borderWidth: 3,
+		borderRadius: 5,
+		borderColor: '#000'
+	}, params));
+	w.add(w.picture);
+})();
 
 /* Name */
-win.name = Ti.UI.createLabel({
+w.name = Ti.UI.createLabel({
 	top: 6,
 	left: 60,
 	height: 50,
 	width: Ti.Platform.displayCaps.platformWidth-60,
 	color: '#fff'
 });
-win.add(win.name);
+w.add(w.name);
 
 /* Logout Button */
-win.logout = Ti.UI.createButton({
+w.logout = Ti.UI.createButton({
 	titleid: 'logout',
 	width: 200,
 	height: 100
 });
-win.logout.addEventListener('click', function(e){
+w.logout.addEventListener('click', function(e){
 	Ti.API.info("click");
 	
 	Ti.App.fireEvent('logout');
 });
-win.add(win.logout);
+w.add(w.logout);
 
-win.update = function() {
-	win.person = JSON.parse(Ti.App.Properties.getString("person", "{}"));
-	if (win.person) {
-		if (win.person.picture && win.person.id) {
-			UI.createCachedFBImageView('imgcache_profile', win.person.picture+"?type=square", win.picture, win.person.id);
+w.update = function() {
+	w.person = JSON.parse(Ti.App.Properties.getString("person", "{}"));
+	if (w.person) {
+		if (w.person.picture) {
+			w.picture.setImage(w.person.picture+"?type=large");
 		}
-		
-		if (win.person.name) {
-			win.name.text = win.person.name;
+		if (w.person.name) {
+			w.name.text = w.person.name;
 		}
 	}
 };
-win.addEventListener('update', win.update);
-win.update();
+w.addEventListener('profile:update', w.update);
+w.update();

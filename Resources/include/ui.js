@@ -247,6 +247,8 @@ UI.MagicImage = function(_params) {
 		});
 		var img = tmpimg.toImage();
 		var dimensions = {height: img.height, width: img.width};
+		tmpimg = null;
+		img = null;
 		
 		var wRatio = dimensions.width/v.maxWidth;
 		var hRadio = dimensions.height/v.maxHeight;
@@ -263,12 +265,14 @@ UI.MagicImage = function(_params) {
 		v.backgroundImage = i;
 		// Fire custom event
 		if (e.fireEvent) {
-			v.fireEvent('updated', {height: v.height, width: v.width, image: i});	
+			v.loaded = true;
+			v.fireEvent('MagicImage:updated', {height: v.height, width: v.width, image: i});	
 		}
 	};
-	v.addEventListener('update', v.update);
+	v.addEventListener('MagicImage:update', v.update);
 	
 	function setup() {
+		v.loaded = false;
 		var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 		if (regexp.test(_params.image)) {
 			// If File Is Remote
@@ -289,12 +293,12 @@ UI.MagicImage = function(_params) {
 			if (file.exists()) {
 				// Display Cached File
 				i = file.nativePath;
-				v.fireEvent('update', {fireEvent: true});
+				v.fireEvent('MagicImage:update', {fireEvent: true});
 			} else {
 				// Fetch Remote Image
 				if (_params.defaultImage) {
 					i = _params.defaultImage;
-					v.fireEvent('update', {fireEvent: false});
+					v.fireEvent('MagicImage:update', {fireEvent: false});
 				}
 				
 				var g = Ti.Filesystem.getFile(Ti.Filesystem.applicationDataDirectory, 'img_cache');
@@ -309,7 +313,7 @@ UI.MagicImage = function(_params) {
 					if (xhr.status == 200) {
 						file.write(xhr.responseData);
 						i = file.nativePath;
-						v.fireEvent('update', {fireEvent: true});
+						v.fireEvent('MagicImage:update', {fireEvent: true});
 					} else {
 						xhr.onerror(e);
 					}
@@ -325,8 +329,8 @@ UI.MagicImage = function(_params) {
 				xhr.send();
 			}
 		} else {
-			// If File Is Local
-			v.fireEvent('update', {fireEvent: true});
+			i = _params.image;
+			v.fireEvent('MagicImage:update', {fireEvent: true});
 		}
 	}
 	

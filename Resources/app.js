@@ -55,7 +55,8 @@ var params = {
 	titleid: 'win_title_login',
 	url: '/windows/login.js',
 	fullscreen: false,
-	barColor: Colors.bar
+	barColor: Colors.bar,
+	exitOnClose: true
 };
 if (android) {
 	win_login = Ti.UI.createWindow(params);
@@ -85,7 +86,7 @@ Ti.App.addEventListener('logout', function(e) {
 /* Listens for profile:update from login window */
 Ti.App.addEventListener('profile:update', function(e) {
 	Ti.App.Properties.setString('person', JSON.stringify(e.person));
-	main.win_profile.fireEvent('update');
+	main.win_profile.fireEvent('profile:update');
 });
 
 win_login.open();

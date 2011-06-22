@@ -57,7 +57,6 @@ var unassigned = Titanium.UI.createView({
 	w.addEventListener('click_contacts_unassigned', function(e) {
 		if (firstView == true) {
 			firstView = false;
-			//MH.Utils.clearImageCache('imgcache_unassigned');
 			fetchTableViewData(0, defaultLimit); //fetch 25 records from the beginning
 		}
 	});
@@ -231,7 +230,9 @@ var unassigned = Titanium.UI.createView({
 		var person = e.person;
 		var contact_win = Ti.UI.createWindow({
 			url: '/windows/contact.js',
-			titleid: 'win_title_contact'
+			titleid: 'win_title_contact',
+			tabBarHidden: true,
+			backgroundColor: Colors.lightBlue
 		});
 		contact_win.person = person;
 		Ti.UI.currentTab.open(contact_win, {animated:true});
