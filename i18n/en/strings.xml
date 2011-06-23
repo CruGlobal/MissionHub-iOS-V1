@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-	<string name="app">MissionHub Mobile</string>
+	<string name="app_name">MissionHub Mobile</string>
+	
+	<!-- Globals --> 
+	<string name="alert_btn_ok">Ok</string>
+	<string name="alert_btn_cancel">Cancel</string>
+	
+	
+	
+	
 	<string name="tab_title_contacts">Contacts</string>
 	<string name="tab_title_profile">Profile</string>
 	<string name="win_title_login">MissionHub Mobile Login</string>

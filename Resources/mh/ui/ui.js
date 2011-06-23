@@ -20,6 +20,7 @@
 	
 })();
 
+Ti.include('/mh/ui/components/components.js');
 Ti.include('/mh/ui/contact/contact.js');
 Ti.include('/mh/ui/contacts/contacts.js');
 Ti.include('/mh/ui/login/login.js');
