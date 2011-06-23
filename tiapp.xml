@@ -14,6 +14,7 @@
 <url>http://www.ccci.org</url>
 <description>No description provided</description>
 <copyright>Campus Crusade for Christ International</copyright>
+<property name="ti.android.threadstacksize" type="int">131072</property>
 <icon>default_app_logo.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
@@ -32,6 +33,10 @@
 		</orientations>
 	</iphone>
 	<android xmlns:android="http://schemas.android.com/apk/res/android">
+		<manifest>
+			<uses-sdk android:minSdkVersion="7"/>
+			<screens small="false" normal="true" large="true" anyDensity="true"/>
+		</manifest>
 	</android>
 	<modules>
 	</modules>

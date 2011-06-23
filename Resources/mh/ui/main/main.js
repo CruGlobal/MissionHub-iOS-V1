@@ -22,6 +22,12 @@
 			mainWindow.open();
 			
 			refresh();
+			
+			if (android) {
+				setTimeout(function() {
+					refresh();
+				}, 1500);
+			}
 		};
 		
 		var show = function() {
@@ -46,7 +52,7 @@
 				
 				var animation = Ti.UI.createAnimation({
 					duration: 250,
-					top: 460
+					top: Ti.Platform.displayCaps.platformHeight
 				});
 				animation.addEventListener('complete', function() {
 					showView.animate({ duration: 250, top: 240 });
@@ -100,7 +106,9 @@
 				text: L('main_sign_out')
 			});
 			signOutLabel.addEventListener('click', function(e) {
-				// TODO
+				mh.auth.oadapter.logout(function() {
+					refresh();
+				});
 			});
 			logoutBarView.add(signOutLabel);
 			
@@ -166,7 +174,7 @@
 			mainWindow.add(loggedInView);
 			
 			var createPostButton = Titanium.UI.createButton({
-				image: 'images/' + mh.app.lang() + '/home_button_create_post.png',
+				//image: 'images/' + mh.app.lang() + '/home_button_create_post.png',
 				left: 0,
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
@@ -183,7 +191,7 @@
 			loggedInView.add(createPostButton);
 
 			var yourBlogButton = Titanium.UI.createButton({
-				image: 'images/' + mh.app.lang() + '/home_button_your_blog.png',
+				//image: 'images/' + mh.app.lang() + '/home_button_your_blog.png',
 				left: 0,
 				top: 110,
 				width: Ti.Platform.displayCaps.platformWidth, 
@@ -199,7 +207,7 @@
 			yourBlogButton.add(blogUrlLabel);
 			yourBlogButton.addEventListener('click', function() {
 				mh.ui.openLink({
-					url: 'http://meme.yahoo.com' + blogUrlLabel.text
+					url: 'http://hub.ccci.us'
 				});
 			});
 			loggedInView.add(yourBlogButton);
@@ -219,11 +227,12 @@
 			mainWindow.add(loggedOutView);
 			
 			var tryNowButton = Titanium.UI.createButton({
-				image: 'images/' + mh.app.lang() + '/home_button_tryitnow.png',
+				// TODO: image: 'images/' + mh.app.lang() + '/home_button_tryitnow.png',
 				left: 0,
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110
+				height: 110,
+				title: 'Try'
 			});
 			tryNowButton.addEventListener('click', function() {
 				mh.ui.openLink({
@@ -235,11 +244,12 @@
 			loggedOutView.add(tryNowButton);
 
 			var signInButton = Titanium.UI.createButton({
-				//image: 'images/' + meme.app.lang() + '/home_button_signin.png',
+				// TODO: image: 'images/' + meme.app.lang() + '/home_button_signin.png',
 				left: 0,
 				top: 110,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110
+				height: 110,
+				title: 'Sign-In'
 			});
 			loggedOutView.add(signInButton);
 
@@ -252,7 +262,7 @@
 					}, 100);
 				});
 			};
-			// TODO: mh.auth.attachLogin(signInButtonClick, refresh);
+			mh.auth.attachLogin(signInButtonClick, refresh);
 		};
 		
 		return {
