@@ -21,6 +21,12 @@ var mh = {};
 		}
 		return 'en';
 	};
+	
+	mh.app.person = function() {
+		if (mh.auth.oadapter && mh.auth.oadapter.isLoggedIn()) {
+			return mh.api.getPerson(mh.auth.oadapter.getUserId());
+		}
+	};
 })();
 
 Ti.include('/mh/config/config.js');

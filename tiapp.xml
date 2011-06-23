@@ -14,10 +14,11 @@
 <url>http://www.ccci.org</url>
 <description>No description provided</description>
 <copyright>Campus Crusade for Christ International</copyright>
+<property name="ti.android.threadstacksize" type="int">131072</property>
 <icon>default_app_logo.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
-    <statusbar-style>default</statusbar-style>
+    <statusbar-style>opaque_black</statusbar-style>
     <statusbar-hidden>false</statusbar-hidden>
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
@@ -29,12 +30,13 @@
 		</orientations>
 		<orientations device="ipad">
 			<orientation>Ti.UI.PORTRAIT</orientation>
-			<orientation>Ti.UI.UPSIDE_PORTRAIT</orientation>
-			<orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
-			<orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
 		</orientations>
 	</iphone>
 	<android xmlns:android="http://schemas.android.com/apk/res/android">
+		<manifest>
+			<uses-sdk android:minSdkVersion="7"/>
+			<screens small="false" normal="true" large="true" anyDensity="true"/>
+		</manifest>
 	</android>
 	<modules>
 	</modules>
