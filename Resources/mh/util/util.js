@@ -20,6 +20,10 @@
 		return false;
 	};
 	
+	mh.util.stripBadCharacters = function(value) {
+		return value.toString().replace(/[^A-Za-z0-9_\.]/g,"");
+	};
+	
 })();
 
 /* Globals Platform Vars */
