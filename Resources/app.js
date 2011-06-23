@@ -4,10 +4,19 @@
  *
  * Copyright 2011, Campus Crusade for Christ International
  * 
- * Description: Main Application
+ * Description: Application Loader
  * Author: Chris Roemmich <chris.roemmich@cojourners.com>
  * Date: Thu, 16 Jun 2011 12:48:32 -0400
  */
+
+Ti.include('/mh/mh.js');
+mh.ui.home.window.open();
+
+
+
+
+
+
 
 //Ti.App.Properties.removeProperty('access_token');
 //Ti.App.Properties.setString('access_token', 'dd8eed36840c5111e0895ac3b6c131b36df088e1ff4c8347348d80d10d943364');

@@ -350,3 +350,70 @@ UI.MagicImage = function(_params) {
 UI.createMagicImage = function(_params) {
 	return new UI.MagicImage(_params);
 };
+
+/** 
+ * Creates a DropDown View
+ */
+
+UI.createDropDown = function(_params) {
+	return new UI.DropDown(_params);
+};
+
+/* Static Var For Number of DropDowns */
+UI.dropdowns = 0;
+
+/**
+ * DropDown View Creator
+ */
+UI.DropDown = function(_params) {
+	UI.dropdowns++;
+	_params.backgroundColor = 'transparent';
+	_params.scalesPageToFit = false;
+	
+	var v = Ti.UI.createWebView(_params);	
+	v.id = UI.dropdowns;
+	
+	if (_params.options) {
+		v.options = _params.options;
+	} else {
+		v.options = [];
+	}
+	v.selected = _params.selected;
+	
+	Ti.App.addEventListener('uidd_'+v.id+'_change', function(e){
+		v.selected = e.value;
+		v.value = v.options[v.selected];
+		v.fireEvent('selection', {selected: v.selected, value: v.value});
+	});
+	v.g = "";
+	v.generate = function() {
+		if (v.options.length > 0) {
+			v.value = v.options[0];
+		}
+		v.g = '<html><head><meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0"/></head><body style="padding:0px;margin:0px;">';
+		v.g += '<select id="uidd_'+v.id+'" name="uidd_'+v.id+'" style="padding:0px;margin:0px;'+_params.style+'">';
+		for (var i = 0; i < v.options.length; i++) { 
+			if (i == v.selected) {
+				v.value = v.options[i];
+				v.g += '<option value="'+i+'" selected="selected">'+v.options[i]+'</option>';
+			} else {
+				v.g += '<option value="'+i+'">'+v.options[i]+'</option>';
+			}
+		}
+		v.g += '</select>';
+		v.g += "<script type='text/javascript'>";
+		v.g += 'document.getElementById("uidd_'+v.id+'").onchange = function(){ Titanium.App.fireEvent("uidd_'+v.id+'_change",{value:this.value}); };';
+		v.g += 'document.ontouchmove = function(event){ event.preventDefault(); }';
+		v.g += "</script>";
+		v.g += '</body></html>';
+		v.html = v.g;
+	};
+	v.getSelection = function() {
+		return v.selected;
+	};
+	v.getValue = function() {
+		return v.value;
+	};
+	v.generate();
+	return v;
+};

@@ -1,0 +1,5 @@
+(function(){
+	
+	mh.auth = {};
+	
+})();
