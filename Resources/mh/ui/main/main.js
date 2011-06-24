@@ -43,7 +43,7 @@
 			setTimeout(function() {
 				var showView = loggedOutView, hideView = loggedInView;
 				var showOrHideLogoutBar = hideLogoutBar;
-				if (mh.auth.odapter && mh.auth.oadapter.isLoggedIn()) {
+				if (mh.auth.oauth && mh.auth.oauth.isLoggedIn()) {
 					showView = loggedInView; hideView = loggedOutView;
 					showOrHideLogoutBar = showLogoutBar;
 					configureLogoutBar();
