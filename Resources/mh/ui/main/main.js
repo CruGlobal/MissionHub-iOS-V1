@@ -2,6 +2,17 @@
 	
 	mh.ui.main = {};
 	
+	mh.ui.main.indicator = Ti.UI.createActivityIndicator({
+		backgroundColor: "black",
+		borderRadius: 4,
+		height: 50,
+		width: 140,
+		color: '#fff',
+		zIndex: 90,
+		style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
+		font: {fontFamily:'Helvetica Neue', fontSize:15,fontWeight:'bold'}
+	});
+	
 	mh.ui.main.window = function() {
 	
 		var mainWindow, loggedOutView, loggedInView;
@@ -14,6 +25,8 @@
 				orientationModes: [Ti.UI.PORTRAIT],
 				exitOnClose: true
 			});
+			
+			mainWindow.add(mh.ui.main.indicator);
 			
 			createHeader();
 			createLoggedInView();
@@ -28,6 +41,30 @@
 					refresh();
 				}, 1500);
 			}
+			
+			mh.auth.oauth.checkToken(checkTokenOnLoad, checkTokenOnError);
+			mh.ui.main.indicator.message = "Logging In...";
+			mh.ui.main.indicator.show();
+		};
+		
+		var checkTokenOnLoad = function(e) {
+			debug('running mh.ui.login.window.getTokenOnLoad');
+			
+			var response = mh.util.makeValid(e.response);
+			if (response.error || !response || !e.token) {
+				//TODO: Add Error
+			} else {
+				mh.auth.oauth.setToken(e.token);
+				mh.app.setPerson(response);
+				info("Logged in with access token: " + e.token);
+				refresh();
+			}
+			mh.ui.main.indicator.hide();
+		};
+		
+		var checkTokenOnError = function(e) {
+			// TODO: Add Error
+			mh.ui.main.indicator.hide();
 		};
 		
 		var show = function() {

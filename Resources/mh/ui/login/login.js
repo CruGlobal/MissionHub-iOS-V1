@@ -132,7 +132,7 @@
 				var params = mh.util.uriParams(e.url);
 				
 				if (params.error) {
-					//TODO:
+					//TODO: Add Error
 					return;
 				}
 				
@@ -142,12 +142,12 @@
 				}
 			}
 			
-			//TODO Error Handling
+			//TODO: Add Error
 		};
 		
 		var webViewOnError = function(e) {
 			debug('running mh.ui.login.window.webViewOnError');
-			
+			//TODO: Add Error
 		};
 		
 		var grantAccessOnLoad = function (e) {
@@ -164,10 +164,12 @@
 					mh.auth.oauth.getTokenFromCode(params.code, getTokenOnLoad, getTokenOnError);
 				}	
 			}
+			//TODO: Add Error
 		};
 		
 		var grantAccessOnError = function (e) {
 			debug('running mh.ui.login.window.grantAccessOnError');
+			//TODO: Add Error
 			info(e);
 			
 		};
@@ -177,7 +179,7 @@
 			
 			var response = mh.util.makeValid(e.response);
 			if (response.error || !response.access_token) {
-				//TODO: Error
+				//TODO: Add Error
 			} else {
 				mh.auth.oauth.setToken(response.access_token);
 				mh.app.setPerson(response.person);
@@ -188,6 +190,7 @@
 		
 		var getTokenOnError = function(e) {
 			debug('running mh.ui.login.window.getTokenOnError');
+			//TODO: Add Error
 			error(e);
 		};
 		

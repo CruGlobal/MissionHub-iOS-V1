@@ -51,25 +51,30 @@
 		
 		var checkToken = function(onLoadCallback, onErrorCallback) {
 			debug('running mh.auth.oauth.checkToken');
+			if (!getStoredToken()) {
+				debug('stopping mh.auth.oauth.checkToken: no stored token');
+			}
 			
 			var xhr = Ti.Network.createHTTPClient();
 			
 			xhr.onload = function(e) {
 				onLoadCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					token: getStoredToken()
 				});
 			};
 			
 			xhr.onerror = function(e) {
 				onErrorCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					token: getStoredToken()
 				});
 			};
 			
-			xhr.open('GET', mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(token));
-			info(mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(token));
+			xhr.open('GET', mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()));
+			info(mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()));
 			xhr.send();
 		};
 		
