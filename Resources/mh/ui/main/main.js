@@ -2,6 +2,34 @@
 	
 	mh.ui.main = {};
 	
+	mh.ui.main.indicator = Ti.UI.createActivityIndicator({
+		backgroundColor: "black",
+		borderRadius: 4,
+		height: 50,
+		width: 'auto',
+		color: '#fff',
+		zIndex: 90,
+		style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
+		font: {fontFamily:'Helvetica Neue', fontSize:15,fontWeight:'bold'}
+	});
+	
+	mh.ui.main.processes = [];
+	
+	mh.ui.main.showIndicator = function(process) {
+		mh.ui.main.indicator.width = 140;
+		mh.ui.main.processes.push(process);
+		mh.ui.main.indicator.show();
+	};
+	
+	mh.ui.main.hideIndicator = function(process) {
+		var idx = mh.ui.main.processes.indexOf(process);
+		if(idx!=-1) { mh.ui.main.processes.splice(idx, 1); }
+		
+		if (mh.ui.main.processes.length <= 0) {
+			mh.ui.main.indicator.hide();
+		}
+	};
+	
 	mh.ui.main.window = function() {
 	
 		var mainWindow, loggedOutView, loggedInView;
@@ -14,6 +42,8 @@
 				orientationModes: [Ti.UI.PORTRAIT],
 				exitOnClose: true
 			});
+			
+			mainWindow.add(mh.ui.main.indicator);
 			
 			createHeader();
 			createLoggedInView();
@@ -28,6 +58,31 @@
 					refresh();
 				}, 1500);
 			}
+			
+			mh.ui.main.indicator.message = "Logging In...";
+			if (mh.auth.oauth.checkToken(checkTokenOnLoad, checkTokenOnError)){
+				mh.ui.main.showIndicator('checkToken');
+			}
+		};
+		
+		var checkTokenOnLoad = function(e) {
+			debug('running mh.ui.login.window.getTokenOnLoad');
+			
+			var response = mh.util.makeValid(e.response);
+			if (response.error || !response || !e.token) {
+				//TODO: Add Error
+			} else {
+				mh.auth.oauth.setToken(e.token);
+				mh.app.setPerson(response[0]);
+				info("Logged in with access token: " + e.token);
+				refresh();
+			}
+			mh.ui.main.hideIndicator('checkToken');
+		};
+		
+		var checkTokenOnError = function(e) {
+			// TODO: Add Error
+			mh.ui.main.hideIndicator('checkToken');
 		};
 		
 		var show = function() {
@@ -41,24 +96,27 @@
 		var refresh = function() {
 			debug('running mh.ui.main.window.refresh');
 			setTimeout(function() {
-				var showView = loggedOutView, hideView = loggedInView;
-				var showOrHideLogoutBar = hideLogoutBar;
+				var animation = Ti.UI.createAnimation({
+					duration: 250,
+					top: Ti.Platform.displayCaps.platformHeight
+				});
 				if (mh.auth.oauth && mh.auth.oauth.isLoggedIn()) {
 					showView = loggedInView; hideView = loggedOutView;
 					showOrHideLogoutBar = showLogoutBar;
 					configureLogoutBar();
 					configureLoggedInView();
+					animation.addEventListener('complete', function() {
+						loggedInView.animate({ duration: 250, top: 240 });
+					});
+					loggedOutView.animate(animation);
+					showLogoutBar();
+				} else {
+					animation.addEventListener('complete', function() {
+						loggedOutView.animate({ duration: 250, top: 240 });
+					});
+					loggedInView.animate(animation);
+					hideLogoutBar();
 				}
-				
-				var animation = Ti.UI.createAnimation({
-					duration: 250,
-					top: Ti.Platform.displayCaps.platformHeight
-				});
-				animation.addEventListener('complete', function() {
-					showView.animate({ duration: 250, top: 240 });
-				});
-				hideView.animate(animation);
-				showOrHideLogoutBar();
 			}, 125);
 		};
 		
@@ -107,7 +165,7 @@
 				text: L('main_sign_out')
 			});
 			signOutLabel.addEventListener('click', function(e) {
-				mh.auth.oadapter.logout(function() {
+				mh.auth.oauth.logout(function() {
 					refresh();
 				});
 			});

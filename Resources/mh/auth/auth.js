@@ -28,17 +28,10 @@
 		};
 		
 		var logout = function(callback) {
+			//TODO Nuke Cache
 			token = null;
 			Ti.App.Properties.removeProperty(property);
 			callback();
-		};
-		
-		var login = function(callback) {
-			if (!token) {
-				w.login(callback);
-			} else {
-				callback();
-			}
 		};
 		
 		var isLoggedIn = function() {
@@ -51,26 +44,34 @@
 		
 		var checkToken = function(onLoadCallback, onErrorCallback) {
 			debug('running mh.auth.oauth.checkToken');
+			if (!getStoredToken()) {
+				debug('stopping mh.auth.oauth.checkToken: no stored token');
+				return false;
+			}
 			
 			var xhr = Ti.Network.createHTTPClient();
 			
 			xhr.onload = function(e) {
 				onLoadCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					token: getStoredToken()
 				});
 			};
 			
 			xhr.onerror = function(e) {
 				onErrorCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					token: getStoredToken()
 				});
 			};
 			
-			xhr.open('GET', mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(token));
-			info(mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(token));
+			xhr.open('GET', mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()));
+			info(mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()));
 			xhr.send();
+			
+			return true;
 		};
 		
 		var getTokenFromCode = function(code, onLoadCallback, onErrorCallback) {
@@ -100,14 +101,12 @@
 				code:code,
 				grant_type:'authorization_code',
 				scope: mh.config.oauth_scope,
-				redirect_uri:mh.config.oauth_url+'/done'
+				redirect_uri:mh.config.oauth_url+'/done.json'
 			});
 		};
 		
 		var grantAccess = function(authorization, onLoadCallback, onErrorCallback) {
 			debug('running mh.auth.oauth.grantAccess with authorization: ' + authorization);
-			
-			// TODO
 			var xhr = Ti.Network.createHTTPClient();
 			
 			xhr.onload = function(e) {
@@ -125,6 +124,26 @@
 			};
 			
 			xhr.open('GET',mh.config.oauth_url+'/grant.json?authorization='+Titanium.Network.encodeURIComponent(authorization));
+			if (android) {
+				var db = Ti.Database.open('webview.db');
+				var cookieRS = db.execute('SELECT name,value,domain FROM cookies');			
+				
+				var name, value, domain;
+				while (cookieRS.isValidRow()) {
+					name = cookieRS.fieldByName('name');
+					value = cookieRS.fieldByName('value');
+					domain = cookieRS.fieldByName('domain');
+					cookieRS.next();
+				}
+				cookieRS.close();
+				db.close();
+				if (name && value && domain) {
+					Ti.API.info(name + "=" + value);
+					xhr.setRequestHeader("Cookie", name+"="+value);
+				} else {
+					//TODO: Display Error
+				}
+			}
 			xhr.send();			
 		};
 		
@@ -145,7 +164,6 @@
 			getTokenFromCode: getTokenFromCode,
 			grantAccess: grantAccess,
 			isLoggedIn: isLoggedIn,
-			login: login,
 			logout: logout,
 			setToken: setToken
 		};

@@ -4,7 +4,7 @@
 
 	mh.ui.login.window = function() {
 
-		var loginWindow, authWebView, signingIn, callback;
+		var loginWindow, authWebView, signingIn, callback, indicator;
 
 		var show = function(cb) {
 			debug('running mh.ui.login.window.show');
@@ -16,6 +16,10 @@
 				
 				loginWindow = Ti.UI.createWindow({
 					navBarHidden: true
+				});
+				
+				loginWindow.addEventListener('android:back', function() {
+					destroy();
 				});
 
 				authWebView = Ti.UI.createWebView({
@@ -34,7 +38,7 @@
 					top: 5,
 					left: 5,
 					width: Ti.Platform.displayCaps.platformWidth-10,
-					height: Ti.Platform.displayCaps.platformHeight-10,
+					height: Ti.Platform.displayCaps.platformHeight-30,
 					border: 5,
 					backgroundColor: 'white',
 					borderColor: '#333',
@@ -46,17 +50,16 @@
 				loginWindow.add(authView);
 
 				// Activity indicator AJAX
-				// var actInd = Ti.UI.createActivityIndicator({
-					// top: 220,
-					// backgroundColor: "black",
-					// borderRadius: 4,
-					// height: 50,
-					// width: 50,
-					// zIndex: 90,
-					// style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
-					// visible: false
-				// });
-				// authWebView.add(actInd);
+				indicator = Ti.UI.createActivityIndicator({
+					backgroundColor: "black",
+					borderRadius: 4,
+					height: 50,
+					width: 50,
+					zIndex: 90,
+					style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
+					visible: false
+				});
+				authWebView.add(indicator);
 
 				//Close button
 				var btn_close = Titanium.UI.createButton({
@@ -75,7 +78,7 @@
 				loginWindow.open();
 
 				authWebView.addEventListener("beforeload", function(e) {
-					//actInd.show();
+					indicator.show();
 				});
 				
 				authWebView.addEventListener('load', webViewOnLoad);
@@ -132,44 +135,50 @@
 				var params = mh.util.uriParams(e.url);
 				
 				if (params.error) {
-					//TODO:
+					//TODO: Add Error
 					return;
 				}
 				
 				if (params.authorization) {
-					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
 					destroy();
+					mh.ui.main.indicator.message = "Logging In...";
+					mh.ui.main.showIndicator('grantAccess');
+					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
 				}
 			}
-			
-			//TODO Error Handling
+			indicator.hide();
+			mh.ui.main.hideIndicator('webViewLoad');
+			//TODO: Add Error
 		};
 		
 		var webViewOnError = function(e) {
 			debug('running mh.ui.login.window.webViewOnError');
-			
+			indicator.hide();
+			mh.ui.main.hideIndicator('webViewLoad');
+			//TODO: Add Error
 		};
 		
 		var grantAccessOnLoad = function (e) {
 			debug('running mh.ui.login.window.grantAccessOnLoad');
-			if (e.location) {
-				var params = mh.util.uriParams(e.location);
-				
-				if (params.error) {
-					//TODO:
-					return;
-				}
-				
-				if (params.code) {
-					mh.auth.oauth.getTokenFromCode(params.code, getTokenOnLoad, getTokenOnError);
-				}	
+			var response = mh.util.makeValid(e.response);
+			if (response.error || !response.code) {
+				//TODO: Add Error
+			} else {
+				mh.ui.main.indicator.message = "Logging In...";
+				mh.ui.main.showIndicator('getToken');
+				mh.auth.oauth.getTokenFromCode(response.code, getTokenOnLoad, getTokenOnError);
 			}
+			
+			mh.ui.main.hideIndicator('grantAccess');
+			//TODO: Add Error
 		};
 		
 		var grantAccessOnError = function (e) {
 			debug('running mh.ui.login.window.grantAccessOnError');
+			//TODO: Add Error
 			info(e);
 			
+			mh.ui.main.hideIndicator('grantAccess');
 		};
 		
 		var getTokenOnLoad = function(e) {
@@ -177,18 +186,23 @@
 			
 			var response = mh.util.makeValid(e.response);
 			if (response.error || !response.access_token) {
-				//TODO: Error
+				//TODO: Add Error
 			} else {
 				mh.auth.oauth.setToken(response.access_token);
 				mh.app.setPerson(response.person);
 				info("Logged in with access token: " + response.access_token);
+				destroy();
 				callback();
-			}
+			}			
+			mh.ui.main.hideIndicator('getToken');
 		};
 		
 		var getTokenOnError = function(e) {
 			debug('running mh.ui.login.window.getTokenOnError');
+			//TODO: Add Error
 			error(e);
+			
+			mh.ui.main.hideIndicator('getToken');
 		};
 		
 		return {
