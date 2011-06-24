@@ -170,14 +170,14 @@
 		};
 		
 		var getTokenOnLoad = function(e) {
-			
-			Ti.API.info(e);
-			
 			var response = mh.util.makeValid(e.response);
 			if (response.error || !response.access_token) {
 				//TODO: Error
 			} else {
 				mh.auth.oauth.setToken(response.access_token);
+				
+				info("Logged in with access token: " + response.access_token);
+				
 				callback();
 			}
 		};
