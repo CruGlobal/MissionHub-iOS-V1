@@ -19,11 +19,12 @@
 				});
 
 				authWebView = Ti.UI.createWebView({
-					url: 'http://google.com',
+					url: mh.auth.wvUrl,
 					top: 40,
 					zIndex: 99,
-					scalesPageToFit: true,
-					autoDetect: [ Ti.UI.AUTODETECT_NONE ] // does not detects Phone numbers and links them automatically
+					autoDetect: [ Ti.UI.AUTODETECT_NONE ],
+					canGoBack:false,
+					canGoForward:false
 				});
 
 				// Force Landscape mode only
@@ -32,8 +33,8 @@
 				var authView = Ti.UI.createView({
 					top: 5,
 					left: 5,
-					width: 310,
-					height: 450,
+					width: Ti.Platform.displayCaps.platformWidth-10,
+					height: Ti.Platform.displayCaps.platformHeight-10,
 					border: 5,
 					backgroundColor: 'white',
 					borderColor: '#333',
@@ -77,8 +78,8 @@
 					//actInd.show();
 				});
 				
-				authWebView.addEventListener('load', responseHandler);
-				authWebView.addEventListener('error', responseHandler);
+				authWebView.addEventListener('load', webViewOnLoad);
+				authWebView.addEventListener('error', webViewOnError);
 				
 				// Creating the Open Transition
 				// create first transform to go beyond normal size
@@ -113,8 +114,8 @@
 			}
 
 			try {
-				loginWindow.removeEventListener('load', responseHandler);
-				loginWindow.removeEventListener('error', responseHandler);
+				loginWindow.removeEventListener('load', webViewOnLoad);
+				loginWindow.removeEventListener('error', webViewOnError);
 				loginWindow.close();
 				signingIn = false;
 			} catch(ex) {
@@ -125,8 +126,64 @@
 			authWebView = null;
 		};
 		
-		var responseHandler = function (e) {
+		var webViewOnLoad = function (e) {
+			if (e.url) {
+				var params = mh.util.uriParams(e.url);
+				
+				if (params.error) {
+					//TODO:
+					return;
+				}
+				
+				if (params.authorization) {
+					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
+					destroy();
+				}
+			}
+			
+			//TODO Error Handling
+		};
+		
+		var webViewOnError = function(e) {
+			
+		};
+		
+		var grantAccessOnLoad = function (e) {
+			if (e.location) {
+				var params = mh.util.uriParams(e.location);
+				
+				if (params.error) {
+					//TODO:
+					return;
+				}
+				
+				if (params.code) {
+					mh.auth.oauth.getTokenFromCode(params.code, getTokenOnLoad, getTokenOnError);
+				}	
+			}
+		};
+		
+		var grantAccessOnError = function (e) {
+			
 			Ti.API.info(e);
+			
+		};
+		
+		var getTokenOnLoad = function(e) {
+			
+			Ti.API.info(e);
+			
+			var response = mh.util.makeValid(e.response);
+			if (response.error || !response.access_token) {
+				//TODO: Error
+			} else {
+				mh.auth.oauth.setToken(response.access_token);
+				callback();
+			}
+		};
+		
+		var getTokenOnError = function(e) {
+			
 		};
 		
 		return {
