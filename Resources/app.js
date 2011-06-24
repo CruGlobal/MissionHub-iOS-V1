@@ -41,7 +41,7 @@ var options3 = {
 	}
 };
 
-//mh.api.getContactsList(options);
+setTimeout(function() {mh.api.getContactsList(options)}, 15000);
 //mh.api.getContacts([1282204,244771],options3);
 // mh.api.getPeople(['me',244771],options3);
 	var data = {
@@ -61,5 +61,5 @@ var options3 = {
 		org_id: '1825'
 	};
 	
-setTimeout(function() {mh.api.deleteContactAssignment(1282204,options3)},19000);	
+//setTimeout(function() {mh.api.deleteContactAssignment(1282204,options3)},19000);	
 //setTimeout(function() {mh.api.postFollowupComment(data, options);mh.api.createContactAssignment(data2,options)},20000);

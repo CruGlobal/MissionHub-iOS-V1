@@ -38,6 +38,7 @@ var mh = {};
 
 Ti.include('/mh/config/config.js');
 Ti.include('/mh/util/util.js');
+Ti.include('/mh/error/error.js');
 Ti.include('/mh/api/api.js');
 Ti.include('/mh/ui/ui.js');
 Ti.include('/mh/auth/auth.js');

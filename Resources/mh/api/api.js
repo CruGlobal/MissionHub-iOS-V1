@@ -18,7 +18,7 @@
 		options.cacheKey = false;  // DO NOT PASS IN A CACHEKEY
 		
 		var queryParams = sortFilterAssign(options);
-		queryParams.access_token = mh.auth.oauth.getToken();
+		queryParams.access_token = 'c1d65450bcb7c26efcedcd41497cae4b66e2194388c8c124914499b2094ebbed';//mh.auth.oauth.getToken();
 	
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
@@ -130,48 +130,48 @@
 	
 
 	
-	function firePostRequest(requestURL, options, data) {
-		//TODO: PUT LOADING INDICATOR HERE w.indicator.show();
-		info("running mh.api.firePostRequest");
-		info("requestURL: " + requestURL);
-				
-		var xhr = Ti.Network.createHTTPClient();
-	
-		xhr.onload = function(e) {
-			info("in mh.api.firePostRequest.xhr.onload");
-			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
-			var response = mh.util.makeValid(this.responseText);
-			debug("response:" + JSON.stringify(response));
-			if (validResponse(response, options.errorCallback)) {
-				Ti.API.info("RESPONSE VALID & NOT WITH AN ERROR");
-				return options.successCallback(response);
-			}
-		};
-		
-		xhr.onerror = function(e) {
-			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
-			
-			var response = mh.util.makeValid(this.responseText);
-			Ti.API.info("whoops... in xhr.onerror");
-			if (validResponse(response,options.errorCallback) || !this.responseText) {
-				if (!Ti.Network.online) {
-					return handleError('', options.errorCallback, 'no_network');
-				}
-				else {
-					return handleError('', options.errorCallback, 'no_data');
-				}
-			}
-			// var response = ui.util.makeValid(this.responseText);
-			// if (response.error) {
-				// Ti.API.info(response.error);
-				// handleError('',options.errorCallback, response.error)
+	// function firePostRequest(requestURL, options, data) {
+		// //TODO: PUT LOADING INDICATOR HERE w.indicator.show();
+		// info("running mh.api.firePostRequest");
+		// info("requestURL: " + requestURL);
+// 				
+		// var xhr = Ti.Network.createHTTPClient();
+// 	
+		// xhr.onload = function(e) {
+			// info("in mh.api.firePostRequest.xhr.onload");
+			// //TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
+			// var response = mh.util.makeValid(this.responseText);
+			// debug("response:" + JSON.stringify(response));
+			// if (validResponse(response, options.errorCallback)) {
+				// Ti.API.info("RESPONSE VALID & NOT WITH AN ERROR");
+				// return options.successCallback(response);
 			// }
-		};
-		xhr.open('POST',requestURL);
-		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		xhr.send(data);
-
-	};
+		// };
+// 		
+		// xhr.onerror = function(e) {
+			// //TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
+// 			
+			// var response = mh.util.makeValid(this.responseText);
+			// Ti.API.info("whoops... in xhr.onerror");
+			// if (validResponse(response,options.errorCallback) || !this.responseText) {
+				// if (!Ti.Network.online) {
+					// return handleError('', options.errorCallback, 'no_network');
+				// }
+				// else {
+					// return handleError('', options.errorCallback, 'no_data');
+				// }
+			// }
+			// // var response = ui.util.makeValid(this.responseText);
+			// // if (response.error) {
+				// // Ti.API.info(response.error);
+				// // handleError('',options.errorCallback, response.error)
+			// // }
+		// };
+		// xhr.open('POST',requestURL);
+		// xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		// xhr.send(data);
+// 
+	// };
 	function fireGetRequest(requestURL, options) {
 		//TODO: PUT LOADING INDICATOR HERE   w.indicator.show();
 		
@@ -185,7 +185,7 @@
 		if (options.cacheKey) {
 			jsonResponse = mh.api.cache.get(options.cacheKey);
 			var response = mh.util.makeValid(jsonResponse);
-			if (validResponse(response, options.errorCallback)) {
+			if (mh.error.handleResponse(jsonResponse, options.errorCallback)) {
 				Ti.API.info("I'm using a cached response");
 				return options.successCallback(response);
 			}
@@ -196,8 +196,7 @@
 
 			xhr.onload = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-				var response = mh.util.makeValid(this.responseText);
-				if (validResponse(response, options.errorCallback)) {
+				if (mh.error.handleResponse(this.responseText, options.errorCallback)) {
 					if (options.cacheKey) {
 						if (options.fresh) {
 							mh.api.cache.del(options.cacheKey);
@@ -205,7 +204,6 @@
 						Ti.API.info("I'm storing the cache key");
 						mh.api.cache.put(options.cacheKey, this.responseText, cacheSeconds);
 					}
-					Ti.API.info("I made a request!");
 					return options.successCallback(response);
 				}
 			};
@@ -213,15 +211,7 @@
 			xhr.onerror = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
 				Ti.API.info("whoops... in xhr.onerror");
-				var response = mh.util.makeValid(this.responseText);
-				if (validResponse(response,options.errorCallback) || !this.responseText) {
-					if (!Ti.Network.online) {
-						return handleError('', options.errorCallback, 'no_network');
-					}
-					else {
-						return handleError('', options.errorCallback, 'no_data');
-					}
-				}
+				mh.error.handleResponse(this.responseText,options.errorCallback);
 			};
 
 		xhr.open('GET', requestURL);
@@ -282,50 +272,6 @@
 			query += paramName + '=' + hash[paramName] + '&';
 		}
 		return query;
-	}
-
-
-	//Pass in an XHR response to validate and a callback function to execute if response is not valid
-	//OPTIONAL: alternate code to lookup in i18n file
-	function validResponse(response, callback, alt) {
-		if (response) {
-			debug("in validResponse if response");
-			if (mh.util.validJSON(response)) {
-				debug("mh.utli.validJSON true");
-				if (response.error && response.error != 'no_data') {
-					debug(JSON.stringify(response));
-					handleError(response.error, callback, alt);
-				} else {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	
-	//Pass in an error JSON object (has code & message attributes), a function to call when OK is hit on the error window.
-	//OPTIONAL:  alt -- alternate code to look up in Locale i18n file
-	function handleError(code, callback, alt) {
-		var hash = {};
-		var error_code='';
-		var message;
-		
-		hash.onClick = callback;
-		
-		if (code.code) {
-			error_code = code.code;
-			message = code.message;
-		}
-		
-		if (alt) {
-			hash.title = L('error_'+error_code, L('error_'+alt));
-			hash.message = L('error_'+error_code+'_msg', L('error_'+alt+'_msg'));
-		} else {
-			hash.title =  L('error_'+error_code, L('error_unknown'));
-			hash.message = L('error_'+error_code+'_msg', message);
-		}
-		mh.ui.alert(hash);
 	}
 	
 	function generateIDString(ids) {

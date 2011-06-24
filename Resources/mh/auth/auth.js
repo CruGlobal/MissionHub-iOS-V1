@@ -6,7 +6,7 @@
 		mh.auth.oauth.attachLogin(buttonClick, callback);	
 	};
 	
-	mh.auth.wvUrl = mh.config.oauth_url + "/authorize?display=touch&simple=true&response_type=code&redirect_uri=" + mh.config.oauth_url + "/done&client_id=" + mh.config.oauth_client_id + "&scope=" + mh.config.oauth_scope;
+	mh.auth.wvUrl = mh.config.oauth_url + "/authorize?display=touch&simple=true&response_type=code&redirect_uri=" + mh.config.oauth_url + "/done.json&client_id=" + mh.config.oauth_client_id + "&scope=" + mh.config.oauth_scope;
 	
 	var OAuth = function(loginWindow) {
 		
