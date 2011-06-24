@@ -144,8 +144,8 @@
 		xhr.open('POST',requestURL);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send(data);
-	}
-	
+		};
+	};
 	function fireGetRequest(requestURL, options) {
 		//TODO: PUT LOADING INDICATOR HERE   w.indicator.show();
 		
