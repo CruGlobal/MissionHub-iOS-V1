@@ -35,7 +35,7 @@
 	<android xmlns:android="http://schemas.android.com/apk/res/android">
 		<manifest>
 			<uses-sdk android:minSdkVersion="7"/>
-			<screens small="false" normal="true" large="true" anyDensity="true"/>
+			<screens anyDensity="true" large="true" normal="true" small="false"/>
 		</manifest>
 	</android>
 	<modules>
