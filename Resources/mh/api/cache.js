@@ -8,40 +8,40 @@ More info at http://github.com/guilhermechapiewski/titanium-cache#readme
 
 Usage:
 	// the following call will return null
-	meme.api.cache.get('my_data');
+	mh.api.cache.get('my_data');
 
 	// now we'll cache object under "my_data" key for 5 minutes
 	// (if you do not specify, the default cache time is 5 minutes)
 	var my_javascript_object = { property: 'value' };
-	meme.api.cache.put('my_data', my_javascript_object);
+	mh.api.cache.put('my_data', my_javascript_object);
 
 	// returns cached object
 	var cached_obj = meme.api.cache.get('my_data');
 
 	// cache another object (a xml document) for 1 hour
 	// (you can specify different cache expiration times then 5 minutes)
-	meme.api.cache.put('another_data', xml_document, 3600);
+	mh.api.cache.put('another_data', xml_document, 3600);
 
 	// the following call will delete an object from cache
-	meme.api.cache.del('my_data');
+	mh.api.cache.del('my_data');
 ***************************************************/
 
 (function(){
 	
 	var CONFIG = {
 		// Disables cache (useful during development).
-		DISABLE: meme.config.cache.disable,
+		DISABLE: mh.config.cache.disable,
 		
 		// Time to check for objects that will be expired.
 		// Will check each CACHE_EXPIRATION_INTERVAL seconds.
-		CACHE_EXPIRATION_INTERVAL: meme.config.cache.cache_expiration_interval,
+		CACHE_EXPIRATION_INTERVAL: mh.config.cache.cache_expiration_interval,
 		
 		// This will avoid the cache expiration task to be set up
 		// and will expire objects from cache before get.
 		EXPIRE_ON_GET: false
 	};
 	
-	meme.api.cache = function() {
+	mh.api.cache = function() {
 		var init_cache, expire_cache, current_timestamp, get, put, del;
 
 		// Cache initialization

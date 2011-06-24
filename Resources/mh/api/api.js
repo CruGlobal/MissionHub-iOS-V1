@@ -12,12 +12,80 @@
 	//  assigned_to_id:    only show contacts assigned to value of assigned_to_id
 	//  sort:  						 array of hashes.  allowed: [ {name:  [time, status], direction: [asc, desc] } ] 
 	//  filters:           array of hashes.  allowed: [ {name: [gender, status], value: [male, female, do_not_contact, uncontacted, contacted, finished, completed]} ]
+	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
+	//  cacheSeconds:      the number of seconds until the cache'd API request expires
 	mh.api.getContacts = function (options) {
+		options.cacheKey = false;  // DO NOT PASS IN A CACHEKEY
+		
+		var queryParams = sortFilterAssign(options);
+		//now we actually build the query string
+		var queryString = buildQueryParams(queryParams);
+
+		//figure out the request URL we want to use
+		var requestURL = mh.config.api_url + '/contacts.json?' + queryString;
+		
+		if (!options.fresh) {
+			options.cacheKey = mh.util.stripBadCharacters(requestURL);
+		}
+		
+		fireRequest(requestURL, options);
+	};
+	
+	
+	function fireRequest(requestURL, options) {
 		//TODO: PUT LOADING INDICATOR HERE   w.indicator.show();
-		var xhr = Ti.Network.createHTTPClient();
 		
+		var cacheSeconds = 11;
+		if (options.cacheSeconds) {
+			cacheSeconds = options.cacheSeconds;
+		}
+		
+		var jsonResponse = false;
+		
+		if (options.cacheKey) {
+			jsonResponse = mh.api.cache.get(options.cacheKey);
+			
+			Ti.API.info("cached response from table: " + jsonResponse);
+			
+			if (validResponse(jsonResponse, options.errorCallback)) {
+				Ti.API.info("Hi!  I'm using a cached response: " + jsonResponse);
+				return options.successCallback(jsonResponse);
+			}
+		}
+		
+		if (!jsonResponse) {
+			
+			var xhr = Ti.Network.createHTTPClient();
+
+			xhr.onload = function(e) {
+				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
+				if (validResponse(this.responseText)) {
+					if (options.cacheKey) {
+						if (options.fresh) {
+							mh.api.cache.del(options.cacheKey);
+						}
+						Ti.API.info("I'm storing the cache key :" + this.responseText);
+						mh.api.cache.put(options.cacheKey, this.responseText, cacheSeconds);
+					}
+					Ti.API.info("I made a request!");
+					return options.successCallback(this.responseText);
+				}
+			};
+		
+			xhr.onerror = function(e) {			
+				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
+				validResponse(this.responseText,options.errorCallback);
+			};
+
+		xhr.open('GET',requestURL);
+		Ti.API.info("Request:  "  + requestURL);
+		xhr.send();		
+		}
+	}
+	
+	
+	function sortFilterAssign(options) {
 		//inspect options and figure out what type of requests we want to build	
-		
 		//figure out and build the query parameters
 		var queryParams = {};
 		queryParams.limit = options.limit;
@@ -57,34 +125,8 @@
 				}
 			}
 		}
-
-		//now we actually build the query string
-		var queryString = buildQueryParams(queryParams);
-		
-		//figure out the request URL we want to use
-		var requestURL = mh.config.api_url + '/contacts.json?' + queryString;
-
-		xhr.onload = function(e) {
-			Ti.API.info(e);
-			//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-			if (validResponse(this.responseText)) {
-				Ti.API.info(this.responseText);
-				options.successCallback(this.responseText);
-			}
-		};
-		
-		xhr.onerror = function(e) {			
-			//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-			Ti.API.info(this.responseText);
-			validResponse(this.responseText,options.errorCallback);
-		};
-		
-		xhr.open('GET',requestURL);
-		Ti.API.info(requestURL);
-		
-		//mh.util.stripBadCharacters
-		xhr.send();
-	};
+		return queryParams;
+	}
 	
 	
 	function buildQueryParams(hash) {
@@ -96,14 +138,13 @@
 		return query;
 	}
 
+
 	//Pass in an XHR response to validate and a callback function to execute if response is not valid
 	//OPTIONAL: alternate code to lookup in i18n file
 	function validResponse(response, callback, alt) {
 		if (response) {
-			Ti.API.info("I have a response");
 			if (mh.util.validJSON(response)) {
 				var data = JSON.parse(response);
-				
 				if (data.error) {
 					handleError(data.error, callback, alt);
 				} else {
@@ -113,6 +154,7 @@
 		}
 		return false;
 	}
+	
 	
 	//Pass in an error JSON object (has code & message attributes), a function to call when OK is hit on the error window.
 	//OPTIONAL:  alt -- alternate code to look up in Locale i18n file
@@ -140,6 +182,7 @@
 	}
 })();
 
-//Ti.include(
-//	'/mh/api/cache.js'
-//);
+
+Ti.include(
+	'/mh/api/cache.js'
+);

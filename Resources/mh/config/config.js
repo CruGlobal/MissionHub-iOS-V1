@@ -9,7 +9,7 @@
 		
 		cache: {
 			disable: false,
-			cache_expiration_interval: 60
+			cache_expiration_interval: 10
 		}
 	};
 	
