@@ -15,6 +15,10 @@
 		var token; // set per session after successful auth or token check
 		
 		var getToken = function() {
+			return token;
+		};
+		
+		var getStoredToken = function() {
 			return Ti.App.Properties.getString(property);
 		};
 		
