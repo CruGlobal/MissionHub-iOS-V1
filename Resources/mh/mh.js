@@ -22,11 +22,18 @@ var mh = {};
 		return 'en';
 	};
 	
+	var person;
+	
 	mh.app.person = function() {
-		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn()) {
-			return mh.api.getPerson(mh.auth.oadapter.getUserId());
+		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
+			return person;
 		}
 	};
+	
+	mh.app.setPerson = function(p) {
+		person = p;
+	};
+	
 })();
 
 Ti.include('/mh/config/config.js');

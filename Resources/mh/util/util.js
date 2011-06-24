@@ -25,20 +25,21 @@
 	};
 	
 	mh.util.isArray = function(obj) {
-    return obj.constructor == Array;
-}
+		return obj.constructor == Array;
+	};
 	
 	mh.util.makeValid = function(response) {
-	if (response) {
-		if (mh.util.validJSON(response)) {
-			return JSON.parse(response);
+		if (response) {
+			if (mh.util.validJSON(response)) {
+				return JSON.parse(response);
+			} else {
+				return ({error: 'not_json'});
+			}
 		} else {
-			return ({error: 'not_json'});
+			return ({error: 'no_data'});
 		}
-	} else {
-		return ({error: 'no_data'});
-	}
-};
+	};
+	
 	mh.util.uriParams = function (uri) {
 		var result = {};
 	    var params = (uri.split('?')[1] || '').split('&');

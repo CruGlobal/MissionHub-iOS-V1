@@ -6,6 +6,8 @@
 		mh.auth.oauth.attachLogin(buttonClick, callback);	
 	};
 	
+	mh.auth.wvUrl = mh.config.oauth_url + "/authorize?display=touch&simple=true&response_type=code&redirect_uri=" + mh.config.oauth_url + "/done&client_id=" + mh.config.oauth_client_id + "&scope=" + mh.config.oauth_scope;
+	
 	var OAuth = function(loginWindow) {
 		
 		var property = 'access_token';
@@ -48,14 +50,14 @@
 			
 			xhr.onload = function(e) {
 				onLoadCallback({
-					e: e,
+					location: this.location,
 					response: this.responseText
 				});
 			};
 			
 			xhr.onerror = function(e) {
 				onErrorCallback({
-					e: e,
+					location: this.location,
 					response: this.responseText
 				});
 			};
@@ -70,14 +72,14 @@
 			
 			xhr.onload = function(e) {
 				onLoadCallback({
-					e: e,
+					location: this.location,
 					response: this.responseText
 				});
 			};
 			
 			xhr.onerror = function(e) {
 				onErrorCallback({
-					e: e,
+					location: this.location,
 					response: this.responseText
 				});
 			};
@@ -100,28 +102,20 @@
 			
 			xhr.onload = function(e) {
 				onLoadCallback({
-					e: e,
+					location: this.location,
 					response: this.responseText
 				});
 			};
 			
 			xhr.onerror = function(e) {
 				onErrorCallback({
-					e: e,
+					location: this.location,
 					response: this.responseText
 				});
 			};
 			
-			xhr.open('POST',mh.config.oauth_url+'/access_token');
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			xhr.send({
-				client_id:mh.config.oauth_client_id,
-				client_secret:mh.config.oauth_client_secret,
-				code:code,
-				grant_type:'authorization_code',
-				scope: mh.config.oauth_scope,
-				redirect_uri:mh.config.oauth_url+'/done'
-			});
+			xhr.open('GET',mh.config.oauth_url+'/grant.json?authorization='+Titanium.Network.encodeURIComponent(authorization));
+			xhr.send();			
 		};
 		
 		var attachLogin = function(attachFunction, callback) {
