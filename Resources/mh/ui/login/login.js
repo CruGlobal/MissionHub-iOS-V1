@@ -7,7 +7,7 @@
 		var loginWindow, authWebView, signingIn, callback;
 
 		var show = function(cb) {
-			Ti.API.debug('mh.ui.login.window.show');
+			debug('running mh.ui.login.window.show');
 
 			if (signingIn !== true) {
 				signingIn = true;
@@ -108,7 +108,7 @@
 		};
 		
 		var destroy = function() {
-			Ti.API.debug('mh.ui.login.window.destroy');
+			debug('running mh.ui.login.window.destroy');
 			if (loginWindow === null) {
 				return;
 			}
@@ -119,7 +119,7 @@
 				loginWindow.close();
 				signingIn = false;
 			} catch(ex) {
-				Ti.API.debug('Cannot destroy the authorize UI, ignoring. reason: '+ ex.message);
+				debug('Cannot destroy the authorize UI, ignoring. reason: '+ ex.message);
 			}
 
 			loginWindow  = null;
@@ -127,6 +127,7 @@
 		};
 		
 		var webViewOnLoad = function (e) {
+			debug('running mh.ui.login.window.webViewOnLoad');
 			if (e.url) {
 				var params = mh.util.uriParams(e.url);
 				
@@ -145,10 +146,12 @@
 		};
 		
 		var webViewOnError = function(e) {
+			debug('running mh.ui.login.window.webViewOnError');
 			
 		};
 		
 		var grantAccessOnLoad = function (e) {
+			debug('running mh.ui.login.window.grantAccessOnLoad');
 			if (e.location) {
 				var params = mh.util.uriParams(e.location);
 				
@@ -164,18 +167,15 @@
 		};
 		
 		var grantAccessOnError = function (e) {
-			
+			debug('running mh.ui.login.window.grantAccessOnError');
 			info(e);
 			
 		};
 		
 		var getTokenOnLoad = function(e) {
-			info(e);
+			debug('running mh.ui.login.window.getTokenOnLoad');
 			
 			var response = mh.util.makeValid(e.response);
-			
-			info(response);
-			
 			if (response.error || !response.access_token) {
 				//TODO: Error
 			} else {
@@ -187,6 +187,7 @@
 		};
 		
 		var getTokenOnError = function(e) {
+			debug('running mh.ui.login.window.getTokenOnError');
 			error(e);
 		};
 		

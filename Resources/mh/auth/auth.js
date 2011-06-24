@@ -15,6 +15,10 @@
 		var token; // set per session after successful auth or token check
 		
 		var getToken = function() {
+			return token;
+		};
+		
+		var getStoredToken = function() {
 			return Ti.App.Properties.getString(property);
 		};
 		
@@ -46,6 +50,8 @@
 		};
 		
 		var checkToken = function(onLoadCallback, onErrorCallback) {
+			debug('running mh.auth.oauth.checkToken');
+			
 			var xhr = Ti.Network.createHTTPClient();
 			
 			xhr.onload = function(e) {
@@ -68,6 +74,8 @@
 		};
 		
 		var getTokenFromCode = function(code, onLoadCallback, onErrorCallback) {
+			debug('running mh.auth.oauth.getTokenFromCode with code: ' + code);
+			
 			var xhr = Ti.Network.createHTTPClient();
 			
 			xhr.onload = function(e) {
@@ -97,6 +105,8 @@
 		};
 		
 		var grantAccess = function(authorization, onLoadCallback, onErrorCallback) {
+			debug('running mh.auth.oauth.grantAccess with authorization: ' + authorization);
+			
 			// TODO
 			var xhr = Ti.Network.createHTTPClient();
 			

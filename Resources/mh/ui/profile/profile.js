@@ -7,6 +7,7 @@
 		var aboutWindow;
 		
 		var open = function() {
+			debug('running mh.ui.profile.window.open');
 			aboutWindow = Ti.UI.createWindow({
 				backgroundImage: 'images/bg.png',
 				height: Ti.Platform.displayCaps.platformHeight,
@@ -22,6 +23,7 @@
 		};
 		
 		var createHeader = function() {
+			debug('running mh.ui.profile.window.createHeader');
 			var aboutBar = Ti.UI.createView({
 				top: 0,
 				width: 320,

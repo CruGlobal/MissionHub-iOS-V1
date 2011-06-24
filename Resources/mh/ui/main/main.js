@@ -7,7 +7,7 @@
 		var mainWindow, loggedOutView, loggedInView;
 		
 		var open = function() {
-			Ti.API.info('running mh.ui.main.window.open');
+			debug('running mh.ui.main.window.open');
 			
 			mainWindow = Titanium.UI.createWindow({
 				backgroundImage: '/images/bg.png',
@@ -31,7 +31,7 @@
 		};
 		
 		var show = function() {
-			Ti.API.info('running mh.ui.main.window.show');
+			debug('running mh.ui.main.window.show');
 			mainWindow.animate({
 				left: 0,
 				duration: 250
@@ -39,11 +39,11 @@
 		};
 		
 		var refresh = function() {
-			Ti.API.info('running mh.ui.main.window.refresh');
+			debug('running mh.ui.main.window.refresh');
 			setTimeout(function() {
 				var showView = loggedOutView, hideView = loggedInView;
 				var showOrHideLogoutBar = hideLogoutBar;
-				if (mh.auth.odapter && mh.auth.oadapter.isLoggedIn()) {
+				if (mh.auth.oauth && mh.auth.oauth.isLoggedIn()) {
 					showView = loggedInView; hideView = loggedOutView;
 					showOrHideLogoutBar = showLogoutBar;
 					configureLogoutBar();
@@ -64,6 +64,7 @@
 		
 		var configureLogoutBar, showLogoutBar, hideLogoutBar;
 		var createHeader = function() {
+			debug('running mh.ui.main.window.createHeader');
 			// Logo
 			var logoView = Ti.UI.createView({
 				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',
@@ -165,6 +166,7 @@
 		
 		var configureLoggedInView;
 		var createLoggedInView = function() {
+			debug('running mh.ui.main.window.createLoggedInView');
 			loggedInView = Ti.UI.createView({
 				top: Ti.Platform.displayCaps.platformHeight,
 				left: 0,
@@ -218,6 +220,7 @@
 		};
 		
 		var createLoggedOutView = function() {
+			debug('running mh.ui.main.window.createLoggedOutView');
 			loggedOutView = Ti.UI.createView({
 				top: Ti.Platform.displayCaps.platformHeight,
 				left: 0,
