@@ -30,7 +30,8 @@
 	<!-- Errors -->
 	<string name="error_unknown">Error</string>
 	<string name="error_unknown_msg">An unknown error has occured. Please try again or contact support.</string>
-	<string name="error_no_data_msg">The MissionHub server did not return any data. Please check your network connection and try agian.</string>
+	<string name="error_no_data">No Data Returned</string>
+	<string name="error_no_data_msg">The MissionHub server did not return any data. Please check your network connection and try again.</string>
 	<string name="error_not_json_msg">The MissionHub server returned unrecognized data. Please try again later.</string>
 	<string name="error_bad_login">Invalid Key</string>
 	<string name="error_bad_login_msg">Your access key is invalid. Please try to login again.</string>

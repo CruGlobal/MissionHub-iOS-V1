@@ -14,10 +14,12 @@
 	//  filters:           array of hashes.  allowed: [ {name: [gender, status], value: [male, female, do_not_contact, uncontacted, contacted, finished, completed]} ]
 	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
 	//  cacheSeconds:      the number of seconds until the cache'd API request expires
-	mh.api.getContacts = function (options) {
+	mh.api.getContactsList = function (options) {
 		options.cacheKey = false;  // DO NOT PASS IN A CACHEKEY
 		
 		var queryParams = sortFilterAssign(options);
+		queryParams.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+	
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
 
@@ -27,12 +29,124 @@
 		if (!options.fresh) {
 			options.cacheKey = mh.util.stripBadCharacters(requestURL);
 		}
+		fireGetRequest(requestURL, options);
+	};
 		
-		fireRequest(requestURL, options);
+		
+	//Used to pull down a single or multiple full contact descriptions
+	// required parameter ids -- array of person IDs OR just a single integer
+	// required in options object: 
+	//  successCallback:   function fired when getContacts succeeds
+	//  errorCallback:     function fired when getContacts fails
+	// optional:
+	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
+	//  cacheSeconds:      the number of seconds until the cache'd API request expires
+	mh.api.getContacts = function (ids, options) {
+		options.cacheKey = null;  // DO NOT PASS IN A CACHEKEY
+
+		idString = generateIDString(ids);
+		
+		var queryParams = {}
+		queryParams.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+		//now we actually build the query string
+		var queryString = buildQueryParams(queryParams);
+
+		//figure out the request URL we want to use
+		var requestURL = mh.config.api_url + '/contacts/' + idString + '.json?' + queryString;
+		
+		if (!options.fresh) {
+			options.cacheKey = mh.util.stripBadCharacters(requestURL);
+		}
+		fireGetRequest(requestURL, options);
 	};
 	
+		//Used to pull down a single or multiple full person descriptions
+	// required parameter ids -- array of person IDs OR just a single integer
+	// required in options object: 
+	//  successCallback:   function fired when getContacts succeeds
+	//  errorCallback:     function fired when getContacts fails
+	// optional:
+	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
+	//  cacheSeconds:      the number of seconds until the cache'd API request expires
+	mh.api.getPeople = function (ids, options) {
+		options.cacheKey = null;  // DO NOT PASS IN A CACHEKEY
+		
+		idString = generateIDString(ids);
+		var queryParams = {}
+		queryParams.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+		//now we actually build the query string
+		var queryString = buildQueryParams(queryParams);
+
+		//figure out the request URL we want to use
+		var requestURL = mh.config.api_url + '/people/' + idString + '.json?' + queryString;
+		
+		if (!options.fresh) {
+			options.cacheKey = mh.util.stripBadCharacters(requestURL);
+		}
+		fireGetRequest(requestURL, options);
+	};
 	
-	function fireRequest(requestURL, options) {
+	// var data = {
+		// followup_comment: {
+			// organization_id: w.person.request_org_id,
+			// contact_id: w.person.id,
+			// commenter_id: JSON.parse(Ti.App.Properties.getString("person", "{}")).id,
+			// status: status,
+			// comment:w.comment.value,
+		// },
+		// rejoicables: ['spiritual_conversation']
+	// };
+	
+	mh.api.postFollowupComment = function (data, options) {
+		
+		data.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+		
+		//figure out the request URL we want to use
+		var requestURL = mh.config.api_url + '/followup_comments.json?' + queryString;
+		
+		firePostRequest(requestURL, options, data);
+	};
+	
+
+	
+	function firePostRequest(requestURL, options, data) {
+		//TODO: PUT LOADING INDICATOR HERE w.indicator.show();
+	
+		var xhr = Ti.Network.createHTTPClient();
+	
+		xhr.onload = function(e) {
+			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
+			var response = mh.util.makeValid(this.responseText);
+			if (response.error || !response) {
+				handleError('',options.errorCallback, response.error)
+			} 
+			else {
+				return response;
+			}
+		};
+		
+		xhr.onerror = function(e) {
+			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
+			Ti.API.info("whoops... in xhr.onerror");
+			if (validResponse(this.responseText,options.errorCallback) || !this.responseText) {
+				if (!Ti.Network.online) {
+					return handleError('', options.errorCallback, 'no_network');
+				}
+				else {
+					return handleError('', options.errorCallback, 'no_data');
+				}
+			}
+			// var response = ui.util.makeValid(this.responseText);
+			// if (response.error) {
+				// Ti.API.info(response.error);
+				// handleError('',options.errorCallback, response.error)
+			// }
+		xhr.open('POST',requestURL);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.send(data);
+	}
+	
+	function fireGetRequest(requestURL, options) {
 		//TODO: PUT LOADING INDICATOR HERE   w.indicator.show();
 		
 		var cacheSeconds = 11;
@@ -44,11 +158,8 @@
 		
 		if (options.cacheKey) {
 			jsonResponse = mh.api.cache.get(options.cacheKey);
-			
-			Ti.API.info("cached response from table: " + jsonResponse);
-			
 			if (validResponse(jsonResponse, options.errorCallback)) {
-				Ti.API.info("Hi!  I'm using a cached response: " + jsonResponse);
+				Ti.API.info("I'm using a cached response");
 				return options.successCallback(jsonResponse);
 			}
 		}
@@ -59,12 +170,12 @@
 
 			xhr.onload = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-				if (validResponse(this.responseText)) {
+				if (validResponse(this.responseText, options.errorCallback)) {
 					if (options.cacheKey) {
 						if (options.fresh) {
 							mh.api.cache.del(options.cacheKey);
 						}
-						Ti.API.info("I'm storing the cache key :" + this.responseText);
+						Ti.API.info("I'm storing the cache key");
 						mh.api.cache.put(options.cacheKey, this.responseText, cacheSeconds);
 					}
 					Ti.API.info("I made a request!");
@@ -72,9 +183,17 @@
 				}
 			};
 		
-			xhr.onerror = function(e) {			
+			xhr.onerror = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-				validResponse(this.responseText,options.errorCallback);
+				Ti.API.info("whoops... in xhr.onerror");
+				if (validResponse(this.responseText,options.errorCallback) || !this.responseText) {
+					if (!Ti.Network.online) {
+						return handleError('', options.errorCallback, 'no_network');
+					}
+					else {
+						return handleError('', options.errorCallback, 'no_data');
+					}
+				}
 			};
 
 		xhr.open('GET',requestURL);
@@ -90,7 +209,6 @@
 		var queryParams = {};
 		queryParams.limit = options.limit;
 		queryParams.start = options.start;
-		queryParams.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12' //Titanium.Network.encodeURIComponent(getToken());
 		
 		if (options.assigned_to_id) {
 			queryParams.assigned_to = options.assigned_to_id;
@@ -104,7 +222,7 @@
 				queryParams.sort += options.sort[x].name;
 				queryParams.direction += options.sort[x].direction;
 				
-				if (x != options.sort.length) {
+				if (x != (options.sort.length-1)) {
 					queryParams.sort += ',';
 					queryParams.direction += ',';
 				}
@@ -119,7 +237,7 @@
 				queryParams.filters += options.filters[x].name;
 				queryParams.values += options.filters[x].value;
 				
-				if (x != options.sort.length) {
+				if (x != (options.sort.length-1)) {
 					queryParams.filters += ',';
 					queryParams.values += ',';
 				}
@@ -158,12 +276,12 @@
 	
 	//Pass in an error JSON object (has code & message attributes), a function to call when OK is hit on the error window.
 	//OPTIONAL:  alt -- alternate code to look up in Locale i18n file
-	function handleError(code, clickFunction, alt) {
+	function handleError(code, callback, alt) {
 		var hash = {};
-		var error_code;
+		var error_code='';
 		var message;
 		
-		hash.onClick = clickFunction;
+		hash.onClick = callback;
 		
 		if (code.code) {
 			error_code = code.code;
@@ -177,8 +295,23 @@
 			hash.title =  L('error_'+error_code, L('error_unknown'));
 			hash.message = L('error_'+error_code+'_msg', message);
 		}
-		
 		mh.ui.alert(hash);
+	}
+	
+	function generateIDString(ids) {
+		var idString = '';
+				if (mh.util.isArray(ids)) {
+			for (var x in ids) {
+					idString += ids[x];				
+				if (x != (ids.length-1)) {
+					idString += ',';
+				}
+			}
+		}
+		else {
+			idString = ids;
+		}
+		return idString;
 	}
 })();
 
