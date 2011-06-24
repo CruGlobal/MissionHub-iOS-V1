@@ -18,7 +18,7 @@
 		options.cacheKey = false;  // DO NOT PASS IN A CACHEKEY
 		
 		var queryParams = sortFilterAssign(options);
-		queryParams.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+		queryParams.access_token = mh.auth.oauth.getToken();
 	
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
@@ -47,7 +47,7 @@
 		idString = generateIDString(ids);
 		
 		var queryParams = {}
-		queryParams.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+		queryParams.access_token = mh.auth.oauth.getToken();
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
 
@@ -73,7 +73,7 @@
 		
 		idString = generateIDString(ids);
 		var queryParams = {}
-		queryParams.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+		queryParams.access_token = mh.auth.oauth.getToken();
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
 
@@ -98,13 +98,15 @@
 	// };
 	
 	mh.api.postFollowupComment = function (data, options) {
-		
-		data.access_token = 'e7c01a607441887f30467bdfe74c2bed02e464585ca62a5b8cc0207218dbfd12'; //Titanium.Network.encodeURIComponent(getToken());
+		realData = {
+			json: data
+		}
+		realData.access_token = mh.auth.oauth.getToken();
 		
 		//figure out the request URL we want to use
-		var requestURL = mh.config.api_url + '/followup_comments.json?' + queryString;
+		var requestURL = mh.config.api_url + '/followup_comments.json?';
 		
-		firePostRequest(requestURL, options, data);
+		firePostRequest(requestURL, options, realData);
 	};
 	
 

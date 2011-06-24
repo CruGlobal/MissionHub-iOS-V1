@@ -30,7 +30,7 @@
 	
 	mh.util.makeValid = function(response) {
 	if (response) {
-		if (JSON.valid(response)) {
+		if (mh.util.validJSON(response)) {
 			return JSON.parse(response);
 		} else {
 			return ({error: 'not_json'});

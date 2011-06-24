@@ -41,5 +41,17 @@ var options3 = {
 //mh.api.getContactsList(options);
 //mh.api.getContacts([1282204,244771],options3);
 mh.api.getPeople(['me',244771],options3);
+	var data = {
+		followup_comment: {
+			organization_id: 1825,
+			contact_id: 1282204,
+			commenter_id: 1282204,
+			status: 'do_not_contact',
+			comment:'testing comment!',
+		},
+		rejoicables: ['spiritual_conversation']
+	};
+	
+mh.api.postFollowupComment(data, options);
 
 mh.ui.main.window.open();
