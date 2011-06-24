@@ -165,25 +165,29 @@
 		
 		var grantAccessOnError = function (e) {
 			
-			Ti.API.info(e);
+			info(e);
 			
 		};
 		
 		var getTokenOnLoad = function(e) {
+			info(e);
+			
 			var response = mh.util.makeValid(e.response);
+			
+			info(response);
+			
 			if (response.error || !response.access_token) {
 				//TODO: Error
 			} else {
 				mh.auth.oauth.setToken(response.access_token);
-				
+				mh.app.setPerson(response.person);
 				info("Logged in with access token: " + response.access_token);
-				
 				callback();
 			}
 		};
 		
 		var getTokenOnError = function(e) {
-			
+			error(e);
 		};
 		
 		return {
