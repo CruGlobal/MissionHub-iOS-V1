@@ -24,6 +24,17 @@
 		return value.toString().replace(/[^A-Za-z0-9_\.]/g,"");
 	};
 	
+	mh.util.uriParams = function (uri) {
+		var result = {};
+	    var params = (uri.split('?')[1] || '').split('&');
+	    for(var param in params) {
+	        if (params.hasOwnProperty(param)) {
+	            var paramParts = params[param].split('=');
+	            result[paramParts[0]] = decodeURIComponent(paramParts[1] || "");
+	        }
+	    }
+	    return result;
+	};
 })();
 
 /* Globals Platform Vars */
