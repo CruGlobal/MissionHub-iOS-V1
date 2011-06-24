@@ -23,7 +23,7 @@ var mh = {};
 	};
 	
 	mh.app.person = function() {
-		if (mh.auth.oadapter && mh.auth.oadapter.isLoggedIn()) {
+		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn()) {
 			return mh.api.getPerson(mh.auth.oadapter.getUserId());
 		}
 	};
@@ -32,5 +32,5 @@ var mh = {};
 Ti.include('/mh/config/config.js');
 Ti.include('/mh/util/util.js');
 Ti.include('/mh/api/api.js');
-Ti.include('/mh/auth/auth.js');
 Ti.include('/mh/ui/ui.js');
+Ti.include('/mh/auth/auth.js');
