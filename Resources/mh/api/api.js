@@ -99,24 +99,47 @@
 	
 	mh.api.postFollowupComment = function (data, options) {
 		realData = {
-			json: data
+			json: JSON.stringify(data)
 		}
 		realData.access_token = mh.auth.oauth.getToken();
 		
 		//figure out the request URL we want to use
-		var requestURL = mh.config.api_url + '/followup_comments.json?';
+		var requestURL = mh.config.api_url + '/followup_comments/';
 		
 		firePostRequest(requestURL, options, realData);
+	};
+	
+	mh.api.createContactAssignment = function (data, options) {
+
+		data.access_token = mh.auth.oauth.getToken();
+		
+		//figure out the request URL we want to use
+		var requestURL = mh.config.api_url + '/contact_assignments/';
+		
+		firePostRequest(requestURL, options, data);
+	};
+	
+	mh.api.deleteContactAssignment = function (id, options) {
+
+		data.access_token = mh.auth.oauth.getToken();
+		
+		//figure out the request URL we want to use
+		var requestURL = mh.config.api_url + '/contact_assignments/' + id;
+		
+		firePostRequest(requestURL, options, '');
 	};
 	
 
 	
 	function firePostRequest(requestURL, options, data) {
 		//TODO: PUT LOADING INDICATOR HERE w.indicator.show();
-	
+		info("running mh.api.firePostRequest");
+		info("requestURL: " + requestURL);
+		
 		var xhr = Ti.Network.createHTTPClient();
 	
 		xhr.onload = function(e) {
+			info("in mh.api.firePostRequest.xhr.onload");
 			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
 			var response = mh.util.makeValid(this.responseText);
 			if (response.error || !response) {
@@ -143,10 +166,11 @@
 				// Ti.API.info(response.error);
 				// handleError('',options.errorCallback, response.error)
 			// }
+		};
 		xhr.open('POST',requestURL);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send(data);
-		};
+
 	};
 	function fireGetRequest(requestURL, options) {
 		//TODO: PUT LOADING INDICATOR HERE   w.indicator.show();

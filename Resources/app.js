@@ -27,6 +27,9 @@ options = {
 	}
 };
 
+mh.ui.main.window.open();
+
+
 var options3 = {
 	fresh: true,
 	successCallback: function(e) {
@@ -40,7 +43,7 @@ var options3 = {
 
 //mh.api.getContactsList(options);
 //mh.api.getContacts([1282204,244771],options3);
-mh.api.getPeople(['me',244771],options3);
+// mh.api.getPeople(['me',244771],options3);
 	var data = {
 		followup_comment: {
 			organization_id: 1825,
@@ -52,6 +55,11 @@ mh.api.getPeople(['me',244771],options3);
 		rejoicables: ['spiritual_conversation']
 	};
 	
-mh.api.postFollowupComment(data, options);
-
-mh.ui.main.window.open();
+		var data2 = {
+		ids: '1282204',
+		assign_to: '1282204',
+		org_id: '1825'
+	};
+	
+//setTimeout(function() {mh.api.deleteContactAssignment('11',options)},19000);	
+setTimeout(function() {mh.api.postFollowupComment(data, options);mh.api.createContactAssignment(data2,options)},20000);
