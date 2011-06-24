@@ -7,7 +7,7 @@
 		var mainWindow, loggedOutView, loggedInView;
 		
 		var open = function() {
-			Ti.API.info('running mh.ui.main.window.open');
+			debug('running mh.ui.main.window.open');
 			
 			mainWindow = Titanium.UI.createWindow({
 				backgroundImage: '/images/bg.png',
@@ -31,7 +31,7 @@
 		};
 		
 		var show = function() {
-			Ti.API.info('running mh.ui.main.window.show');
+			debug('running mh.ui.main.window.show');
 			mainWindow.animate({
 				left: 0,
 				duration: 250
@@ -39,7 +39,7 @@
 		};
 		
 		var refresh = function() {
-			Ti.API.info('running mh.ui.main.window.refresh');
+			debug('running mh.ui.main.window.refresh');
 			setTimeout(function() {
 				var showView = loggedOutView, hideView = loggedInView;
 				var showOrHideLogoutBar = hideLogoutBar;
