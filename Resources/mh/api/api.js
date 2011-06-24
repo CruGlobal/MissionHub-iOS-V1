@@ -120,13 +120,12 @@
 	};
 	
 	mh.api.deleteContactAssignment = function (id, options) {
-
-		data.access_token = mh.auth.oauth.getToken();
-		
+		var data = {};
+		data['_method'] = 'delete';
 		//figure out the request URL we want to use
-		var requestURL = mh.config.api_url + '/contact_assignments/' + id;
+		var requestURL = mh.config.api_url + '/contact_assignments/' + id + '.json?access_token=' + mh.auth.oauth.getToken();
 		
-		firePostRequest(requestURL, options, '');
+		firePostRequest(requestURL, options, data);
 	};
 	
 
@@ -135,25 +134,26 @@
 		//TODO: PUT LOADING INDICATOR HERE w.indicator.show();
 		info("running mh.api.firePostRequest");
 		info("requestURL: " + requestURL);
-		
+				
 		var xhr = Ti.Network.createHTTPClient();
 	
 		xhr.onload = function(e) {
 			info("in mh.api.firePostRequest.xhr.onload");
 			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
 			var response = mh.util.makeValid(this.responseText);
-			if (response.error || !response) {
-				handleError('',options.errorCallback, response.error)
-			} 
-			else {
-				return response;
+			debug("response:" + JSON.stringify(response));
+			if (validResponse(response, options.errorCallback)) {
+				Ti.API.info("RESPONSE VALID & NOT WITH AN ERROR");
+				return options.successCallback(response);
 			}
 		};
 		
 		xhr.onerror = function(e) {
 			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
+			
+			var response = mh.util.makeValid(this.responseText);
 			Ti.API.info("whoops... in xhr.onerror");
-			if (validResponse(this.responseText,options.errorCallback) || !this.responseText) {
+			if (validResponse(response,options.errorCallback) || !this.responseText) {
 				if (!Ti.Network.online) {
 					return handleError('', options.errorCallback, 'no_network');
 				}
@@ -184,19 +184,20 @@
 		
 		if (options.cacheKey) {
 			jsonResponse = mh.api.cache.get(options.cacheKey);
-			if (validResponse(jsonResponse, options.errorCallback)) {
+			var response = mh.util.makeValid(jsonResponse);
+			if (validResponse(response, options.errorCallback)) {
 				Ti.API.info("I'm using a cached response");
-				return options.successCallback(jsonResponse);
+				return options.successCallback(response);
 			}
 		}
 		
 		if (!jsonResponse) {
-			
 			var xhr = Ti.Network.createHTTPClient();
 
 			xhr.onload = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-				if (validResponse(this.responseText, options.errorCallback)) {
+				var response = mh.util.makeValid(this.responseText);
+				if (validResponse(response, options.errorCallback)) {
 					if (options.cacheKey) {
 						if (options.fresh) {
 							mh.api.cache.del(options.cacheKey);
@@ -205,14 +206,15 @@
 						mh.api.cache.put(options.cacheKey, this.responseText, cacheSeconds);
 					}
 					Ti.API.info("I made a request!");
-					return options.successCallback(this.responseText);
+					return options.successCallback(response);
 				}
 			};
 		
 			xhr.onerror = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
 				Ti.API.info("whoops... in xhr.onerror");
-				if (validResponse(this.responseText,options.errorCallback) || !this.responseText) {
+				var response = mh.util.makeValid(this.responseText);
+				if (validResponse(response,options.errorCallback) || !this.responseText) {
 					if (!Ti.Network.online) {
 						return handleError('', options.errorCallback, 'no_network');
 					}
@@ -222,8 +224,8 @@
 				}
 			};
 
-		xhr.open('GET',requestURL);
-		Ti.API.info("Request:  "  + requestURL);
+		xhr.open('GET', requestURL);
+		Ti.API.info("Request:  " + requestURL);
 		xhr.send();		
 		}
 	}
@@ -287,10 +289,12 @@
 	//OPTIONAL: alternate code to lookup in i18n file
 	function validResponse(response, callback, alt) {
 		if (response) {
+			debug("in validResponse if response");
 			if (mh.util.validJSON(response)) {
-				var data = JSON.parse(response);
-				if (data.error) {
-					handleError(data.error, callback, alt);
+				debug("mh.utli.validJSON true");
+				if (response.error && response.error != 'no_data') {
+					debug(JSON.stringify(response));
+					handleError(response.error, callback, alt);
 				} else {
 					return true;
 				}

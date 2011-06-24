@@ -61,5 +61,5 @@ var options3 = {
 		org_id: '1825'
 	};
 	
-//setTimeout(function() {mh.api.deleteContactAssignment('11',options)},19000);	
-setTimeout(function() {mh.api.postFollowupComment(data, options);mh.api.createContactAssignment(data2,options)},20000);
+setTimeout(function() {mh.api.deleteContactAssignment(1282204,options3)},19000);	
+//setTimeout(function() {mh.api.postFollowupComment(data, options);mh.api.createContactAssignment(data2,options)},20000);
