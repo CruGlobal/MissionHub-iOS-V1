@@ -49,12 +49,12 @@ Usage:
 			var db = Titanium.Database.open('cache');
 			db.execute('CREATE TABLE IF NOT EXISTS cache (key TEXT UNIQUE, value TEXT, expiration INTEGER)');
 			db.close();
-			Ti.API.info('[CACHE] INITIALIZED');
+			debug('[CACHE] INITIALIZED');
 			
 			if (!CONFIG || (CONFIG && !CONFIG.EXPIRE_ON_GET)) {
 				// set cache expiration task
 				setInterval(expire_cache, cache_expiration_interval * 1000);
-				Ti.API.info('[CACHE] Will expire objects each ' + cache_expiration_interval + ' seconds');
+				debug('[CACHE] Will expire objects each ' + cache_expiration_interval + ' seconds');
 			}
 		};
 
@@ -75,12 +75,12 @@ Usage:
 			db.execute('DELETE FROM cache WHERE expiration <= ?', timestamp);
 			db.close();
 
-			Ti.API.debug('[CACHE] EXPIRATION: [' + count + '] object(s) expired');
+			debug('[CACHE] EXPIRATION: [' + count + '] object(s) expired');
 		};
 
 		current_timestamp = function() {
 			var value = Math.floor(new Date().getTime() / 1000);
-			Ti.API.debug("[CACHE] current_timestamp=" + value);
+			debug("[CACHE] current_timestamp=" + value);
 			return value;
 		};
 
@@ -88,17 +88,17 @@ Usage:
 			var db = Titanium.Database.open('cache');
 			
 			if (CONFIG && CONFIG.EXPIRE_ON_GET) {
-				Ti.API.debug('[CACHE] EXPIRE_ON_GET is set to "true"');
+				debug('[CACHE] EXPIRE_ON_GET is set to "true"');
 				expire_cache();
 			}
 			
 			var rs = db.execute('SELECT value FROM cache WHERE key = ?', key);
 			var result = null;
 			if (rs.isValidRow()) {
-				Ti.API.info('[CACHE] HIT, key[' + key + ']');
+				debug('[CACHE] HIT, key[' + key + ']');
 				result = JSON.parse(rs.fieldByName('value'));
 			} else {
-				Ti.API.info('[CACHE] MISS, key[' + key + ']');				
+				debug('[CACHE] MISS, key[' + key + ']');				
 			}
 			rs.close();
 			db.close();
@@ -112,7 +112,7 @@ Usage:
 			}
 			var expires_in = current_timestamp() + expiration_seconds;
 			var db = Titanium.Database.open('cache');
-			Ti.API.info('[CACHE] PUT: time=' + current_timestamp() + ', expires_in=' + expires_in);
+			debug('[CACHE] PUT: time=' + current_timestamp() + ', expires_in=' + expires_in);
 			var query = 'INSERT OR REPLACE INTO cache (key, value, expiration) VALUES (?, ?, ?);';
 			db.execute(query, key, JSON.stringify(value), expires_in);
 			db.close();
@@ -122,7 +122,7 @@ Usage:
 			var db = Titanium.Database.open('cache');
 			db.execute('DELETE FROM cache WHERE key = ?', key);
 			db.close();
-			Ti.API.info('[CACHE] DELETED key[' + key + ']');
+			debug('[CACHE] DELETED key[' + key + ']');
 		};
 
 		return function() {

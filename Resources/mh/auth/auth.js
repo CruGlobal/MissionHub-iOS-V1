@@ -50,6 +50,8 @@
 		};
 		
 		var checkToken = function(onLoadCallback, onErrorCallback) {
+			debug('running mh.auth.oauth.checkToken');
+			
 			var xhr = Ti.Network.createHTTPClient();
 			
 			xhr.onload = function(e) {
@@ -72,6 +74,8 @@
 		};
 		
 		var getTokenFromCode = function(code, onLoadCallback, onErrorCallback) {
+			debug('running mh.auth.oauth.getTokenFromCode with code: ' + code);
+			
 			var xhr = Ti.Network.createHTTPClient();
 			
 			xhr.onload = function(e) {
@@ -101,6 +105,8 @@
 		};
 		
 		var grantAccess = function(authorization, onLoadCallback, onErrorCallback) {
+			debug('running mh.auth.oauth.grantAccess with authorization: ' + authorization);
+			
 			// TODO
 			var xhr = Ti.Network.createHTTPClient();
 			

@@ -64,6 +64,7 @@
 		
 		var configureLogoutBar, showLogoutBar, hideLogoutBar;
 		var createHeader = function() {
+			debug('running mh.ui.main.window.createHeader');
 			// Logo
 			var logoView = Ti.UI.createView({
 				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',
@@ -165,6 +166,7 @@
 		
 		var configureLoggedInView;
 		var createLoggedInView = function() {
+			debug('running mh.ui.main.window.createLoggedInView');
 			loggedInView = Ti.UI.createView({
 				top: Ti.Platform.displayCaps.platformHeight,
 				left: 0,
@@ -218,6 +220,7 @@
 		};
 		
 		var createLoggedOutView = function() {
+			debug('running mh.ui.main.window.createLoggedOutView');
 			loggedOutView = Ti.UI.createView({
 				top: Ti.Platform.displayCaps.platformHeight,
 				left: 0,
