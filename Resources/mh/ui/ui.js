@@ -7,11 +7,13 @@
 		if (options.buttonNames) {
 			buttonNames = options.buttonNames;
 		}
+		
 		var alert = Titanium.UI.createAlertDialog({
 			title: options.title,
 			message: options.message,
 			buttonNames: buttonNames
 		});
+		
 		if (options.onClick) {
 			alert.addEventListener('click', options.onClick);
 		}

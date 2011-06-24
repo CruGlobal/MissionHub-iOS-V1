@@ -24,6 +24,21 @@
 		return value.toString().replace(/[^A-Za-z0-9_\.]/g,"");
 	};
 	
+	mh.util.isArray = function(obj) {
+    return obj.constructor == Array;
+}
+	
+	mh.util.makeValid = function(response) {
+	if (response) {
+		if (JSON.valid(response)) {
+			return JSON.parse(response);
+		} else {
+			return ({error: 'not_json'});
+		}
+	} else {
+		return ({error: 'no_data'});
+	}
+};
 })();
 
 /* Globals Platform Vars */
@@ -39,4 +54,13 @@ if (Titanium.Platform.osname == 'android') {
 } else if (Titanium.Platform.osname == 'iphone') {
 	iphone = true;
 	ios = true;
+}
+
+/* Easy Log */
+function info(msg) {
+	Ti.API.info(msg);
+}
+
+function error(msg) {
+	Ti.API.error(msg);
 }
