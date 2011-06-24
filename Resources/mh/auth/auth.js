@@ -33,14 +33,6 @@
 			callback();
 		};
 		
-		var login = function(callback) {
-			if (!token) {
-				w.login(callback);
-			} else {
-				callback();
-			}
-		};
-		
 		var isLoggedIn = function() {
 			if (token) {
 				return true;
@@ -150,7 +142,6 @@
 			getTokenFromCode: getTokenFromCode,
 			grantAccess: grantAccess,
 			isLoggedIn: isLoggedIn,
-			login: login,
 			logout: logout,
 			setToken: setToken
 		};

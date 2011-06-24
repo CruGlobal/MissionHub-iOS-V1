@@ -144,7 +144,7 @@
 				text: L('main_sign_out')
 			});
 			signOutLabel.addEventListener('click', function(e) {
-				mh.auth.oadapter.logout(function() {
+				mh.auth.oauth.logout(function() {
 					refresh();
 				});
 			});
