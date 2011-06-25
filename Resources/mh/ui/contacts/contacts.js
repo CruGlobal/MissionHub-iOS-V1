@@ -269,9 +269,6 @@
 		
 		var loadDefaultData = function() {
 			
-			
-			
-			
 		};
 		
 		var handleBarClick = function(index) {
