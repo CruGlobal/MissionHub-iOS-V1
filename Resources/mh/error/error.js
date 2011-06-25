@@ -18,25 +18,33 @@
 	mh.error.NO_RESPONSE = 0;
 	
 	mh.error.handleResponse = function(response,errorCallback) {
+			debug("1");
 		var validity = mh.error.validResponse(response);
+		debug("validity:  " + validity);
 		if (!Ti.Network.online && validity == mh.error.NO_RESPONSE) {
+			debug("2");
 			return mh.error.handleError('', errorCallback, 'no_network');
 		} 
 		else if (!Ti.Network.online && validity != mh.error.NO_RESPONSE) {
+			debug("3");
 			return mh.error.handleError('', errorCallback, 'no_data');
 		}
 		else if(Ti.Network.online && validity == mh.error.INVALID_RESPONSE) {
+			debug("4");
 			return mh.error.handleError('', errorCallback, 'not_json');
 		}
 		else if (Ti.Network.online && validity == mh.error.NO_RESPONSE){
+			debug("5");
 			return mh.error.handleError('', errorCallback, 'no_data');
 		}
 		else if (Ti.Network.online && validity == mh.error.VALID_RESPONSE) {
 			var json_object = JSON.parse(response);
-			if (response.error) {
-				return mh.error.handleError(response.error, errorCallback);
+			if (json_object.error) {
+				debug("6");
+				return mh.error.handleError(json_object.error, errorCallback);
 			}
 			else {
+				debug("7");
 				return json_object;
 			}
 		}

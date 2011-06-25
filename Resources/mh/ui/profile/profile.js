@@ -19,6 +19,28 @@
 			
 			profileWindow.open();
 			profileWindow.animate({duration: 250, left: 0});
+			
+			
+			
+		var options = {
+				term: 'Matt',
+				limit: 15,
+				start: 0,
+				sort: [{
+					name: 'time',
+					direction: 'desc'
+				}],
+				successCallback: function(e) {
+					Ti.API.info("successCallback response: " + JSON.stringify(e));
+				},
+				errorCallback: function(e) {
+					Ti.API.info("FAILURE!!!" + JSON.stringify(e));
+				}
+			};
+			
+			setTimeout( function() {
+				mh.api.getContactsList(options)
+			}, 500);
 		};
 		
 		var createHeader = function() {

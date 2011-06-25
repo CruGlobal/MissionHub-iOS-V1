@@ -58,7 +58,7 @@ var options3 = {
 	};
 	
 // var xyz;
-//setTimeout(function() {mh.api.getContactsList(options)}, 5000);
+setTimeout(function() {mh.api.getContactsList(options)}, 5000);
 //setTimeout(function() {xyz = mh.api.searchContactsList(options)}, 5000);
 //info("ok, let's abort!");
 //setTimeout(function() {xyz.onerror = function() {info("I'm onerroring, but new")}},5150);
