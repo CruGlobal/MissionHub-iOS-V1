@@ -1,6 +1,7 @@
 (function() {
 	
 	mh.config = {
+		base_url: 'http://hub.ccci.us',
 		oauth_url: 'http://hub.ccci.us/oauth',
 		oauth_client_id: '4',
 		oauth_client_secret: 'a0f7de3c353d69c61d4c8a94b338c073d09ebd381bcb4a3b304c59cf4b15bfd5',

@@ -17,8 +17,6 @@
 	/* Contacts Tab Bar */
 	mh.config.colors.ctbBorder = '#666';
 	mh.config.colors.ctbBg = mh.config.colors.lightBlue;
-	mh.config.colors.ctbItmBgFoc = mh.config.colors.green; // Android
-	mh.config.colors.ctbItmBgSel = mh.config.colors.green; // Android
 	mh.config.colors.ctbItmBg = mh.config.colors.lightBlue;
 	mh.config.colors.ctbItmBgActive = mh.config.colors.blue;
 	mh.config.colors.ctbTxt = '#000';
@@ -26,12 +24,9 @@
 	
 	/* Contacts Table Views */
 	mh.config.colors.ctvBg = '#fff';
-	mh.config.colors.ctvBgDis = '#333'; // Android
-	mh.config.colors.ctvBgFoc = mh.config.colors.green; // Android
-	mh.config.colors.ctvBgSel = mh.config.colors.green; // Android
 	mh.config.colors.ctvSep = mh.config.colors.lightGray;
 	mh.config.colors.ctvTxt = '#000';
-	mh.config.colors.ctvSelStyle = Ti.UI.iPhone.TableViewCellSelectionStyle.GRAY; // iOS
+	mh.config.colors.ctvSelStyle = Ti.UI.iPhone.TableViewCellSelectionStyle.GRAY;
 	/* iOS Pull Down */
 	mh.config.colors.ctvPdBorder = mh.config.colors.lightBlue;
 	mh.config.colors.ctvPdBg = mh.config.colors.lightGray;

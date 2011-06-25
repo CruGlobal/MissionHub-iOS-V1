@@ -141,6 +141,7 @@
 				
 				if (params.authorization) {
 					destroy();
+					mh.ui.main.indicator.width = 140;
 					mh.ui.main.indicator.message = "Logging In...";
 					mh.ui.main.showIndicator('grantAccess');
 					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
@@ -164,6 +165,7 @@
 			if (response.error || !response.code) {
 				//TODO: Add Error
 			} else {
+				mh.ui.main.indicator.width = 140;
 				mh.ui.main.indicator.message = "Logging In...";
 				mh.ui.main.showIndicator('getToken');
 				mh.auth.oauth.getTokenFromCode(response.code, getTokenOnLoad, getTokenOnError);

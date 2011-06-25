@@ -84,9 +84,26 @@
 				right: 35,
 				top:5,
 				height: 35,
-				zIndex: 50
+				zIndex: 50,
+				keyboardType:Titanium.UI.KEYBOARD_DEFAULT
 			});
 			search.addEventListener('change', searchOnChange);
+			
+			var timeout;
+			search.addEventListener('change', function() {
+				if (timeout) { clearTimeout(timeout); }
+				if (this.value.length == 0) {
+					timeout = setTimeout(function() { search.blur(); }, 1000);
+				} else {
+					timeout = setTimeout(function() { search.blur(); }, 3000);
+				}
+			});
+			search.addEventListener('return', function() {
+				search.blur();
+			});
+			search.addEventListener('cancel', function() {
+				search.blur();
+			});
 			
 			contactsWindow.add(search);
 			
@@ -103,19 +120,27 @@
 				width: Ti.Platform.displayCaps.platformWidth
 			});
 			contactsWindow.add(bottomView);
-
+			
 			function formatDate() {
 				var date = new Date();
 				var datestr = date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear();
 				if (date.getHours()>=12)
 				{
-					datestr+=' '+(date.getHours()==12 ? date.getHours() : date.getHours()-12)+':'+date.getMinutes()+' PM';
+					datestr+=' '+(date.getHours()==12 ? date.getHours() : date.getHours()-12)+':'+pad(date.getMinutes(), 2)+' PM';
 				}
 				else
 				{
 					datestr+=' '+date.getHours()+':'+date.getMinutes()+' AM';
 				}
 				return datestr;
+			}
+			
+			function pad(numNumber, numLength){
+				var strString = '' + numNumber;
+				while(strString.length<numLength){
+					strString = '0' + strString;
+				}
+				return strString;
 			}
 			
 			tableView = Ti.UI.createTableView({
@@ -184,6 +209,11 @@
 				shadowColor:"#999",
 				shadowOffset:{x:0,y:1}
 			});
+			
+			tableView.updateLastUpdated = function() {
+				lastUpdatedLabel.text = "Last Updated: "+formatDate();
+			}
+			
 			var actInd = Titanium.UI.createActivityIndicator({
 				left:20,
 				bottom:13,
@@ -244,7 +274,7 @@
 			});
 			
 			tabbedBar = Ti.UI.createTabbedBar({
-				labels:['My Contacts', 'Completed', 'Unassigned'],
+				labels:['My Contacts', 'My Completed', 'Unassigned'],
 				backgroundColor:'#333',
 			    top:tableView.height,
 			    height:30,
@@ -255,13 +285,12 @@
 			bottomView.add(tabbedBar);
 			
 			tabbedBar.addEventListener('click', function(e) {
-				changeTab(e.index);
+				changeTab(e.index, true);
 			});
 			
 			setTimeout(function() {
 				bottomView.animate({duration: 250, top: 40+35+10});
 			}, 1000);
-			
 			
 			changeTab(0, true);
 		};
@@ -315,6 +344,10 @@
 			debug('mh.ui.window.contacts.onGetMore');
 			if (loadingData || hasLastContact) { return; }
 			loadingData = true;
+			
+			if (force) {
+				tableView.updateLastUpdated();
+			}
 			
 			if (prevXhr && force) {
 				prevXhr.onload = function(){};
@@ -408,19 +441,21 @@
 				top: 10,
 				left: 60,
 				height: 20,
-				width: Ti.Platform.displayCaps.platformWidth - 60
+				width: Ti.Platform.displayCaps.platformWidth - 60,
+				font: { fontSize: 18 }
 			})
 			row.add(name);
 			
-			var gender = Ti.UI.createLabel({
+			var status = Ti.UI.createLabel({
 				color: 'black',
-				text: person.gender,
+				text: person.status,
 				top: 30,
 				left: 60,
 				height: 20,
-				width: Ti.Platform.displayCaps.platformWidth - 60
+				width: Ti.Platform.displayCaps.platformWidth - 60,
+				font: { fontSize: 13, fontFamily: 'Helvetica' }
 			})
-			row.add(gender);
+			row.add(status);
 			
 			row.person = person;
 			return row;
