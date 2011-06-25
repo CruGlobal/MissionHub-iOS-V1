@@ -183,7 +183,7 @@
 			debug("in mh.api.firePostRequest.xhr.onload");
 			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
 			
-			if (mh.error.handleResponse(this.responseText, options.errorCallback)) {
+			if (mh.error.handleResponse(this.responseText, options)) {
 				var response = mh.util.makeValid(this.responseText);
 				return options.successCallback(response);
 			}
@@ -193,7 +193,7 @@
 			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
 			var response = mh.util.makeValid(this.responseText);
 			debug("whoops... in mh.api.firePostRequest.xhr.onerror");
-			mh.error.handleResponse(this.responseText,options.errorCallback);
+			mh.error.handleResponse(this.responseText,options);
 		};
 		
 		xhr.open('POST',requestURL);
@@ -216,7 +216,7 @@
 			jsonResponse = mh.api.cache.get(options.cacheKey);
 			if (jsonResponse) {
 				var response = mh.util.makeValid(jsonResponse);
-				if (mh.error.handleResponse(jsonResponse, options.errorCallback)) {
+				if (mh.error.handleResponse(jsonResponse, options)) {
 					info("I'm using a cached response");
 					xhr = false;
 					return options.successCallback(response);
@@ -229,7 +229,7 @@
 
 			xhr.onload = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-				if (mh.error.handleResponse(this.responseText, options.errorCallback)) {
+				if (mh.error.handleResponse(this.responseText, options)) {
 					if (options.cacheKey) {
 						if (options.fresh) {
 							mh.api.cache.del(options.cacheKey);
@@ -246,7 +246,7 @@
 			xhr.onerror = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
 				debug("whoops... mh.api.fireGetRequest.xhr.onerror");
-				mh.error.handleResponse(this.responseText,options.errorCallback);
+				mh.error.handleResponse(this.responseText,options);
 			};
 
 		xhr.open('GET', requestURL);

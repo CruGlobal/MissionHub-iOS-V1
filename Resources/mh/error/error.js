@@ -17,31 +17,31 @@
 	mh.error.INVALID_RESPONSE = 1;
 	mh.error.NO_RESPONSE = 0;
 	
-	mh.error.handleResponse = function(response,errorCallback) {
+	mh.error.handleResponse = function(response,options) {
 			debug("1");
 		var validity = mh.error.validResponse(response);
 		debug("validity:  " + validity);
 		if (!Ti.Network.online && validity == mh.error.NO_RESPONSE) {
 			debug("2");
-			return mh.error.handleError('', errorCallback, 'no_network');
+			return mh.error.handleError('', options, 'no_network');
 		} 
 		else if (!Ti.Network.online && validity != mh.error.NO_RESPONSE) {
 			debug("3");
-			return mh.error.handleError('', errorCallback, 'no_data');
+			return mh.error.handleError('', options, 'no_data');
 		}
 		else if(Ti.Network.online && validity == mh.error.INVALID_RESPONSE) {
 			debug("4");
-			return mh.error.handleError('', errorCallback, 'not_json');
+			return mh.error.handleError('', options, 'not_json');
 		}
 		else if (Ti.Network.online && validity == mh.error.NO_RESPONSE){
 			debug("5");
-			return mh.error.handleError('', errorCallback, 'no_data');
+			return mh.error.handleError('', options, 'no_data');
 		}
 		else if (Ti.Network.online && validity == mh.error.VALID_RESPONSE) {
 			var json_object = JSON.parse(response);
 			if (json_object.error) {
 				debug("6");
-				return mh.error.handleError(json_object.error, errorCallback);
+				return mh.error.handleError(json_object.error, options);
 			}
 			else {
 				debug("7");
@@ -65,12 +65,15 @@
 	
 	//Pass in an error JSON object (has code & message attributes), a function to call when OK is hit on the error window.
 	//OPTIONAL:  alt -- alternate code to look up in Locale i18n file
-	mh.error.handleError = function(code, callback, alt) {
+	mh.error.handleError = function(code, options, alt) {
 		var hash = {};
 		var error_code='';
 		var message;
 		
-		hash.onClick = callback;
+		hash.onClick = options.errorCallback;
+		if (options.buttonNames) {
+			hash.buttonNames = options.buttonNames;
+		}
 		
 		if (code.code) {
 			error_code = code.code;

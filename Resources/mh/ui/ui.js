@@ -28,9 +28,9 @@
 			options.message = L('alert_openlink_message');
 		}
 		options.onClick = function(e) {
-			if (e.index === 0) {
-				Ti.Platform.openURL(options.url);
-			}
+				if (e.index === 0) {
+					Ti.Platform.openURL(options.url);
+				}
 		};
 		mh.ui.alert(options);
 	};
