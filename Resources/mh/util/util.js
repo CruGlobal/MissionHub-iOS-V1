@@ -70,7 +70,7 @@ if (Titanium.Platform.osname == 'android') {
 
 /* Easy Log */
 function debug(msg) {
-	Ti.API.debug(msg);
+	//Ti.API.debug(msg);
 }
 
 function info(msg) {

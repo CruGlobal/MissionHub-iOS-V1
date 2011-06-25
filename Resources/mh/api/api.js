@@ -33,9 +33,14 @@
 	
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
-
+		
 		//figure out the request URL we want to use
-		var requestURL = mh.config.api_url + '/contacts.json?' + queryString;
+		var requestURL;
+		if(options.term) {
+			requestURL = mh.config.api_url + '/contacts/search.json?' + queryString;
+		} else {
+			requestURL = mh.config.api_url + '/contacts.json?' + queryString;
+		}
 		
 		if (!options.fresh) {
 			options.cacheKey = mh.util.stripBadCharacters(requestURL);
@@ -290,9 +295,11 @@
 				queryParams.filters += options.filters[x].name;
 				queryParams.values += options.filters[x].value;
 				
-				if (x != (options.sort.length-1)) {
-					queryParams.filters += ',';
-					queryParams.values += ',';
+				if (options.sort) {
+					if (x != (options.sort.length-1)) {
+						queryParams.filters += ',';
+						queryParams.values += ',';
+					}
 				}
 			}
 		}

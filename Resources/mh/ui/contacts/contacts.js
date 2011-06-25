@@ -4,7 +4,7 @@
 	
 	mh.ui.contacts.window = function() {
 		
-		var contactsWindow, tabbedBar, tableView, indicator;
+		var contactsWindow, tabbedBar, tableView, search, indicator;
 		
 		var open = function() {
 			debug('running mh.ui.contacts.window.open');
@@ -62,6 +62,7 @@
 				});
 				contactsWindow.animate(animation);
 				mh.ui.main.window.show();
+				resetTableView();
 			});
 			contactsBar.add(doneButton);
 						
@@ -75,23 +76,8 @@
 			contactsBar.add(indicator);
 		};
 		
-		var processes = [];
-	
-		var showIndicator = function(process) {
-			processes.push(process);
-			indicator.show();
-		};
-		
-		var hideIndicator = function(process) {
-			var idx = processes.indexOf(process);
-			if(idx!=-1) { processes.splice(idx, 1); }
-			if (processes.length <= 0) {
-				indicator.hide();
-			}
-		};
-		
 		var createSearchFilters = function() {
-			var search = Titanium.UI.createSearchBar({
+			search = Titanium.UI.createSearchBar({
 				barColor:'#333',
 				showCancel:false,
 				hintText:'search',
@@ -107,10 +93,6 @@
 			setTimeout(function() {
 				search.animate({duration: 250, top: 50});
 			}, 1000);
-		};
-		
-		var searchOnChange = function(e) {
-			
 		};
 		
 		var createTableView = function() {		
@@ -141,8 +123,24 @@
 				left: 0,
 				height: bottomView.height-36 //tabbar
 			});
-			
 			bottomView.add(tableView);
+			
+			var lastY = 0;
+			tableView.addEventListener('scroll', function(e) {
+				var y = e.contentOffset.y;		
+				if (y > lastY && y >= 0) {
+					var height = e.size.height;
+					var cHeight = e.contentSize.height;
+					if (y > cHeight-(2*height)) {
+						onGetMore();
+					}
+				}
+				if (e.contentOffset.y < 0) {
+					lastY = 0;
+				} else {
+					lastY = e.contentOffset.y;
+				}
+			});
 			
 			var border = Ti.UI.createView({
 				backgroundColor:"#576c89",
@@ -199,22 +197,22 @@
 			tableView.headerPullView = tableHeader;
 			
 			var pulling = false;
-			var reloading = false;
 			
 			function beginReloading() {
-				// just mock out the reload
-				setTimeout(endReloading,2000);
-			}
+				resetTableView();
+				tableView.reloading = true;
+				onGetMore();
+			};
 			
-			function endReloading() {
+			tableView.endReloading = function() {
 				// when you're done, just reset
+				tableView.reloading = false;
 				tableView.setContentInsets({top:0},{animated:true});
-				reloading = false;
 				lastUpdatedLabel.text = "Last Updated: "+formatDate();
 				statusLabel.text = "Pull down to refresh...";
 				actInd.hide();
 				arrow.show();
-			}
+			};
 			
 			tableView.addEventListener('scroll',function(e) {
 				var offset = e.contentOffset.y;
@@ -233,7 +231,7 @@
 			});
 			
 			tableView.addEventListener('scrollEnd',function(e) {
-				if (pulling && !reloading && e.contentOffset.y <= -65.0) {
+				if (pulling && !tableView.reloading && e.contentOffset.y <= -65.0) {
 					reloading = true;
 					pulling = false;
 					arrow.hide();
@@ -257,22 +255,223 @@
 			bottomView.add(tabbedBar);
 			
 			tabbedBar.addEventListener('click', function(e) {
-				handleBarClick(e.index);
+				changeTab(e.index);
 			});
 			
 			setTimeout(function() {
 				bottomView.animate({duration: 250, top: 40+35+10});
 			}, 1000);
 			
-			loadDefaultData();
+			
+			changeTab(0, true);
 		};
 		
-		var loadDefaultData = function() {
-			
+		var ids = []; // id's of people in table to avoid duplicates
+		var loadingData = false; // True when loading remote data
+		var hasLastContact = false; // True when last contact has been feteched
+		
+		var options = {
+			start: 0,
+			limit: 15,
+			successCallback: function(e){ onContactFetch(e); },
+			errorCallback: function(e){ onContactFetchError(e); }
+		};
+		if (ipad) {
+			options.limit = 30;
+		}
+		
+		var filters = [];
+		
+		var resetTableView = function() {
+			debug('mh.ui.window.contacts.resetTableView');
+			loadingData = false; // reset state
+			hasLastContact = false;  // reset state
+			options.start = 0;
+			ids=[];
+			tableView.data = []; // clear table
 		};
 		
-		var handleBarClick = function(index) {
+		var searching = false;
+		var timeout;
+		var searchOnChange = function(e) {
+			if (this.value.length >= 3) {
+				if (timeout) { clearTimeout(timeout); }
+				timeout = setTimeout(function() {
+					searching = true;
+					addOption('term', search.value);
+					changeTab(curTab, true);
+				}, 300);
+			} else {
+				if (searching) {
+					searching = false;
+					removeOption('term');
+					changeTab(curTab, true);
+				}
+			}
+		};
+		
+		var prevXhr;
+		var onGetMore = function(force) {
+			debug('mh.ui.window.contacts.onGetMore');
+			if (loadingData || hasLastContact) { return; }
+			loadingData = true;
 			
+			if (prevXhr && force) {
+				prevXhr.onload = function(){};
+				prevXhr.onerror = function(){};
+				indicator.hide();
+				prevXhr.abort();
+			}
+			
+			indicator.show();
+			
+			options.filters = filters;
+			prevXhr = mh.api.getContactsList(options);
+		};
+		
+		var onContactFetch = function(e) {
+			debug('mh.ui.window.contacts.onContactsFetch');
+			
+			if (e.length < options.limit) {
+				hasLastContact = true;
+			} else {
+				hasLastContact = false;
+			}
+			
+			options.start = options.limit + options.start;
+			
+			for (index in e) {
+				var person = e[index].person;
+				if (person) {
+					if (person.id && ids.indexOf(person.id) < 0) {
+						tableView.appendRow(createTableRow(person));
+						ids.push(person.id);
+					}
+				}
+			}
+			
+			if (tableView.reloading === true) { 
+				tableView.endReloading();
+			}
+			
+			indicator.hide();
+			loadingData = false;
+		};
+		
+		var onContactFetchError = function(e) {
+			debug('mh.ui.window.contacts.onContactsFetchError');
+			
+			if (tableView.reloading === true) { 
+				tableView.endReloading();
+			}
+			
+			indicator.hide();
+			loadingData = false;
+		};
+		
+		
+		var createTableRow = function(person) {
+			debug('mh.ui.window.contacts.createTableRow');
+			var row = Ti.UI.createTableViewRow({
+				className:"person",
+				color: mh.config.colors.ctvTxt,
+				backgroundColor: mh.config.colors.ctvBg,
+				backgroundDisabledColor: mh.config.colors.ctvBgDisabled,
+				backgroundFocusedColor: mh.config.colors.ctvBgFocused,
+				backgroundSelectedColor: mh.config.colors.ctvBgSelected,
+				selectionStyle: mh.config.colors.ctvSelStyle,
+				height: 56,
+				hasChild:true
+			});
+			
+			var img;
+			var params = {
+				defaultImage: '/images/default_contact.jpg',
+				image: person.picture+"?type=square",
+				top: 3,
+				left: 3,
+				width: 50,
+				height: 50
+			};
+			
+			if (person.picture) {
+				img = Ti.UI.createImageView(params);
+			} else {
+				img = Ti.UI.createImageView(mh.util.mergeJSON(params, {image: '/images/default_contact.jpg'}));
+			}
+			row.image = img;
+			row.add(img);
+			
+			var name = Ti.UI.createLabel({
+				color: 'black',
+				text: person.name,
+				top: 10,
+				left: 60,
+				height: 20,
+				width: Ti.Platform.displayCaps.platformWidth - 60
+			})
+			row.add(name);
+			
+			var gender = Ti.UI.createLabel({
+				color: 'black',
+				text: person.gender,
+				top: 30,
+				left: 60,
+				height: 20,
+				width: Ti.Platform.displayCaps.platformWidth - 60
+			})
+			row.add(gender);
+			
+			row.person = person;
+			return row;
+		};
+		
+		var curTab = 0;
+		var changeTab = function(index, force) {
+			if (index !== curTab || force) {
+				curTab = index;
+				resetTableView();
+				switch (index) {
+					case 0:	addOption('assigned_to_id', mh.app.person().id);
+							addFilter('status', 'not_finished');
+							break;
+					case 1: addOption('assigned_to_id', mh.app.person().id);
+							addFilter('status', 'finished');
+							break;
+					case 2: addOption('assigned_to_id', 'none');
+							removeFilter('status');
+							break;
+				}
+				onGetMore(force);
+			}
+		};
+		
+		var addOption = function(name, value) {
+			options[name] = value;
+		}
+		
+		var removeOption = function(name) {
+			delete options[name];
+		};
+		
+		var addFilter = function(name, value) {
+			for (var index in filters) {
+				var filter = filters[index];
+				if (filter.name == name) {
+					filters[index] = {name: name, value: value};	
+					return;
+				}
+			}
+			filters.push({name: name, value: value});
+		}
+		
+		var removeFilter = function(name) {
+			for (var i=0; i<filters.length; i++) {
+				var filter = filters[i];
+				if (filter.name == name) {
+					filters.splice(i, 1);
+				}
+			}
 		};
 		
 		return {
