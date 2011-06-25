@@ -24,7 +24,7 @@
 		var createHeader = function() {
 			debug('running mh.ui.contacts.window.createHeader');
 			var contactsBar = Ti.UI.createView({
-				top: 0,
+				top: 10,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
 				backgroundImage: 'images/navbar_bg.png'
@@ -35,7 +35,7 @@
 				text: L('contacts_title'),
 				color: 'white',
 				height: 22,
-				top: 12,
+				top: 8,
 				left: 65,
 				width: Ti.Platform.displayCaps.platformWidth-65-65,
 				textAlign: 'center',
@@ -44,7 +44,7 @@
 			contactsBar.add(contactsLabel);
 
 			var doneButton = Ti.UI.createButton({
-				top: 5,
+				top: 4,
 				right: 5,
 				height: 30,
 				width: 60,

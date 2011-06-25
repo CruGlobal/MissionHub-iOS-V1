@@ -161,7 +161,6 @@
 				style: Titanium.UI.iPhone.SystemButton.INFO_LIGHT
 			});
 			iButton.addEventListener('click', function() {
-				//hideToRight();
 				mh.ui.profile.window.open();
 			});
 			logoutBarView.add(iButton);
