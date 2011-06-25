@@ -87,6 +87,22 @@
 			});
 		};
 		
+		var hideToLeft = function() {
+			debug('running mh.ui.main.window.hideToLeft');
+			mainWindow.animate({
+				left: -(Ti.Platform.displayCaps.platformWidth),
+				duration: 250
+			});
+		};
+		
+		var hideToRight = function() {
+			debug('running mh.ui.main.window.hideToRight');
+			mainWindow.animate({
+				left: Ti.Platform.displayCaps.platformWidth,
+				duration: 250
+			});
+		};
+		
 		var refresh = function() {
 			debug('running mh.ui.main.window.refresh');
 			setTimeout(function() {
@@ -144,7 +160,10 @@
 				left: 9,
 				style: Titanium.UI.iPhone.SystemButton.INFO_LIGHT
 			});
-			iButton.addEventListener('click', mh.ui.profile.window.open);
+			iButton.addEventListener('click', function() {
+				//hideToRight();
+				mh.ui.profile.window.open();
+			});
 			logoutBarView.add(iButton);
 			
 			// Top Bar Right
@@ -237,6 +256,7 @@
 				color: 'black'
 			});
 			createPostButton.addEventListener('click', function() {
+				hideToLeft();
 				mh.ui.contacts.window.open();
 			});
 			
@@ -297,6 +317,8 @@
 		};
 		
 		return {
+			hideToLeft: hideToLeft,
+			hideToRight: hideToRight,
 			open: open,
 			show: show,
 			refresh: refresh

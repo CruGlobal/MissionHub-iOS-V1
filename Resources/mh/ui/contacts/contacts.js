@@ -35,8 +35,9 @@
 				text: L('contacts_title'),
 				color: 'white',
 				height: 22,
-				left: 60,
-				width: 200,
+				top: 12,
+				left: 65,
+				width: Ti.Platform.displayCaps.platformWidth-65-65,
 				textAlign: 'center',
 				font: { fontSize: 20, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
@@ -57,6 +58,7 @@
 					contactsWindow.close();
 				});
 				contactsWindow.animate(animation);
+				mh.ui.main.window.show();
 			});
 			contactsBar.add(doneButton);
 		};

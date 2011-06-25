@@ -35,8 +35,9 @@
 				text: L('profile_title'),
 				color: 'white',
 				height: 22,
-				left: 60,
-				width: 200,
+				top: 12,
+				left: 65,
+				width: Ti.Platform.displayCaps.platformWidth-65-65,
 				textAlign: 'center',
 				font: { fontSize: 20, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
