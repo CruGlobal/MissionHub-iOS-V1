@@ -1,3 +1,14 @@
+/*!
+ * MissionHub
+ * http://hub.ccci.us
+ *
+ * Copyright 2011, Campus Crusade for Christ International
+ * 
+ * Description: MissionHub iPhone
+ * Author: Matt Webb <matt.webb@cojourners.com>
+ * Date: Fri, 24 Jun 2011 23:16:47 -0400
+ */
+
 (function() {
 	
 	mh.error = {};
@@ -8,7 +19,6 @@
 	
 	mh.error.handleResponse = function(response,errorCallback) {
 		var validity = mh.error.validResponse(response);
-		
 		if (!Ti.Network.online && validity == mh.error.NO_RESPONSE) {
 			return mh.error.handleError('', errorCallback, 'no_network');
 		} 
@@ -16,13 +26,12 @@
 			return mh.error.handleError('', errorCallback, 'no_data');
 		}
 		else if(Ti.Network.online && validity == mh.error.INVALID_RESPONSE) {
-			return mh.error.handleError('', errorCallback, 'not_json')
+			return mh.error.handleError('', errorCallback, 'not_json');
 		}
 		else if (Ti.Network.online && validity == mh.error.NO_RESPONSE){
 			return mh.error.handleError('', errorCallback, 'no_data');
 		}
 		else if (Ti.Network.online && validity == mh.error.VALID_RESPONSE) {
-			info(JSON.stringify(response));
 			var json_object = JSON.parse(response);
 			if (response.error) {
 				return mh.error.handleError(response.error, errorCallback);
@@ -38,12 +47,10 @@
 		if (response) {
 			if (mh.util.validJSON(response)) {
 				return mh.error.VALID_RESPONSE;
-			}
-			else {
+			} else {
 				return mh.error.INVALID_RESPONSE;
 			}
-		}
-		else {
+		} else {
 			return mh.error.NO_RESPONSE;
 		}
 	};
@@ -71,5 +78,4 @@
 		}
 		mh.ui.alert(hash);
 	};
-	
 })();

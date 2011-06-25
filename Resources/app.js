@@ -11,7 +11,10 @@
 
 Ti.include('/mh/mh.js');
 
-options = {
+mh.ui.main.window.open();
+
+var options = {
+	term: 'Matt',
 	limit: 15,
 	start: 0,
 	sort: [{
@@ -19,16 +22,12 @@ options = {
 		direction: 'desc'
 	}],
 	successCallback: function(e) {
-		Ti.API.info("SUCCESS!!");
 		Ti.API.info("successCallback response: " + JSON.stringify(e));
 	},
 	errorCallback: function(e) {
-		Ti.API.info("FAILURE!!!" + e);
+		Ti.API.info("FAILURE!!!" + JSON.stringify(e));
 	}
 };
-
-mh.ui.main.window.open();
-
 
 var options3 = {
 	fresh: true,
@@ -41,9 +40,6 @@ var options3 = {
 	}
 };
 
-setTimeout(function() {mh.api.getContactsList(options)}, 15000);
-//mh.api.getContacts([1282204,244771],options3);
-// mh.api.getPeople(['me',244771],options3);
 	var data = {
 		followup_comment: {
 			organization_id: 1825,
@@ -61,5 +57,14 @@ setTimeout(function() {mh.api.getContactsList(options)}, 15000);
 		org_id: '1825'
 	};
 	
-//setTimeout(function() {mh.api.deleteContactAssignment(1282204,options3)},19000);	
-//setTimeout(function() {mh.api.postFollowupComment(data, options);mh.api.createContactAssignment(data2,options)},20000);
+// var xyz;
+//setTimeout(function() {mh.api.getContactsList(options)}, 5000);
+//setTimeout(function() {xyz = mh.api.searchContactsList(options)}, 5000);
+//info("ok, let's abort!");
+//setTimeout(function() {xyz.onerror = function() {info("I'm onerroring, but new")}},5150);
+//setTimeout(function() {xyz.abort()},5300)
+//mh.api.getContacts([1282204,244771],options3);
+//mh.api.getPeople(['me',244771],options3);
+//mh.api.postFollowupComment(data, options);
+//setTimeout(function() {mh.api.createContactAssignment(data2,options)},5000);
+//setTimeout(function() {mh.api.deleteContactAssignment(1282204,options3)},15000);	
