@@ -53,12 +53,6 @@
 			
 			refresh();
 			
-			if (android) {
-				setTimeout(function() {
-					refresh();
-				}, 1500);
-			}
-			
 			mh.ui.main.indicator.message = "Logging In...";
 			if (mh.auth.oauth.checkToken(checkTokenOnLoad, checkTokenOnError)){
 				mh.ui.main.showIndicator('checkToken');
@@ -89,6 +83,22 @@
 			debug('running mh.ui.main.window.show');
 			mainWindow.animate({
 				left: 0,
+				duration: 250
+			});
+		};
+		
+		var hideToLeft = function() {
+			debug('running mh.ui.main.window.hideToLeft');
+			mainWindow.animate({
+				left: -(Ti.Platform.displayCaps.platformWidth),
+				duration: 250
+			});
+		};
+		
+		var hideToRight = function() {
+			debug('running mh.ui.main.window.hideToRight');
+			mainWindow.animate({
+				left: Ti.Platform.displayCaps.platformWidth,
 				duration: 250
 			});
 		};
@@ -150,7 +160,9 @@
 				left: 9,
 				style: Titanium.UI.iPhone.SystemButton.INFO_LIGHT
 			});
-			//TODO iButton.addEventListener('click', mh.ui.about.window.open);
+			iButton.addEventListener('click', function() {
+				mh.ui.profile.window.open();
+			});
 			logoutBarView.add(iButton);
 			
 			// Top Bar Right
@@ -238,42 +250,19 @@
 				left: 0,
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110
+				height: 110,
+				title: 'Contacts',
+				color: 'black'
 			});
 			createPostButton.addEventListener('click', function() {
-				meme.ui.post.window.open();
-				homeWindow.animate({
-					duration: 250,
-					left: -(Ti.Platform.displayCaps.platformWidth)
-				});
+				hideToLeft();
+				mh.ui.contacts.window.open();
 			});
 			
 			loggedInView.add(createPostButton);
 
-			var yourBlogButton = Titanium.UI.createButton({
-				//image: 'images/' + mh.app.lang() + '/home_button_your_blog.png',
-				left: 0,
-				top: 110,
-				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110
-			});
-
-			var blogUrlLabel = Ti.UI.createLabel({
-				top: 36,
-				left: 26,
-				color: 'white',
-				font: { fontSize: 14, fontFamily:'Gotham Rounded', fontWeight: 'Light' }
-			});
-			yourBlogButton.add(blogUrlLabel);
-			yourBlogButton.addEventListener('click', function() {
-				mh.ui.openLink({
-					url: 'http://hub.ccci.us'
-				});
-			});
-			loggedInView.add(yourBlogButton);
-
 			configureLoggedInView = function() {
-				blogUrlLabel.text = '/' + mh.app.person().name;
+				//TODO If needed
 			};
 		};
 		
@@ -327,6 +316,8 @@
 		};
 		
 		return {
+			hideToLeft: hideToLeft,
+			hideToRight: hideToRight,
 			open: open,
 			show: show,
 			refresh: refresh
