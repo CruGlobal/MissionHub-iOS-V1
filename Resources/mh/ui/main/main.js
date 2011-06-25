@@ -237,11 +237,7 @@
 				color: 'black'
 			});
 			createPostButton.addEventListener('click', function() {
-				meme.ui.post.window.open();
-				homeWindow.animate({
-					duration: 250,
-					left: -(Ti.Platform.displayCaps.platformWidth)
-				});
+				mh.ui.contacts.window.open();
 			});
 			
 			loggedInView.add(createPostButton);
