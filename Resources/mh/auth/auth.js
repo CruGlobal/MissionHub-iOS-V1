@@ -7,7 +7,7 @@
 	};
 	
 	mh.auth.wvUrl = mh.config.oauth_url + "/authorize?display=touch&simple=true&response_type=code&redirect_uri=" + mh.config.oauth_url + "/done.json&client_id=" + mh.config.oauth_client_id + "&scope=" + mh.config.oauth_scope;
-	
+		
 	var OAuth = function(loginWindow) {
 		
 		var property = 'access_token';
@@ -28,10 +28,40 @@
 		};
 		
 		var logout = function(callback) {
-			//TODO Nuke Cache
-			token = null;
-			Ti.App.Properties.removeProperty(property);
-			callback();
+			
+			var win = Ti.UI.createWindow();
+
+			var indicator = Ti.UI.createActivityIndicator({
+				backgroundColor: "black",
+				borderRadius: 4,
+				height: 50,
+				width: 50,
+				zIndex: 90,
+				style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN
+			});
+			win.add(indicator);
+						
+			var wv = Ti.UI.createWebView({
+				opacity: 0,
+				url: mh.config.base_url + '/auth/facebook/logout'
+			});
+			win.add(wv);
+			
+			wv.addEventListener('load', function(e) {
+				indicator.hide();
+				win.close();
+				token = null;
+				Ti.App.Properties.removeProperty(property);
+				callback();
+			});
+			
+			wv.addEventListener('error', function(e) {
+				indicator.hide();
+				win.close();
+				//TODO:
+			});
+			win.open();
+			indicator.show();
 		};
 		
 		var isLoggedIn = function() {
@@ -124,26 +154,6 @@
 			};
 			
 			xhr.open('GET',mh.config.oauth_url+'/grant.json?authorization='+Titanium.Network.encodeURIComponent(authorization));
-			if (android) {
-				var db = Ti.Database.open('webview.db');
-				var cookieRS = db.execute('SELECT name,value,domain FROM cookies');			
-				
-				var name, value, domain;
-				while (cookieRS.isValidRow()) {
-					name = cookieRS.fieldByName('name');
-					value = cookieRS.fieldByName('value');
-					domain = cookieRS.fieldByName('domain');
-					cookieRS.next();
-				}
-				cookieRS.close();
-				db.close();
-				if (name && value && domain) {
-					Ti.API.info(name + "=" + value);
-					xhr.setRequestHeader("Cookie", name+"="+value);
-				} else {
-					//TODO: Display Error
-				}
-			}
 			xhr.send();			
 		};
 		

@@ -21,7 +21,7 @@
 	//  limit:             limit # of contacts returned
 	// optional:
 	//  assigned_to_id:    only show contacts assigned to value of assigned_to_id
-	//  sort:  						 array of hashes.  allowed: [ {name:  [time, status], direction: [asc, desc] } ] 
+	//  sort:              array of hashes.  allowed: [ {name:  [time, status], direction: [asc, desc] } ] 
 	//  filters:           array of hashes.  allowed: [ {name: [gender, status], value: [male, female, do_not_contact, uncontacted, contacted, finished, completed]} ]
 	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
 	//  cacheSeconds:      the number of seconds until the cache'd API request expires
@@ -33,9 +33,14 @@
 	
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
-
+		
 		//figure out the request URL we want to use
-		var requestURL = mh.config.api_url + '/contacts.json?' + queryString;
+		var requestURL;
+		if(options.term) {
+			requestURL = mh.config.api_url + '/contacts/search.json?' + queryString;
+		} else {
+			requestURL = mh.config.api_url + '/contacts.json?' + queryString;
+		}
 		
 		if (!options.fresh) {
 			options.cacheKey = mh.util.stripBadCharacters(requestURL);
@@ -55,7 +60,7 @@
 	mh.api.getContacts = function (ids, options) {
 		options.cacheKey = null;  // DO NOT PASS IN A CACHEKEY
 		idString = generateIDString(ids);
-		var queryParams = {}
+		var queryParams = {};
 		queryParams.access_token = mh.auth.oauth.getToken();
 		var queryString = buildQueryParams(queryParams);
 		var requestURL = mh.config.api_url + '/contacts/' + idString + '.json?' + queryString;
@@ -75,7 +80,7 @@
 	//  term:              the search term
 	// optional:
 	//  assigned_to_id:    only show contacts assigned to value of assigned_to_id
-	//  sort:  						 array of hashes.  allowed: [ {name:  [time, status], direction: [asc, desc] } ] 
+	//  sort:              array of hashes.  allowed: [ {name:  [time, status], direction: [asc, desc] } ] 
 	//  filters:           array of hashes.  allowed: [ {name: [gender, status], value: [male, female, do_not_contact, uncontacted, contacted, finished, completed]} ]
 	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
 	//  cacheSeconds:      the number of seconds until the cache'd API request expires
@@ -104,7 +109,7 @@
 		options.cacheKey = null;  // DO NOT PASS IN A CACHEKEY
 		
 		idString = generateIDString(ids);
-		var queryParams = {}
+		var queryParams = {};
 		queryParams.access_token = mh.auth.oauth.getToken();
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
@@ -290,9 +295,11 @@
 				queryParams.filters += options.filters[x].name;
 				queryParams.values += options.filters[x].value;
 				
-				if (x != (options.sort.length-1)) {
-					queryParams.filters += ',';
-					queryParams.values += ',';
+				if (options.sort) {
+					if (x != (options.sort.length-1)) {
+						queryParams.filters += ',';
+						queryParams.values += ',';
+					}
 				}
 			}
 		}
