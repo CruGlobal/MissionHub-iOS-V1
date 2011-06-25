@@ -52,7 +52,7 @@
 				height: 30,
 				width: 60,
 				backgroundImage: '/images/btn_done.png',
-				title: L('contacts_btn_done'),
+				title: L('contacts_btn_back'),
 				font: { fontSize: 12, fontFamily: 'Helvetica Neue', fontWeight: 'Bold' }
 			});
 			doneButton.addEventListener('click', function() {
@@ -63,6 +63,7 @@
 				contactsWindow.animate(animation);
 				mh.ui.main.window.show();
 				resetTableView();
+				delete options.term;
 			});
 			contactsBar.add(doneButton);
 						
@@ -80,7 +81,7 @@
 			search = Titanium.UI.createSearchBar({
 				barColor:'#333',
 				showCancel:false,
-				hintText:'search',
+				hint: L('contacts_search_hint'),
 				right: 35,
 				top:5,
 				height: 35,
@@ -109,7 +110,7 @@
 			
 			setTimeout(function() {
 				search.animate({duration: 250, top: 50});
-			}, 1000);
+			}, 500);
 		};
 		
 		var createTableView = function() {		
@@ -150,6 +151,10 @@
 			});
 			bottomView.add(tableView);
 			
+			tableView.addEventListener('click', function(e){
+				tableViewClick(e);
+			});
+			
 			var lastY = 0;
 			tableView.addEventListener('scroll', function(e) {
 				var y = e.contentOffset.y;		
@@ -186,7 +191,7 @@
 				left:20
 			});
 			var statusLabel = Ti.UI.createLabel({
-				text:"Pull to reload",
+				textid: 'contacts_pull_to_reload',
 				left:55,
 				width:200,
 				bottom:30,
@@ -198,7 +203,7 @@
 				shadowOffset:{x:0,y:1}
 			});
 			var lastUpdatedLabel = Ti.UI.createLabel({
-				text:"Last Updated: "+formatDate(),
+				text: L('contacts_last_updated') + ': ' + formatDate(),
 				left:55,
 				width:200,
 				bottom:15,
@@ -211,7 +216,7 @@
 			});
 			
 			tableView.updateLastUpdated = function() {
-				lastUpdatedLabel.text = "Last Updated: "+formatDate();
+				lastUpdatedLabel.text = L('contacts_last_updated') + ': ' + formatDate();
 			}
 			
 			var actInd = Titanium.UI.createActivityIndicator({
@@ -238,8 +243,8 @@
 				// when you're done, just reset
 				tableView.reloading = false;
 				tableView.setContentInsets({top:0},{animated:true});
-				lastUpdatedLabel.text = "Last Updated: "+formatDate();
-				statusLabel.text = "Pull down to refresh...";
+				lastUpdatedLabel.text = L('contacts_last_updated') + ': ' + formatDate();
+				statusLabel.text = L('contacts_pull_down_to_refresh');
 				actInd.hide();
 				arrow.show();
 			};
@@ -251,12 +256,12 @@
 					t = t.rotate(-180);
 					pulling = true;
 					arrow.animate({transform:t,duration:180});
-					statusLabel.text = "Release to refresh...";
+					statusLabel.text = L('contacts_release_to_refresh');
 				} else if (pulling && offset > -65.0 && offset < 0) {
 					pulling = false;
 					var t = Ti.UI.create2DMatrix();
 					arrow.animate({transform:t,duration:180});
-					statusLabel.text = "Pull down to refresh...";
+					statusLabel.text = L('contacts_pull_down_to_refresh');
 				}
 			});
 			
@@ -266,7 +271,7 @@
 					pulling = false;
 					arrow.hide();
 					actInd.show();
-					statusLabel.text = "Reloading...";
+					statusLabel.text = L('contacts_reloading');
 					tableView.setContentInsets({top:60},{animated:true});
 					arrow.transform=Ti.UI.create2DMatrix();
 					beginReloading();
@@ -274,7 +279,7 @@
 			});
 			
 			tabbedBar = Ti.UI.createTabbedBar({
-				labels:['My Contacts', 'My Completed', 'Unassigned'],
+				labels:[L('contacts_my_contacts'), L('contacts_my_completed'), L('contacts_my_unassigned')],
 				backgroundColor:'#333',
 			    top:tableView.height,
 			    height:30,
@@ -290,7 +295,7 @@
 			
 			setTimeout(function() {
 				bottomView.animate({duration: 250, top: 40+35+10});
-			}, 1000);
+			}, 500);
 			
 			changeTab(0, true);
 		};
@@ -442,13 +447,13 @@
 				left: 60,
 				height: 20,
 				width: Ti.Platform.displayCaps.platformWidth - 60,
-				font: { fontSize: 18 }
+				font: { fontSize: 18, fontFamily: 'Helvetica' }
 			})
 			row.add(name);
 			
 			var status = Ti.UI.createLabel({
 				color: 'black',
-				text: person.status,
+				text: L('contacts_status_'+person.status),
 				top: 30,
 				left: 60,
 				height: 20,
@@ -460,6 +465,11 @@
 			row.person = person;
 			return row;
 		};
+		
+		var tableViewClick = function(e) {
+			contactsWindow.animate({left: -(Ti.Platform.displayCaps.platformWidth), duration: 250});
+			mh.ui.contact.window.open(e.row.person);
+		}
 		
 		var curTab = 0;
 		var changeTab = function(index, force) {
@@ -509,8 +519,13 @@
 			}
 		};
 		
+		var show = function() {
+			contactsWindow.animate({left: 0, duration: 250});
+		};
+		
 		return {
-			open: open
+			open: open,
+			show: show
 		};
 	}();
 	
