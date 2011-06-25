@@ -19,14 +19,13 @@
 			createSearchFilters();
 			createTableView();
 			
-			contactsWindow.open();
-			contactsWindow.animate({duration: 250, left: 0});
+			mh.ui.nav.open(contactsWindow);
 		};
 
 		var createHeader = function() {
 			debug('running mh.ui.contacts.window.createHeader');
 			var contactsBar = Ti.UI.createView({
-				top: 10,
+				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
 				backgroundImage: '/images/navbar_bg.png',
@@ -58,7 +57,7 @@
 			doneButton.addEventListener('click', function() {
 				var animation = Ti.UI.createAnimation({duration: 250, left: Ti.Platform.displayCaps.platformWidth});
 				animation.addEventListener('complete', function() {
-					contactsWindow.close();
+					mh.ui.nav.pop();
 				});
 				contactsWindow.animate(animation);
 				mh.ui.main.window.show();
@@ -83,7 +82,7 @@
 				showCancel:false,
 				hint: L('contacts_search_hint'),
 				right: 35,
-				top:5,
+				top:-5,
 				height: 35,
 				zIndex: 50,
 				keyboardType:Titanium.UI.KEYBOARD_DEFAULT
@@ -109,7 +108,7 @@
 			contactsWindow.add(search);
 			
 			setTimeout(function() {
-				search.animate({duration: 250, top: 50});
+				search.animate({duration: 250, top: 40});
 			}, 500);
 		};
 		
@@ -294,7 +293,7 @@
 			});
 			
 			setTimeout(function() {
-				bottomView.animate({duration: 250, top: 40+35+10});
+				bottomView.animate({duration: 250, top: 40+35});
 			}, 500);
 			
 			changeTab(0, true);
@@ -467,7 +466,6 @@
 		};
 		
 		var tableViewClick = function(e) {
-			contactsWindow.animate({left: -(Ti.Platform.displayCaps.platformWidth), duration: 250});
 			mh.ui.contact.window.open(e.row.person);
 		}
 		

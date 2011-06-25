@@ -21,8 +21,7 @@
 			
 			createHeader();
 			
-			contactWindow.open();
-			contactWindow.animate({duration: 250, left: 0});
+			mh.ui.nav.open(contactWindow);
 		};
 		
 		var createHeader = function() {
@@ -57,12 +56,7 @@
 				font: { fontSize: 12, fontFamily: 'Helvetica Neue', fontWeight: 'Bold' }
 			});
 			doneButton.addEventListener('click', function() {
-				var animation = Ti.UI.createAnimation({duration: 250, left: Ti.Platform.displayCaps.platformWidth});
-				animation.addEventListener('complete', function() {
-					contactWindow.close();
-				});
-				contactWindow.animate(animation);
-				mh.ui.contacts.window.show();
+				mh.ui.nav.pop();
 			});
 			contactBar.add(doneButton);
 		};
