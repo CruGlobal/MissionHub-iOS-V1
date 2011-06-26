@@ -71,13 +71,25 @@
 				backgroundColor: mh.config.colors.lightGray
 			});
 			
-			tableView = Ti.UI.createTableView({
+			var startReloadCallback = function() {
+				//TODO
+			};
+			
+			tableView = mh.ui.components.createPullTableView({
 				headerView: tableViewHeader,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: Ti.Platform.displayCaps.platformHeight - 50 - 36,
 				top: 40,
 				opacity: 0,
 				backgroundColor: mh.config.colors.lightGray
+			}, startReloadCallback);
+			
+			tableView.addEventListener('click', function(e){
+				//TODO
+			});
+			
+			tableView.addEventListener('nearbottom', function(e) {
+				//TODO
 			});
 			
 			contactWindow.add(tableView);
@@ -85,6 +97,27 @@
 		};
 		
 		var createTableViewHeader = function() {
+			
+			var defaultImage = '/images/facebook_question.gif';
+			if (person.gender && person.gender == 'female') {
+				defaultImage = '/images/facebook_female.gif';
+			} else if (person.gender && person.gender == 'male') {
+				defaultImage = '/images/facebook_male.gif';
+			}
+			
+			var image = defaultImage;
+			if (person.picture) {
+				image = person.picture+'?type=large';
+			}
+			
+			var profilePic = Ti.UI.createImageView({
+				top:6,
+				left: 6,
+				image: image,
+				defaultImage: defaultImage
+			});
+			
+			tableViewHeader.add(profilePic);
 			
 		};
 		
