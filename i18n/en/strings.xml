@@ -17,11 +17,6 @@
 	<string name="contacts_title">Contacts</string>
 	<string name="contacts_btn_back">Back</string>
 	<string name="contacts_search_hint">search</string>
-	<string name="contacts_pull_to_reload">Pull to reload</string>
-	<string name="contacts_last_updated">Last Updated</string>
-	<string name="contacts_pull_down_to_refresh">Pull down to refresh...</string>
-	<string name="contacts_release_to_refresh">Release to refresh...</string>
-	<string name="contacts_reloading">Reloading...</string>
 	<string name="contacts_my_contacts">My Contacts</string>
 	<string name="contacts_my_completed">My Completed</string>
 	<string name="contacts_my_unassigned">Unassigned</string>
@@ -37,6 +32,12 @@
 	<string name="contact_contact">Contact</string>
 	<string name="contact_more_info">More Info</string>
 	
+	<!-- Components -->
+	<string name="tableview_pull_to_reload">Pull to reload</string>
+	<string name="tableview_last_updated">Last Updated</string>
+	<string name="tableview_pull_down_to_reload">Pull down to reload...</string>
+	<string name="tableview_release_to_reload">Release to reload...</string>
+	<string name="tableview_reloading">Reloading...</string>
 	
 	
 	<string name="tab_title_contacts">Contacts</string>

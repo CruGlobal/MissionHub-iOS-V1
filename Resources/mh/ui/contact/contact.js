@@ -74,7 +74,7 @@
 			tableView = Ti.UI.createTableView({
 				headerView: tableViewHeader,
 				width: Ti.Platform.displayCaps.platformWidth,
-				height: Ti.Platform.displayCaps.platformHeight - 40,
+				height: Ti.Platform.displayCaps.platformHeight - 50 - 36,
 				top: 40,
 				opacity: 0,
 				backgroundColor: mh.config.colors.lightGray
@@ -97,7 +97,7 @@
 			tabbedBar = Ti.UI.createTabbedBar({
 				labels:[L('contact_contact'), L('contact_more_info')],
 				backgroundColor:'#333',
-			    top:tableView.height,
+			    top:tableView.top+tableView.height,
 			    height:30,
 			    style: Titanium.UI.iPhone.SystemButtonStyle.BAR,
 			    width:Ti.Platform.displayCaps.platformWidth,

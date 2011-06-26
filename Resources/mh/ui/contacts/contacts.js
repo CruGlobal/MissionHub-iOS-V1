@@ -121,160 +121,24 @@
 			});
 			contactsWindow.add(bottomView);
 			
-			function formatDate() {
-				var date = new Date();
-				var datestr = date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear();
-				if (date.getHours()>=12)
-				{
-					datestr+=' '+(date.getHours()==12 ? date.getHours() : date.getHours()-12)+':'+pad(date.getMinutes(), 2)+' PM';
-				}
-				else
-				{
-					datestr+=' '+date.getHours()+':'+date.getMinutes()+' AM';
-				}
-				return datestr;
-			}
+			var startReloadCallback = function() {
+				resetTableView();
+				onGetMore();
+			};
 			
-			function pad(numNumber, numLength){
-				var strString = '' + numNumber;
-				while(strString.length<numLength){
-					strString = '0' + strString;
-				}
-				return strString;
-			}
-			
-			tableView = Ti.UI.createTableView({
+			tableView = mh.ui.components.PullTableView({
 				top: 0,
 				left: 0,
 				height: bottomView.height-36 //tabbar
-			});
+			}, startReloadCallback);
 			bottomView.add(tableView);
 			
 			tableView.addEventListener('click', function(e){
 				tableViewClick(e);
 			});
 			
-			var lastY = 0;
-			tableView.addEventListener('scroll', function(e) {
-				var y = e.contentOffset.y;		
-				if (y > lastY && y >= 0) {
-					var height = e.size.height;
-					var cHeight = e.contentSize.height;
-					if (y > cHeight-(2*height)) {
-						onGetMore();
-					}
-				}
-				if (e.contentOffset.y < 0) {
-					lastY = 0;
-				} else {
-					lastY = e.contentOffset.y;
-				}
-			});
-			
-			var border = Ti.UI.createView({
-				backgroundColor:"#576c89",
-				height:2,
-				bottom:0
-			});
-			var tableHeader = Ti.UI.createView({
-				backgroundColor:"#e2e7ed",
-				width:320,
-				height:60
-			});
-			tableHeader.add(border);
-			var arrow = Ti.UI.createView({
-				backgroundImage:"/images/whiteArrow.png",
-				width:23,
-				height:60,
-				bottom:10,
-				left:20
-			});
-			var statusLabel = Ti.UI.createLabel({
-				textid: 'contacts_pull_to_reload',
-				left:55,
-				width:200,
-				bottom:30,
-				height:"auto",
-				color:"#576c89",
-				textAlign:"center",
-				font:{fontSize:13,fontWeight:"bold"},
-				shadowColor:"#999",
-				shadowOffset:{x:0,y:1}
-			});
-			var lastUpdatedLabel = Ti.UI.createLabel({
-				text: L('contacts_last_updated') + ': ' + formatDate(),
-				left:55,
-				width:200,
-				bottom:15,
-				height:"auto",
-				color:"#576c89",
-				textAlign:"center",
-				font:{fontSize:12},
-				shadowColor:"#999",
-				shadowOffset:{x:0,y:1}
-			});
-			
-			tableView.updateLastUpdated = function() {
-				lastUpdatedLabel.text = L('contacts_last_updated') + ': ' + formatDate();
-			}
-			
-			var actInd = Titanium.UI.createActivityIndicator({
-				left:20,
-				bottom:13,
-				width:30,
-				height:30
-			});
-			tableHeader.add(arrow);
-			tableHeader.add(statusLabel);
-			tableHeader.add(lastUpdatedLabel);
-			tableHeader.add(actInd);
-			tableView.headerPullView = tableHeader;
-			
-			var pulling = false;
-			
-			function beginReloading() {
-				resetTableView();
-				tableView.reloading = true;
+			tableView.addEventListener('nearbottom', function(e) {
 				onGetMore();
-			};
-			
-			tableView.endReloading = function() {
-				// when you're done, just reset
-				tableView.reloading = false;
-				tableView.setContentInsets({top:0},{animated:true});
-				lastUpdatedLabel.text = L('contacts_last_updated') + ': ' + formatDate();
-				statusLabel.text = L('contacts_pull_down_to_refresh');
-				actInd.hide();
-				arrow.show();
-			};
-			
-			tableView.addEventListener('scroll',function(e) {
-				var offset = e.contentOffset.y;
-				if (offset <= -65.0 && !pulling) {
-					var t = Ti.UI.create2DMatrix();
-					t = t.rotate(-180);
-					pulling = true;
-					arrow.animate({transform:t,duration:180});
-					statusLabel.text = L('contacts_release_to_refresh');
-				} else if (pulling && offset > -65.0 && offset < 0) {
-					pulling = false;
-					var t = Ti.UI.create2DMatrix();
-					arrow.animate({transform:t,duration:180});
-					statusLabel.text = L('contacts_pull_down_to_refresh');
-				}
-			});
-			
-			tableView.addEventListener('scrollEnd',function(e) {
-				if (pulling && !tableView.reloading && e.contentOffset.y <= -65.0) {
-					reloading = true;
-					pulling = false;
-					arrow.hide();
-					actInd.show();
-					statusLabel.text = L('contacts_reloading');
-					tableView.setContentInsets({top:60},{animated:true});
-					arrow.transform=Ti.UI.create2DMatrix();
-					beginReloading();
-				}
 			});
 			
 			tabbedBar = Ti.UI.createTabbedBar({
@@ -358,7 +222,7 @@
 				prevXhr.onload = function(){};
 				prevXhr.onerror = function(){};
 				if (tableView.reloading === true) { 
-					tableView.endReloading();
+					tableView.endReload();
 				}
 				indicator.hide();
 				prevXhr.abort();
@@ -392,7 +256,7 @@
 			}
 			
 			if (tableView.reloading === true) { 
-				tableView.endReloading();
+				tableView.endReload();
 			}
 			
 			indicator.hide();
@@ -403,7 +267,7 @@
 			debug('mh.ui.window.contacts.onContactsFetchError');
 			
 			if (tableView.reloading === true) { 
-				tableView.endReloading();
+				tableView.endReload();
 			}
 			
 			indicator.hide();

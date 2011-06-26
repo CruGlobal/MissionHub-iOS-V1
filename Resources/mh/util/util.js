@@ -51,6 +51,27 @@
 	    }
 	    return result;
 	};
+	
+	mh.util.pad = function pad(string, pad, length){
+		string = string.toString();
+		pad = pad.toString();
+		while(string.length<length){
+			string = pad + string;
+		}
+		return string;
+	};
+	
+	mh.util.formatedNow = function () {
+		var date = new Date();
+		var datestr = date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear();
+		if (date.getHours()>=12) {
+			datestr+=' '+(date.getHours()==12 ? date.getHours() : date.getHours()-12)+':'+mh.util.pad(date.getMinutes(), 0, 2)+' PM';
+		} else {
+			datestr+=' '+date.getHours()+':'+date.getMinutes()+' AM';
+		}
+		return datestr;
+	};
+	
 })();
 
 /* Globals Platform Vars */
