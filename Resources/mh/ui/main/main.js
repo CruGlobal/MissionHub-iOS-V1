@@ -59,7 +59,7 @@
 			
 			refresh();
 			
-			mh.ui.main.indicator.message = "Logging In...";
+			mh.ui.main.indicator.message = " Logging In... ";
 			if (mh.auth.oauth.checkToken(checkTokenOnLoad, checkTokenOnError)){
 				mh.ui.main.showIndicator('checkToken');
 			}
@@ -70,7 +70,12 @@
 			
 			var response = mh.util.makeValid(e.response);
 			if (response.error || !response || !e.token) {
-				//TODO: Add Error
+				if (response.error) {
+					mh.error.handleError(response.error, options);
+				}
+				else {
+					mh.error.handleError('', options, 'no_access_token');
+				}
 			} else {
 				mh.auth.oauth.setToken(e.token);
 				mh.app.setPerson(response[0]);
@@ -81,7 +86,7 @@
 		};
 		
 		var checkTokenOnError = function(e) {
-			// TODO: Add Error
+			mh.error.handleError('',options, 'access_token_fetch');
 			mh.ui.main.hideIndicator('checkToken');
 		};
 		

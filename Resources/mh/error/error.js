@@ -68,7 +68,7 @@
 	mh.error.handleError = function(code, options, alt) {
 		var hash = {};
 		var error_code='';
-		var message;
+		var message='Unknown Error.';
 		
 		hash.onClick = options.errorCallback;
 		if (options.buttonNames) {

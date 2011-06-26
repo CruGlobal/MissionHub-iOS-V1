@@ -66,6 +66,13 @@
 	<string name="error_not_a_leader">Not A Leader</string>
 	<string name="error_not_a_leader_msg">You are not a MissionHub leader. To use this application you must be a leader in your organization.</string>
 	<string name="error_could_not_fetch_contacts">Could not fetch contacts from the MissionHub server. Please make sure you are connected to the internet and try again.</string>
+	<string name="error_authentication">Authentication</string>
+	<string name="error_authentication_msg">You could not be authenticated with the MissionHub servers.</string>
+	<string name="error_no_access_token">No Access Token</string>
+	<string name="error_no_access_token_msg">You could not be authenticated because no access token was returned from MissionHub servers.</string>
+	<string name="error_access_token_fetch">No Access Token</string>
+	<string name="error_no_access_token_fetch_msg">You cannot make data requests because an access token was not returned from MissionHub servers.</string>
+	
 	
 	<!-- Actions -->
 	<string name='error'>Error</string>
