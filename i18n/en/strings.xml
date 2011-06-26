@@ -13,6 +13,26 @@
 	<string name="main_sign_out">sign out</string>
 	<string name="main_signed_in_as">you are signed in as</string>
 	
+	<!-- Contacts -->
+	<string name="contacts_title">Contacts</string>
+	<string name="contacts_btn_back">Back</string>
+	<string name="contacts_search_hint">search</string>
+	<string name="contacts_pull_to_reload">Pull to reload</string>
+	<string name="contacts_last_updated">Last Updated</string>
+	<string name="contacts_pull_down_to_refresh">Pull down to refresh...</string>
+	<string name="contacts_release_to_refresh">Release to refresh...</string>
+	<string name="contacts_reloading">Reloading...</string>
+	<string name="contacts_my_contacts">My Contacts</string>
+	<string name="contacts_my_completed">My Completed</string>
+	<string name="contacts_my_unassigned">Unassigned</string>
+	<string name="contacts_status_uncontacted">uncontacted</string>
+	<string name="contacts_status_contact_attempted">contact attempted</string>
+	<string name="contacts_status_contact_contacted">contact attempted</string>
+	<string name="contacts_status_contact_completed">completed</string>
+	<string name="contacts_status_contact_do_not_contact">do not contact</string>
+	
+	<!-- Contact -->
+	
 	
 	
 	

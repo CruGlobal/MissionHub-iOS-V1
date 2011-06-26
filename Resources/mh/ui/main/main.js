@@ -37,10 +37,12 @@
 		var open = function() {
 			debug('running mh.ui.main.window.open');
 			
+			var win = Titanium.UI.createWindow();
+			
 			mainWindow = Titanium.UI.createWindow({
 				backgroundImage: '/images/bg.png',
 				orientationModes: [Ti.UI.PORTRAIT],
-				exitOnClose: true
+				navBarHidden: true
 			});
 			
 			mainWindow.add(mh.ui.main.indicator);
@@ -49,7 +51,11 @@
 			createLoggedInView();
 			createLoggedOutView();
 			
-			mainWindow.open();
+			mh.ui.nav = Titanium.UI.iPhone.createNavigationGroup({
+			   window: mainWindow
+			});
+			win.add(mh.ui.nav);
+			win.open();
 			
 			refresh();
 			
@@ -255,7 +261,6 @@
 				color: 'black'
 			});
 			createPostButton.addEventListener('click', function() {
-				hideToLeft();
 				mh.ui.contacts.window.open();
 			});
 			

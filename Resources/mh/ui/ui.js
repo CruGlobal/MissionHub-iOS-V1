@@ -35,6 +35,8 @@
 		mh.ui.alert(options);
 	};
 	
+	mh.ui.nav = null;
+	
 })();
 
 Ti.include('/mh/ui/components/components.js');
