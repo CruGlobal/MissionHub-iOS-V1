@@ -307,7 +307,8 @@
 			start: 0,
 			limit: 15,
 			successCallback: function(e){ onContactFetch(e); },
-			errorCallback: function(e){ onContactFetchError(e); }
+			errorCallback: function(e){ onContactFetchError(e); },
+			fresh: true
 		};
 		if (ipad) {
 			options.limit = 30;
@@ -356,6 +357,9 @@
 			if (prevXhr && force) {
 				prevXhr.onload = function(){};
 				prevXhr.onerror = function(){};
+				if (tableView.reloading === true) { 
+					tableView.endReloading();
+				}
 				indicator.hide();
 				prevXhr.abort();
 			}
