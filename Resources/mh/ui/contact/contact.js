@@ -67,8 +67,8 @@
 		var createTableView = function() {
 			tableViewHeader = Ti.UI.createView({
 				width: Ti.Platform.displayCaps.platformWidth,
-				height: 200,
-				backgroundColor: mh.config.colors.lightGray
+				height: 'auto',
+				backgroundColor: mh.config.colors.blue
 			});
 			
 			var startReloadCallback = function() {
@@ -110,13 +110,16 @@
 				image = person.picture+'?type=large';
 			}
 			
-			var profilePic = Ti.UI.createImageView({
-				top:6,
-				left: 6,
+			var profilePic = mh.ui.components.createMagicImage({
 				image: image,
-				defaultImage: defaultImage
+				defaultImage: defaultImage,
+				maxHeight: 150,
+				maxWidth: 110,
+				borderWidth: 3,
+				borderRadius: 5,
+				borderColor: '#000'
 			});
-			
+						
 			tableViewHeader.add(profilePic);
 			
 		};
