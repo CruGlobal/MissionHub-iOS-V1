@@ -92,7 +92,7 @@
 			var timeout;
 			search.addEventListener('change', function() {
 				if (timeout) { clearTimeout(timeout); }
-				if (this.value.length == 0) {
+				if (this.value.length === 0) {
 					timeout = setTimeout(function() { search.blur(); }, 1000);
 				} else {
 					timeout = setTimeout(function() { search.blur(); }, 3000);
