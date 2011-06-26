@@ -182,7 +182,7 @@
 				right: 9,
 				height: 31,
 				width: 'auto',
-				color: '#9F1392',
+				color: mh.config.colors.green,
 				textAlign: 'right',
 				font: { fontSize: 11, fontFamily: 'Helvetica' },
 				text: L('main_sign_out')
@@ -211,10 +211,11 @@
 
 			var signedInAsLabel = Ti.UI.createLabel({
 				top: 8,
-				left: 0,
+				left: -5,
 				height: 14,
 				width: 'auto',
 				color: '#999',
+				visible: false,
 				font: { fontSize: 10, fontFamily: 'Helvetica' },
 				text: L('main_signed_in_as')
 			});

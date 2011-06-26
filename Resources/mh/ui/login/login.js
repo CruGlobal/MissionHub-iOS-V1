@@ -24,7 +24,7 @@
 
 				authWebView = Ti.UI.createWebView({
 					url: mh.auth.wvUrl,
-					top: 40,
+					top: 0,
 					zIndex: 99,
 					autoDetect: [ Ti.UI.AUTODETECT_NONE ],
 					canGoBack:false,
@@ -63,12 +63,12 @@
 
 				//Close button
 				var btn_close = Titanium.UI.createButton({
-					backgroundImage: 'images/close.png',
+					backgroundImage: 'images/close3.png',
 					width: 20,
 					height: 20,
-					top: 12,
+					top: 14,
 					right: 12,
-					zIndex: 10,
+					zIndex: 100,
 					visible: true
 				});
 				authView.add(btn_close);
@@ -154,8 +154,8 @@
 				
 				if (params.authorization) {
 					destroy();
-					mh.ui.main.indicator.message = " Logging In... ";
-					mh.ui.main.showIndicator('grantAccess');
+					mh.ui.main.indicator.message = "  Logging In...  ";
+					mh.ui.main.showIndicator('grantAccess'); 
 					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
 				}
 			}
@@ -213,7 +213,7 @@
 					mh.error.handleError('', options, 'authentication');
 				}
 			} else {
-				mh.ui.main.indicator.message = " Logging In... ";
+				mh.ui.main.indicator.message = "  Logging In...  ";
 				mh.ui.main.showIndicator('getToken');
 				mh.auth.oauth.getTokenFromCode(response.code, getTokenOnLoad, getTokenOnError);
 			}
