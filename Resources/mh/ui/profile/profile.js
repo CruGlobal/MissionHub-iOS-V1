@@ -22,6 +22,8 @@
 			
 			
 			
+			
+			
 		var options = {
 				term: 'Matt',
 				limit: 15,
@@ -30,10 +32,17 @@
 					name: 'time',
 					direction: 'desc'
 				}],
+				buttonNames: ['Retry', 'Cancel'],
 				successCallback: function(e) {
 					Ti.API.info("successCallback response: " + JSON.stringify(e));
 				},
 				errorCallback: function(e) {
+					if (e.index === 0) {
+						info("I hit the left button!");
+					}
+					if (e.index === 1) {
+						info("I hit the right button");
+					}
 					Ti.API.info("FAILURE!!!" + JSON.stringify(e));
 				}
 			};
@@ -42,6 +51,10 @@
 				mh.api.getContactsList(options)
 			}, 500);
 		};
+		
+		
+		
+		
 		
 		var createHeader = function() {
 			debug('running mh.ui.profile.window.createHeader');

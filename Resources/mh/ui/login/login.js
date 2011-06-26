@@ -135,7 +135,20 @@
 				var params = mh.util.uriParams(e.url);
 				
 				if (params.error) {
+					debug("params.error : " + params.error);
 					//TODO: Add Error
+					var options = {
+						errorCallback: function(e) {
+							if (e.index === 0) {
+								authWebView.url = mh.auth.wvUrl;								
+							}
+							if (e.index === 1) {
+								destroy();
+							}
+						},
+						buttonNames: [L('retry'),L('cancel')]						
+					};
+					mh.error.handleError('',options,params.error);
 					return;
 				}
 				
@@ -147,9 +160,12 @@
 					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
 				}
 			}
+			else {
+				
+			}
 			indicator.hide();
 			mh.ui.main.hideIndicator('webViewLoad');
-			//TODO: Add Error
+
 		};
 		
 		var webViewOnError = function(e) {
