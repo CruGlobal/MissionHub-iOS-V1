@@ -264,7 +264,9 @@
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: 'Contacts',
-				color: 'black'
+				backgroundImage: '/images/contacts_button.png',
+				color: '#DDD',
+				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
 			createPostButton.addEventListener('click', function() {
 				mh.ui.contacts.window.open();
