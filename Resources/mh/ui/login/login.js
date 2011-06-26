@@ -136,7 +136,7 @@
 				
 				if (params.error) {
 					debug("params.error : " + params.error);
-					//TODO: Add Error
+
 					var options = {
 						errorCallback: function(e) {
 							if (e.index === 0) {
@@ -148,20 +148,22 @@
 						},
 						buttonNames: [L('retry'),L('cancel')]						
 					};
-					mh.error.handleError('',options,params.error);
+					mh.error.handleError('', options, params.error);
 					return;
 				}
 				
 				if (params.authorization) {
 					destroy();
-					mh.ui.main.indicator.width = 140;
-					mh.ui.main.indicator.message = "Logging In...";
+					mh.ui.main.indicator.message = " Logging In... ";
 					mh.ui.main.showIndicator('grantAccess');
 					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
 				}
 			}
 			else {
-				
+				var options = {
+					errorCallback: function() {}
+				};
+				mh.error.handleError('', options, 'unknown');
 			}
 			indicator.hide();
 			mh.ui.main.hideIndicator('webViewLoad');
@@ -172,39 +174,95 @@
 			debug('running mh.ui.login.window.webViewOnError');
 			indicator.hide();
 			mh.ui.main.hideIndicator('webViewLoad');
-			//TODO: Add Error
+
+			var options = {
+				errorCallback: function(e) {
+						if (e.index === 0) {
+								authWebView.url = mh.auth.wvUrl;
+							}
+							if (e.index === 1) {
+								destroy();
+							}
+					},
+				buttonNames: [L('retry'),L('cancel')]
+			};
+			mh.error.handleError('', options, 'no_data');
 		};
 		
 		var grantAccessOnLoad = function (e) {
 			debug('running mh.ui.login.window.grantAccessOnLoad');
+			
+			var options = {
+				errorCallback: function(e) {
+					if (e.index === 0) {
+						authWebView.url = mh.auth.wvUrl;
+					}
+					if (e.index === 1) {
+						destroy();
+					}
+				},
+				buttonNames: [L('retry'),L('cancel')]
+			};
+
 			var response = mh.util.makeValid(e.response);
 			if (response.error || !response.code) {
-				//TODO: Add Error
+				if (response.error) {
+					mh.error.handleError(response.error, options);
+				}
+				else {
+					mh.error.handleError('', options, 'authentication');
+				}
 			} else {
-				mh.ui.main.indicator.width = 140;
-				mh.ui.main.indicator.message = "Logging In...";
+				mh.ui.main.indicator.message = " Logging In... ";
 				mh.ui.main.showIndicator('getToken');
 				mh.auth.oauth.getTokenFromCode(response.code, getTokenOnLoad, getTokenOnError);
 			}
 			
 			mh.ui.main.hideIndicator('grantAccess');
-			//TODO: Add Error
 		};
 		
 		var grantAccessOnError = function (e) {
 			debug('running mh.ui.login.window.grantAccessOnError');
-			//TODO: Add Error
+
 			info(e);
-			
+			var options = {
+				errorCallback: function(e) {
+					if (e.index === 0) {
+						authWebView.url = mh.auth.wvUrl;
+					}
+					if (e.index === 1) {
+						destroy();
+					}
+				},
+				buttonNames: [L('retry'),L('cancel')]
+			};
+			mh.error.handleError('', options, 'authentication');
 			mh.ui.main.hideIndicator('grantAccess');
 		};
 		
 		var getTokenOnLoad = function(e) {
 			debug('running mh.ui.login.window.getTokenOnLoad');
 			
+			var options = {
+				errorCallback: function(e) {
+					if (e.index === 0) {
+						authWebView.url = mh.auth.wvUrl;
+					}
+					if (e.index === 1) {
+						destroy();
+					}
+				},
+				buttonNames: [L('retry'),L('cancel')]
+			};
+			
 			var response = mh.util.makeValid(e.response);
 			if (response.error || !response.access_token) {
-				//TODO: Add Error
+				if (response.error) {
+					mh.error.handleError(response.error, options);
+				}
+				else {
+					mh.error.handleError('', options, 'authentication');
+				}
 			} else {
 				mh.auth.oauth.setToken(response.access_token);
 				mh.app.setPerson(response.person);
@@ -217,9 +275,19 @@
 		
 		var getTokenOnError = function(e) {
 			debug('running mh.ui.login.window.getTokenOnError');
-			//TODO: Add Error
-			error(e);
-			
+						var options = {
+				errorCallback: function(e) {
+					if (e.index === 0) {
+						authWebView.url = mh.auth.wvUrl;
+					}
+					if (e.index === 1) {
+						destroy();
+					}
+				},
+				buttonNames: [L('retry'),L('cancel')]
+			};
+			info(e);
+			mh.error.handleError('', options, 'authentication');
 			mh.ui.main.hideIndicator('getToken');
 		};
 		
