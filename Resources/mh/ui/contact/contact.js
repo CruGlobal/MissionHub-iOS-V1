@@ -52,48 +52,35 @@
 				errorCallback: function(e) { onPersonError(e); }
 			});
 			
-			showIndicator('contact');
-			mh.api.getContacts(person.id, {
-				successCallback: function(e) { onContactLoad(e); },
-				errorCallback: function(e) { onContactError(e); }
-			});
+			setTimeout(function() {
+				showIndicator('comments');
+				mh.api.getFollowupComments(person.id, {
+					successCallback: function(e) { onCommentsLoad(e); },
+					errorCallback: function(e) { onCommentsError(e); }
+				});
+			}, 500);
 		};
 		
 		var onPersonLoad = function(e) {
-			
 			hideIndicator('person');
-			
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
-			//TODO
 		};
 		
 		var onPersonError= function(e) {
 			error(e);
-			
 			hideIndicator('person');
-			
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
 		};
 		
-		var onContactLoad = function(e) {
-			//TODO
-			
+		var onCommentsLoad = function(e) {
 			hideIndicator('contact');
-			
 			if (tableView.reloading === true) { 
 				tableView.endReload();
 			}
 		};
 		
-		var onContactError = function(e) {
+		var onCommentsError = function(e) {
 			error(e);
 			
 			hideIndicator('contact');
-			
 			if (tableView.reloading === true) { 
 				tableView.endReload();
 			}
@@ -152,19 +139,15 @@
 				backgroundColor: mh.config.colors.blue
 			});
 			
-			var startReloadCallback = function() {
-				refresh();
-				//TODO
-			};
-			
 			tableView = mh.ui.components.createPullTableView({
 				headerView: tableViewHeader,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: Ti.Platform.displayCaps.platformHeight - 10 - 40 - 36,
 				top: 40,
 				opacity: 0,
-				backgroundColor: 'white'
-			}, startReloadCallback);
+				backgroundColor: 'white',
+				data: []
+			}, refresh());
 			
 			tableView.addEventListener('click', function(e){
 				//TODO
@@ -253,13 +236,14 @@
 				left: 8,
 				height: 46,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 8,
-				suppressReturn: true,
-				autocapitalization: Titanium.UI.TEXT_AUTOCAPITALIZATION_SENTENCES,
-				autoLink: false,
-				editable: true,
+				//suppressReturn: true,
+				//autocapitalization: Titanium.UI.TEXT_AUTOCAPITALIZATION_SENTENCES,
+				//autoLink: false,
+				//editable: true,
 				borderColor: 'black',
 				borderWidth: 1,
-				borderRadius: 5
+				borderRadius: 5,
+				value: 'foo'
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
 			
@@ -268,13 +252,13 @@
 				width: 32,
 				height: 32,
 				left: 8,
-				top: tableViewHeader.commentField.height + tableViewHeader.commentField.top + 4
+				top: 8 + 46 + 4
 			});
 			tableViewHeader.commentView.add(tableViewHeader.rejoicables);
 			
 			tableViewHeader.postButton = Ti.UI.createButton({
 				title: 'Post',
-				top: tableViewHeader.commentField.height + tableViewHeader.commentField.top + 4,
+				top: 8 + 46 + 4,
 				right: 8,
 				width: 70,
 				height: 32,
@@ -306,7 +290,7 @@
 				title: L('contact_status_'+person.status),
 				left: 8 + 32 + 4,
 				height: 32,
-				top: tableViewHeader.commentField.height + tableViewHeader.commentField.top + 4,
+				top: 8 + 46 + 4,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 4 - 70 - 4 - 8
 			});
 			tableViewHeader.commentView.add(tableViewHeader.statusButton);
