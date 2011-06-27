@@ -88,8 +88,21 @@
 				top: 40,
 				opacity: 0,
 				backgroundColor: 'white',
-				data: [{title:''}] // Fixes strange keyboard bug
+				data: [{title:''}], // Fixes strange keyboard bug,
+				editable:true,
+				allowsSelectionDuringEditing:true,
+				allowsSelection: false
 			}, refresh);
+			
+			tableView.addEventListener('delete', function(e) {
+				if (e.row.comment) {
+					info(e.row.comment.comment.id);
+					mh.api.deleteComment(e.row.comment.comment.id, {
+						successCallback: function() {},
+						errorCallback: function() {}
+					});
+				}
+			});
 			
 			tableView.addEventListener('click', function(e){
 				//TODO
@@ -586,8 +599,17 @@
 				backgroundFocusedColor: mh.config.colors.ctvBgFocused,
 				backgroundSelectedColor: mh.config.colors.ctvBgSelected,
 				selectionStyle: mh.config.colors.ctvSelStyle,
-				height: 'auto'
+				height: 'auto',
+				editable: false
 			});
+			
+			if (mh.app.getRole() == mh.app.ROLE_ADMIN) {
+				row.editable = true;
+			} else if (mh.app.getRole() == mh.app.ROLE_LEADER) {
+				if (followupComment.comment.commenter.id == mh.app.person().id) {
+					row.editable = true;
+				}
+			}
 			
 			var image;
 			if (followupComment.comment.commenter.picture) {
@@ -628,14 +650,15 @@
 			
 			var status = Ti.UI.createLabel({
 				top: 6,
-				right: 5,
+				left: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10,
 				height: 13,
 				textAlign: 'right',
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
 				font: { fontSize: 13, fontFamily: 'Helvetica' },
-				width: 100,
+				backgroundColor: 'blue',
 			});
+			width -= 5;
 			row.add(status);
 			
 			if (followupComment.comment.comment && followupComment.comment.comment != '') {
@@ -652,6 +675,7 @@
 				row.add(comment);
 			}
 			
+			info(followupComment);
 			
 			row.comment = followupComment;
 			return row;

@@ -163,8 +163,6 @@
 
 
 	//mh.api.deleteContactAssignment -- remove a contact assignment from a person 
-	// required data object:
-	//  var data = { org_id: integer };
 	// required in options object: 
 	//  successCallback:   function fired when request succeeds
 	//  errorCallback:     function fired when request fails
@@ -172,6 +170,17 @@
 		var data = {};
 		data['_method'] = 'delete';
 		var requestURL = mh.config.api_url + '/contact_assignments/' + id + '.json?access_token=' + mh.auth.oauth.getToken();
+		return firePostRequest(requestURL, options, data);
+	};
+	
+	//mh.api.deleteComment -- remove a comment 
+	// required in options object: 
+	//  successCallback:   function fired when request succeeds
+	//  errorCallback:     function fired when request fails
+	mh.api.deleteComment = function (id, options) {
+		var data = {};
+		data['_method'] = 'delete';
+		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?access_token=' + mh.auth.oauth.getToken();
 		return firePostRequest(requestURL, options, data);
 	};
 	
