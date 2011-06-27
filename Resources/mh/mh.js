@@ -23,6 +23,7 @@ var mh = {};
 	};
 	
 	var person;
+	var orgID = null;
 	
 	mh.app.person = function() {
 		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
@@ -32,6 +33,16 @@ var mh = {};
 	
 	mh.app.setPerson = function(p) {
 		person = p;
+	};
+	
+	mh.app.orgID = function() {
+		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
+			return orgID;
+		}
+	};
+	
+	mh.app.setOrgID = function(o) {
+		orgID = o;
 	};
 	
 })();

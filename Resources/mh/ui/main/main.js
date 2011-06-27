@@ -37,6 +37,8 @@
 		var open = function() {
 			debug('running mh.ui.main.window.open');
 			
+			setTimeout(function() {info("aoeuaoeuaoue" + mh.app.orgID())},10000);
+			
 			var win = Titanium.UI.createWindow();
 			
 			mainWindow = Titanium.UI.createWindow({
@@ -147,7 +149,7 @@
 			// Logo
 			var logoView = Ti.UI.createView({
 				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',   //###### LOGO ############
-				top: 57,
+				top: 80,
 				//left: Math.round((Ti.Platform.displayCaps.platformWidth-287)/2),
 				width:320,
 				height:78,
@@ -295,13 +297,15 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
-				title: 'Try'
+				title: 'About',
+				font: {fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
+				backgroundImage: '/images/TopButton.png'
 			});
 			tryNowButton.addEventListener('click', function() {
 				mh.ui.openLink({
-					title: L('home_try_it_now_alert_title'),
-					message: L('home_try_it_now_alert_message'),
-					url: 'http://meme.yahoo.com/confirm'
+					title: L('home_about_alert_title'),
+					message: L('home_about_alert_message'),
+					url: 'http://www.missionhub.com'
 				});
 			});
 			loggedOutView.add(tryNowButton);
@@ -312,7 +316,9 @@
 				top: 110,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
-				title: 'Sign-In'
+				title: 'Sign-In',
+				font:{fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
+				backgroundImage: '/images/BottomButton.png'
 			});
 			loggedOutView.add(signInButton);
 

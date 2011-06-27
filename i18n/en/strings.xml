@@ -39,6 +39,12 @@
 	<string name="contact_cannot_post">Cannot Post</string>
 	<string name="contact_cannot_post_msg">You must provide a message, change contact status, or add a rejoicable before posting!</string>
 	
+	<!-- Profile -->
+	<string name="profile_title">Profile</string>
+	
+	<!-- Information page -->
+	<string name="info_title">Information</string>
+	
 	<!-- Components -->
 	<string name="tableview_pull_to_reload">Pull to reload</string>
 	<string name="tableview_last_updated">Last Updated</string>
@@ -80,6 +86,8 @@
 	<string name="error_access_token_fetch">No Access Token</string>
 	<string name="error_no_access_token_fetch_msg">You cannot make data requests because an access token was not returned from MissionHub servers.</string>
 	
+	<string name="home_about_alert_title">Learn More</string>
+	<string name="home_about_alert_message">Clicking ok will take you to www.missionhub.com to learn more.</string>
 	
 	<!-- Actions -->
 	<string name='error'>Error</string>
