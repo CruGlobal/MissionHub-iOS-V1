@@ -40,7 +40,7 @@
 			var win = Titanium.UI.createWindow();
 			
 			mainWindow = Titanium.UI.createWindow({
-				backgroundImage: '/images/bg.png',
+				backgroundImage: '/images/bg.png',  //############# BACKGROUND IMAGE #################
 				orientationModes: [Ti.UI.PORTRAIT],
 				navBarHidden: true
 			});
@@ -146,11 +146,11 @@
 			debug('running mh.ui.main.window.createHeader');
 			// Logo
 			var logoView = Ti.UI.createView({
-				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',
+				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',   //###### LOGO ############
 				top: 57,
-				left: Math.round((Ti.Platform.displayCaps.platformWidth-287)/2),
-				width: 287,
-				height: 126,
+				//left: Math.round((Ti.Platform.displayCaps.platformWidth-287)/2),
+				width:320,
+				height:78,
 				visible: true
 			});
 			mainWindow.add(logoView);
@@ -264,7 +264,7 @@
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: 'Contacts',
-				backgroundImage: '/images/contacts_button.png',
+				backgroundImage: '/images/contacts_button.png',   //CONTACTS BUTTON
 				color: '#DDD',
 				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
