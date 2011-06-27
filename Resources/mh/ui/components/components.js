@@ -175,35 +175,38 @@
 			if (!e.fireEvent) {
 				img1.backgroundImage = i;
 				img1.width = v.width; img1.height = v.height;
-				Ti.API.info("here");
 			} else {
+				setTimeout(function(){
 				if (curImage === 1) {
 					curImage = 2;
 					img2.backgroundImage = i;
 					img2.width = v.width; img2.height = v.height;
 					img1.animate({opacity: 0, duration: 500});
 					img2.animate({opacity: 1, duration: 500});
-					Ti.API.info("here1");
 				} else {
 					curImage = 1;
 					img1.backgroundImage = i;
 					img1.width = v.width; img1.height = v.height;
 					img2.animate({opacity: 0, duration: 500});
 					img1.animate({opacity: 1, duration: 500});
-					Ti.API.info("here2");
-				}
+				}}, 100);
 			}
 			
 			// Fire custom event
 			if (e.fireEvent) {
 				v.loaded = true;
-				v.fireEvent('MagicImage:updated', {height: v.height, width: v.width, image: i});	
 			}
+			v.fireEvent('MagicImage:updated', {height: v.height, width: v.width, image: i});
 		};
 		v.addEventListener('MagicImage:update', v.update);
 		
 		function setup() {
 			v.loaded = false;
+			
+			if (i == _params.image) {
+				return;
+			}
+			
 			var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 			if (regexp.test(_params.image)) {
 				// If File Is Remote
@@ -266,12 +269,6 @@
 		}
 		
 		setup();
-		
-		v.setImage = function(e) {
-			TI.API.info('set image');
-			//_params.image = imageUrl;
-			//setup();
-		};
 		
 		v.defineImage = function(e) {
 			_params.image = e;

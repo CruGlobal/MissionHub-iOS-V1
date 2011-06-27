@@ -21,16 +21,21 @@
 	<string name="contacts_my_completed">My Completed</string>
 	<string name="contacts_my_unassigned">Unassigned</string>
 	<string name="contacts_status_uncontacted">uncontacted</string>
-	<string name="contacts_status_contact_attempted">contact attempted</string>
-	<string name="contacts_status_contact_contacted">contact attempted</string>
-	<string name="contacts_status_contact_completed">completed</string>
-	<string name="contacts_status_contact_do_not_contact">do not contact</string>
+	<string name="contacts_status_attempted_contact">contact attempted</string>
+	<string name="contacts_status_contacted">contacted</string>
+	<string name="contacts_status_completed">completed</string>
+	<string name="contacts_status_do_not_contact">do not contact</string>
 	
 	<!-- Contact -->
 	<string name="contact_title">Contact</string>
 	<string name="contact_btn_done">Back</string>
 	<string name="contact_contact">Contact</string>
 	<string name="contact_more_info">More Info</string>
+	<string name="contact_status_uncontacted">uncontacted</string>
+	<string name="contact_status_attempted_contact">contact attempted</string>
+	<string name="contact_status_contacted">contacted</string>
+	<string name="contact_status_completed">completed</string>
+	<string name="contact_status_do_not_contact">do not contact</string>
 	
 	<!-- Components -->
 	<string name="tableview_pull_to_reload">Pull to reload</string>
