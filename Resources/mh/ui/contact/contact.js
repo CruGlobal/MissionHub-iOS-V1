@@ -134,9 +134,19 @@
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				top: tableViewHeader.contactView.height
-			});			
+			});
+			
+			tableViewHeader.rejoicablesView = Ti.UI.createView({
+				backgroundColor: mh.config.colors.green,
+				height: 97,
+				left: -(Ti.Platform.displayCaps.platformWidth),
+				width: Ti.Platform.displayCaps.platformWidth,
+				top: tableViewHeader.contactView.height
+			});
+			tableViewHeader.add(tableViewHeader.rejoicablesView);
 			tableViewHeader.add(tableViewHeader.contactView);
 			tableViewHeader.add(tableViewHeader.commentView);
+			
 			
 			tableViewHeader.profilePic = mh.ui.components.createMagicImage({
 				image: image,
@@ -195,6 +205,10 @@
 			});
 			tableViewHeader.commentView.add(tableViewHeader.rejoicables);
 			
+			tableViewHeader.rejoicables.addEventListener('click', function(e) {
+				tableViewHeader.rejoicablesView.animate({left: 0, duration: 250});
+			});
+			
 			tableViewHeader.postButton = Ti.UI.createButton({
 				title: 'Post',
 				top: 8 + 46 + 4,
@@ -240,6 +254,18 @@
 			statusSelector.addEventListener('click', function(e){
 				tableViewHeader.statusButton.title = L(options[e.index]);
 			});
+			
+			
+			var rejoiceDone = Ti.UI.createButton({
+				top: 5,
+				left: 5,
+				text: 'close'
+			})
+			tableViewHeader.rejoicablesView.add(rejoiceDone);
+			rejoiceDone.addEventListener('click', function(e) {
+				tableViewHeader.rejoicablesView.animate({left: -(Ti.Platform.displayCaps.platformWidth), duration:250});
+			});
+			
 		};
 		
 		var updateHeader = function() {
@@ -277,8 +303,8 @@
 				canPost = true;
 			}
 			
+			var status;
 			if (canPost) {
-				var status;
 				switch (tableViewHeader.statusButton.title) {
 					case L('contact_status_uncontacted'): status='uncontacted'; break;
 					case L('contact_status_attempted_contact'): status='attempted_contact'; break;
@@ -313,7 +339,6 @@
 		
 		var postFollowUpSuccess = function(e) {
 			tableViewHeader.postButton.enabled = true;
-			person.status = status;
 			tableViewHeader.commentField.value = '';
 			rejoiceables = [];
 			hideIndicator('post');
