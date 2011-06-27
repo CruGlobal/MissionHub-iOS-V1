@@ -70,33 +70,6 @@
 		return fireGetRequest(requestURL, options);
 	};
 	
-	
-		//Used to pull down contact lists to populate TableViews via searching first and last names
-	// required in options object: 
-	//  successCallback:   function fired when request succeeds
-	//  errorCallback:     function fired when request fails
-	//  start:             start parameter in the query
-	//  limit:             limit # of contacts returned
-	//  term:              the search term
-	// optional:
-	//  assigned_to_id:    only show contacts assigned to value of assigned_to_id
-	//  sort:              array of hashes.  allowed: [ {name:  [time, status], direction: [asc, desc] } ] 
-	//  filters:           array of hashes.  allowed: [ {name: [gender, status], value: [male, female, do_not_contact, uncontacted, contacted, finished, completed]} ]
-	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
-	//  cacheSeconds:      the number of seconds until the cache'd API request expires
-	mh.api.searchContactsList = function (options) {
-		options.cacheKey = false;  // DO NOT PASS IN A CACHEKEY
-		var queryParams = sortFilterAssign(options);
-		queryParams.access_token = mh.auth.oauth.getToken();
-		var queryString = buildQueryParams(queryParams);
-		var requestURL = mh.config.api_url + '/contacts/search.json?' + queryString;
-		if (!options.fresh) {
-			options.cacheKey = mh.util.stripBadCharacters(requestURL);
-		}
-		return fireGetRequest(requestURL, options);
-	};
-	
-	
 	//Used to pull down a single or multiple full person descriptions
 	// required parameter ids -- array of person IDs OR just a single integer
 	// required in options object: 
