@@ -37,8 +37,6 @@
 		var open = function() {
 			debug('running mh.ui.main.window.open');
 			
-			setTimeout(function() {info("aoeuaoeuaoue" + mh.app.orgID())},10000);
-			
 			var win = Titanium.UI.createWindow();
 			
 			mainWindow = Titanium.UI.createWindow({
@@ -148,11 +146,11 @@
 			debug('running mh.ui.main.window.createHeader');
 			// Logo
 			var logoView = Ti.UI.createView({
-				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',   //###### LOGO ############
+				backgroundImage: 'images/' + mh.app.lang() + '/logo_larger.png',   //###### LOGO ############
 				top: 80,
 				//left: Math.round((Ti.Platform.displayCaps.platformWidth-287)/2),
 				width:320,
-				height:78,
+				height:75,
 				visible: true
 			});
 			mainWindow.add(logoView);
@@ -235,12 +233,12 @@
 			
 			showLogoutBar = function() {
 				logoutBarView.animate({ top: 0 });
-				logoView.animate({ top: 75 });
+				logoView.animate({ top: 90 });
 			};
 
 			hideLogoutBar = function() {
 				logoutBarView.animate({ top: -33 });
-				logoView.animate({ top: 57 });
+				logoView.animate({ top: 90 });
 			};
 			
 			configureLogoutBar = function() {
@@ -266,7 +264,7 @@
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: 'Contacts',
-				backgroundImage: '/images/contacts_button.png',   //CONTACTS BUTTON
+				backgroundImage: '/images/BottomButton.png',   //CONTACTS BUTTON
 				color: '#DDD',
 				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});

@@ -32,6 +32,7 @@
 		
 		var open = function() {
 			debug('running mh.ui.profile.window.open');
+			person = mh.app.person();
 			mh.api.getPeople(1282204,options);
 			profileWindow = Ti.UI.createWindow({
 				backgroundImage: 'images/bg.png',
