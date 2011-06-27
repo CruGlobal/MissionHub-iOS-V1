@@ -37,6 +37,8 @@
 		var open = function() {
 			debug('running mh.ui.main.window.open');
 			
+			setTimeout(function() {info("aoeuaoeuaoue" + mh.app.orgID())},10000);
+			
 			var win = Titanium.UI.createWindow();
 			
 			mainWindow = Titanium.UI.createWindow({
@@ -295,13 +297,14 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
-				title: 'Try'
+				title: 'Try',
+				backgroundImage: 'images/contacts_button.png'
 			});
 			tryNowButton.addEventListener('click', function() {
 				mh.ui.openLink({
 					title: L('home_try_it_now_alert_title'),
 					message: L('home_try_it_now_alert_message'),
-					url: 'http://meme.yahoo.com/confirm'
+					url: 'http://www.missionhub.com'
 				});
 			});
 			loggedOutView.add(tryNowButton);
@@ -312,7 +315,8 @@
 				top: 110,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
-				title: 'Sign-In'
+				title: 'Sign-In',
+				backgroundImage: 'images/contacts_button.png'
 			});
 			loggedOutView.add(signInButton);
 

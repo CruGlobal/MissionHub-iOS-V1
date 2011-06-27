@@ -37,6 +37,12 @@
 	<string name="contact_status_completed">completed</string>
 	<string name="contact_status_do_not_contact">do not contact</string>
 	
+	<!-- Profile -->
+	<string name="profile_title">Profile</string>
+	
+	<!-- Information page -->
+	<string name="info_title">Information</string>
+	
 	<!-- Components -->
 	<string name="tableview_pull_to_reload">Pull to reload</string>
 	<string name="tableview_last_updated">Last Updated</string>
