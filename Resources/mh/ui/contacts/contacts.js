@@ -126,7 +126,7 @@
 				onGetMore();
 			};
 			
-			tableView = mh.ui.components.PullTableView({
+			tableView = mh.ui.components.createPullTableView({
 				top: 0,
 				left: 0,
 				height: bottomView.height-36 //tabbar
