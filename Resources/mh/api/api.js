@@ -97,6 +97,32 @@
 	};
 	
 	
+	//Used to pull down followup comments for a person
+	// required parameter id -- integer (personID)
+	// required in options object: 
+	//  successCallback:   function fired when request succeeds
+	//  errorCallback:     function fired when request fails
+	// optional:
+	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
+	//  cacheSeconds:      the number of seconds until the cache'd API request expires
+		mh.api.getFollowupComments = function (id, options) {
+		options.cacheKey = null;  // DO NOT PASS IN A CACHEKEY
+		
+		var queryParams = {};
+		queryParams.access_token = mh.auth.oauth.getToken();
+		//now we actually build the query string
+		var queryString = buildQueryParams(queryParams);
+
+		//figure out the request URL we want to use
+		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?' + queryString;
+		
+		if (!options.fresh) {
+			options.cacheKey = mh.util.stripBadCharacters(requestURL);
+		}
+		return fireGetRequest(requestURL, options);
+	};
+	
+	
 	//mh.api.postFollowupComment -- Post a followup comment to a person's contact card
 	// required data object:
 	//  var data = {
