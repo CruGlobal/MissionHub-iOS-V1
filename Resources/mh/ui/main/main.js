@@ -42,7 +42,7 @@
 			var win = Titanium.UI.createWindow();
 			
 			mainWindow = Titanium.UI.createWindow({
-				backgroundImage: '/images/bg.png',
+				backgroundImage: '/images/bg.png',  //############# BACKGROUND IMAGE #################
 				orientationModes: [Ti.UI.PORTRAIT],
 				navBarHidden: true
 			});
@@ -148,11 +148,11 @@
 			debug('running mh.ui.main.window.createHeader');
 			// Logo
 			var logoView = Ti.UI.createView({
-				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',
-				top: 57,
-				left: Math.round((Ti.Platform.displayCaps.platformWidth-287)/2),
-				width: 287,
-				height: 126,
+				backgroundImage: 'images/' + mh.app.lang() + '/logo.png',   //###### LOGO ############
+				top: 80,
+				//left: Math.round((Ti.Platform.displayCaps.platformWidth-287)/2),
+				width:320,
+				height:78,
 				visible: true
 			});
 			mainWindow.add(logoView);
@@ -266,7 +266,7 @@
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: 'Contacts',
-				backgroundImage: '/images/contacts_button.png',
+				backgroundImage: '/images/contacts_button.png',   //CONTACTS BUTTON
 				color: '#DDD',
 				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
@@ -297,13 +297,14 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
-				title: 'Try',
-				backgroundImage: 'images/contacts_button.png'
+				title: 'About',
+				font: {fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
+				backgroundImage: '/images/TopButton.png'
 			});
 			tryNowButton.addEventListener('click', function() {
 				mh.ui.openLink({
-					title: L('home_try_it_now_alert_title'),
-					message: L('home_try_it_now_alert_message'),
+					title: L('home_about_alert_title'),
+					message: L('home_about_alert_message'),
 					url: 'http://www.missionhub.com'
 				});
 			});
@@ -316,7 +317,8 @@
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: 'Sign-In',
-				backgroundImage: 'images/contacts_button.png'
+				font:{fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
+				backgroundImage: '/images/BottomButton.png'
 			});
 			loggedOutView.add(signInButton);
 

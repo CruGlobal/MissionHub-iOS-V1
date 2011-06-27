@@ -84,6 +84,8 @@
 	<string name="error_access_token_fetch">No Access Token</string>
 	<string name="error_no_access_token_fetch_msg">You cannot make data requests because an access token was not returned from MissionHub servers.</string>
 	
+	<string name="home_about_alert_title">Learn More</string>
+	<string name="home_about_alert_message">Clicking ok will take you to www.missionhub.com to learn more.</string>
 	
 	<!-- Actions -->
 	<string name='error'>Error</string>

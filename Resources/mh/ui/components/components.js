@@ -130,8 +130,8 @@
 		return tableView;
 	};
 	
-	mh.ui.components.createPullTableView = function(_params) {
-		return new mh.ui.components.PullTableView(_params);
+	mh.ui.components.createPullTableView = function(_params, reloadStartCallback) {
+		return new mh.ui.components.PullTableView(_params, reloadStartCallback);
 	};
 	
 	mh.ui.components.MagicImage = function(_params) {

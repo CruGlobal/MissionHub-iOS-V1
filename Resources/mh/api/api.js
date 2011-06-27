@@ -105,7 +105,7 @@
 	// optional:
 	//  fresh:             boolean.  set to true if you want a fresh copy of the API call
 	//  cacheSeconds:      the number of seconds until the cache'd API request expires
-		mh.api.getFollowupComments = function (id, options) {
+	mh.api.getFollowupComments = function (id, options) {
 		options.cacheKey = null;  // DO NOT PASS IN A CACHEKEY
 		
 		var queryParams = {};
