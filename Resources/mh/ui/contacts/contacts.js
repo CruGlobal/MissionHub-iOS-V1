@@ -33,7 +33,7 @@
 			});
 			contactsWindow.add(contactsBar);
 			
-			var contactsLabel = Ti.UI.createLabel({
+			contactsWindow.contactsLabel = Ti.UI.createLabel({
 				text: L('contacts_title'),
 				color: 'white',
 				height: 22,
@@ -41,9 +41,9 @@
 				left: 65,
 				width: Ti.Platform.displayCaps.platformWidth-65-65,
 				textAlign: 'center',
-				font: { fontSize: 20, fontFamily: 'Helvetica', fontWeight: 'Bold' }
+				font: { fontSize: 20, fontFamily: 'Helvetica-Bold'}
 			});
-			contactsBar.add(contactsLabel);
+			contactsBar.add(contactsWindow.contactsLabel);
 
 			var doneButton = Ti.UI.createButton({
 				top: 4,
@@ -52,7 +52,7 @@
 				width: 60,
 				backgroundImage: '/images/btn_done.png',
 				title: L('contacts_btn_back'),
-				font: { fontSize: 12, fontFamily: 'Helvetica Neue', fontWeight: 'Bold' }
+				font: { fontSize: 12, fontFamily: 'Helvetica-Bold'}
 			});
 			doneButton.addEventListener('click', function() {
 				var animation = Ti.UI.createAnimation({duration: 250, left: Ti.Platform.displayCaps.platformWidth});
@@ -81,7 +81,7 @@
 				barColor:'#333',
 				showCancel:false,
 				hint: L('contacts_search_hint'),
-				right: 35,
+				left: 0,
 				top:-5,
 				height: 35,
 				zIndex: 50,
@@ -243,6 +243,10 @@
 				hasLastContact = false;
 			}
 			
+			if(options.start === 0) {
+				tableView.data =[];
+			}
+			
 			options.start = options.limit + options.start;
 			
 			for (index in e) {
@@ -253,6 +257,15 @@
 						ids.push(person.id);
 					}
 				}
+			}
+			
+			if (tableView.data.length === 0) {
+				var row = Ti.UI.createTableViewRow();
+				row.add(Ti.UI.createLabel({
+					text: 'No Contacts',
+					textAlign: 'center'
+				}));
+				tableView.data =[row];
 			}
 			
 			if (tableView.reloading === true) { 
@@ -345,12 +358,15 @@
 				switch (index) {
 					case 0:	addOption('assigned_to_id', mh.app.person().id);
 							addFilter('status', 'not_finished');
+							contactsWindow.contactsLabel.text = L('contacts_title_my');
 							break;
 					case 1: addOption('assigned_to_id', mh.app.person().id);
 							addFilter('status', 'finished');
+							contactsWindow.contactsLabel.text = L('contacts_title_completed');
 							break;
 					case 2: addOption('assigned_to_id', 'none');
 							removeFilter('status');
+							contactsWindow.contactsLabel.text = L('contacts_title_unassigned');
 							break;
 				}
 				onGetMore(force);

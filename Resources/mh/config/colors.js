@@ -32,4 +32,15 @@
 	mh.config.colors.ctvPdBg = mh.config.colors.lightGray;
 	mh.config.colors.ctvPdTxt = mh.config.colors.blue;
 	
+	/* Contact */
+	mh.config.colors.headerBg = mh.config.colors.blue;
+	mh.config.colors.headerNameTxt = '#fff';
+	mh.config.colors.profilePicBorder = '#000';
+	mh.config.colors.commentBg = mh.config.colors.lightGray;
+	mh.config.colors.commentTxtBorder = '#000';
+	mh.config.colors.rejoicablesBg = mh.config.colors.lightGray;
+	mh.config.colors.commentRowNameTxt = '#000';
+	mh.config.colors.commentRowStatusTxt = '#000';
+	mh.config.colors.commentRowCommentTxt = '#333';
+	mh.config.colors.commentFooterBg = '#333';
 })();
