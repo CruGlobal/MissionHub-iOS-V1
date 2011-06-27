@@ -15,6 +15,9 @@
 	
 	<!-- Contacts -->
 	<string name="contacts_title">Contacts</string>
+	<string name="contacts_title_my">My Contacts</string>
+	<string name="contacts_title_completed">My Completed</string>
+	<string name="contacts_title_unassigned">Unassigned</string>
 	<string name="contacts_btn_back">Back</string>
 	<string name="contacts_search_hint">search</string>
 	<string name="contacts_my_contacts">My Contacts</string>
