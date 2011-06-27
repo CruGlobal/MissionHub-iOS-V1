@@ -28,204 +28,6 @@
 			mh.ui.nav.open(contactWindow);
 		};
 		
-		var processes = [];
-	
-		var showIndicator = function(process) {
-			processes.push(process);
-			indicator.show();
-		};
-		
-		var hideIndicator = function(process) {
-			var idx = processes.indexOf(process);
-			if(idx!=-1) { processes.splice(idx, 1); }
-			
-			if (processes.length <= 0) {
-				indicator.hide();
-			}
-		};
-		
-		var refresh = function() {
-			try {
-				tableViewHeader.commentField.blur();
-				tableViewHeader.commentField.enabled = false;
-			} catch(e) {}
-			
-			showIndicator('person');
-			mh.api.getPeople(person.id, {
-				successCallback: function(e) { onPersonLoad(e); },
-				errorCallback: function(e) { onPersonError(e); }
-			});
-			
-			setTimeout(function() {
-				resetTableView();
-				onGetMoreComments(true);
-			}, 500);
-		};
-		
-		var onPersonLoad = function(e) {
-			hideIndicator('person');
-		};
-		
-		var onPersonError= function(e) {
-			error(e);
-			hideIndicator('person');
-		};
-		
-		var hasLastComment = false;
-		var ids = [];
-		var loadingCommentData = false; // True when loading comment data
-		
-		var options = {
-			start: 0,
-			limit: 15,
-			successCallback: function(e){ onCommentFetch(e); },
-			errorCallback: function(e){ onCommentFetchError(e); }
-		};
-		if (ipad) {
-			options.limit = 30;
-		}
-		
-		var resetTableView = function() {
-			loadingData = false; // reset state
-			hasLastComment = false;  // reset state
-			options.start = 0;
-			ids=[];
-			tableView.data = [{title: ''}]; // clear table
-		};
-		
-		var prevXhr;
-		var onGetMoreComments = function(force) {
-			debug('mh.ui.window.contact.onGetMoreComments');
-			if (loadingData || hasLastComment) { return; }
-			loadingData = true;
-			
-			if (force) {
-				tableView.updateLastUpdated();
-			}
-			
-			if (prevXhr && force) {
-				prevXhr.onload = function(){};
-				prevXhr.onerror = function(){};
-				if (tableView.reloading === true) { 
-					tableView.endReload();
-				}
-				hideIndicator('comments');
-				prevXhr.abort();
-			}
-			
-			showIndicator('comments');
-			prevXhr = mh.api.getFollowupComments(person.id, options);
-		};
-		
-		var onCommentFetch = function(e) {
-			debug('mh.ui.window.contact.onCommentFetch');
-			
-			if (e.length < options.limit) {
-				hasLastComment = true;
-			} else {
-				hasLastComment = false;
-			}
-			
-			options.start = options.limit + options.start;
-			
-			try {
-				tableViewHeader.commentField.blur();
-				tableViewHeader.commentField.enabled = false;
-			} catch (exception2) {}
-			
-			if (e.length > 0) {
-				tableView.data = [];
-			}
-			
-			for (var index in e) {
-				var followupComment = e[index];
-				if (followupComment) {
-					followupComment = followupComment.followup_comment;
-					if (followupComment.comment && followupComment.comment.id && ids.indexOf(followupComment.comment.id) < 0) {
-						tableView.appendRow(createTableRow(followupComment));
-						ids.push(followupComment.comment.id);
-					}
-				}
-			}
-			
-			if (tableView.data.length <= 0) {
-				try {
-					tableView.data = [{title:''}];
-				} catch(exception) {}
-			}
-			try {
-				tableViewHeader.commentField.enabled = true;
-			} catch (exception2) {}
-			
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
-			
-			hideIndicator('comments');
-			loadingData = false;
-		};
-		
-		var onCommentFetchError = function(e) {
-			debug('mh.ui.window.contact.onCommentFetchError');
-			
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
-			
-			hideIndicator('comments');
-			loadingData = false;
-		};
-		
-		
-		var createTableRow = function(followupComment) {
-			
-			info(followupComment);
-			
-			debug('mh.ui.window.contacts.createTableRow');
-			var row = Ti.UI.createTableViewRow({
-				className:"comment",
-				color: mh.config.colors.ctvTxt,
-				backgroundColor: mh.config.colors.ctvBg,
-				backgroundDisabledColor: mh.config.colors.ctvBgDisabled,
-				backgroundFocusedColor: mh.config.colors.ctvBgFocused,
-				backgroundSelectedColor: mh.config.colors.ctvBgSelected,
-				selectionStyle: mh.config.colors.ctvSelStyle,
-				height: 'auto'
-			});
-			
-			var image;
-			if (followupComment.comment.commenter.picture) {
-				image = followupComment.comment.commenter.picture+'?type=square';
-			} else {
-				image = '/images/default_contact.jpg';
-			}
-			
-			var img = Ti.UI.createImageView({
-				defaultImage: '/images/default_contact.jpg',
-				image: image,
-				top: 3,
-				left: 3,
-				width: 50,
-				height: 50
-			});
-			row.image = img;
-			row.add(img);
-			
-			var name = Ti.UI.createLabel({
-				color: 'black',
-				text: followupComment.comment.commenter.name,
-				top: 10,
-				left: 60,
-				height: 14,
-				width: Ti.Platform.displayCaps.platformWidth - 60,
-				font: { fontSize: 14, fontFamily: 'Helvetica' }
-			});
-			row.add(name);
-			
-			row.comment = followupComment;
-			return row;
-		};		
-		
 		var createHeader = function() {
 			debug('running mh.ui.contact.window.createHeader');
 			var contactBar = Ti.UI.createView({
@@ -332,9 +134,19 @@
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				top: tableViewHeader.contactView.height
-			});			
+			});
+			
+			tableViewHeader.rejoicablesView = Ti.UI.createView({
+				backgroundColor: mh.config.colors.green,
+				height: 97,
+				left: -(Ti.Platform.displayCaps.platformWidth),
+				width: Ti.Platform.displayCaps.platformWidth,
+				top: tableViewHeader.contactView.height
+			});
+			tableViewHeader.add(tableViewHeader.rejoicablesView);
 			tableViewHeader.add(tableViewHeader.contactView);
 			tableViewHeader.add(tableViewHeader.commentView);
+			
 			
 			tableViewHeader.profilePic = mh.ui.components.createMagicImage({
 				image: image,
@@ -393,15 +205,19 @@
 			});
 			tableViewHeader.commentView.add(tableViewHeader.rejoicables);
 			
+			tableViewHeader.rejoicables.addEventListener('click', function(e) {
+				tableViewHeader.rejoicablesView.animate({left: 0, duration: 250});
+			});
+			
 			tableViewHeader.postButton = Ti.UI.createButton({
 				title: 'Post',
 				top: 8 + 46 + 4,
 				right: 8,
 				width: 70,
-				height: 32,
-				enabled: false
+				height: 32
 			});
 			tableViewHeader.commentView.add(tableViewHeader.postButton);
+			tableViewHeader.postButton.addEventListener('click', function(e){ onPost(); });
 			
 			var options = [];
 			options[0]=L('contact_status_uncontacted');
@@ -438,15 +254,307 @@
 			statusSelector.addEventListener('click', function(e){
 				tableViewHeader.statusButton.title = L(options[e.index]);
 			});
+			
+			
+			var rejoiceDone = Ti.UI.createButton({
+				top: 5,
+				left: 5,
+				text: 'close'
+			})
+			tableViewHeader.rejoicablesView.add(rejoiceDone);
+			rejoiceDone.addEventListener('click', function(e) {
+				tableViewHeader.rejoicablesView.animate({left: -(Ti.Platform.displayCaps.platformWidth), duration:250});
+			});
+			
 		};
 		
 		var updateHeader = function() {
-			tableViewHeader.profilePic.defineImage(person.picture);
-			tableViewHeader.name.text = person.name;
+			debug('mh.ui.window.contact.updateHeader');
+			if (person.picture) {
+				tableViewHeader.profilePic.defineImage(person.picture+'?type=large');
+			}
+			if (person.name) {
+				tableViewHeader.name.text = person.name;
+			}
+			if (person.status) {
+				tableViewHeader.statusButton.title = L('contact_status_' + person.status);
+			}
+		};
+		
+		var rejoiceables = [];
+		
+		var onPost = function() {
+			var changedStatus = false;
+			var hasRejoice = false;
+			var hasMessage = false;
+			var canPost = false;
+			if (tableViewHeader.statusButton.title != L('contact_status_'+person.status)) {
+				changedStatus = true;
+				canPost = true;
+			}
+			
+			if (rejoiceables.length > 0) {
+				hasRejoice = true;
+				canPost = true;
+			}
+			
+			if (tableViewHeader.commentField.value.length > 0) {
+				hasMessage = true;
+				canPost = true;
+			}
+			
+			var status;
+			if (canPost) {
+				switch (tableViewHeader.statusButton.title) {
+					case L('contact_status_uncontacted'): status='uncontacted'; break;
+					case L('contact_status_attempted_contact'): status='attempted_contact'; break;
+					case L('contact_status_contacted'): status='contacted'; break;
+					case L('contact_status_completed'): status='completed'; break;
+					case L('contact_status_do_not_contact'): status='do_not_contact'; break;
+				}
+				var data = { 
+					followup_comment: {
+						organization_id: person.request_org_id,
+						contact_id: person.id,
+						commenter_id: mh.app.person().id,
+						status: status,
+						comment: tableViewHeader.commentField.value,
+					}, rejoicables: rejoiceables};
+				var options = {
+					successCallback: function(e) { postFollowUpSuccess(e) },
+					errorCallback: function(e) { postFollowUpError(e) }
+				};
+				
+				showIndicator('post');
+				tableViewHeader.postButton.enabled = false;
+				mh.api.postFollowupComment(data, options);
+			} else {
+				mh.ui.alert({
+					buttonNames: [L('alert_btn_ok')],
+					title: L('contact_cannot_post'),
+					message: L('contact_cannot_post_msg')
+				});
+			}
+		};
+		
+		var postFollowUpSuccess = function(e) {
+			tableViewHeader.postButton.enabled = true;
+			tableViewHeader.commentField.value = '';
+			rejoiceables = [];
+			hideIndicator('post');
+			refresh();
+		};
+		
+		var postFollowUpError = function(e) {
+			tableViewHeader.postButton.enabled = true;
+			hideIndicator('post');
+			//TODO
+		};
+		
+		var processes = [];
+	
+		var showIndicator = function(process) {
+			processes.push(process);
+			indicator.show();
+		};
+		
+		var hideIndicator = function(process) {
+			var idx = processes.indexOf(process);
+			if(idx!=-1) { processes.splice(idx, 1); }
+			
+			if (processes.length <= 0) {
+				indicator.hide();
+			}
+		};
+		
+		var refresh = function() {
+			try {
+				tableViewHeader.commentField.blur();
+				tableViewHeader.commentField.enabled = false;
+			} catch(e) {}
+			
+			showIndicator('person');
+			mh.api.getPeople(person.id, {
+				successCallback: function(e) { onPersonLoad(e); },
+				errorCallback: function(e) { onPersonError(e); }
+			});
+			
+			setTimeout(function() {
+				resetTableView();
+				onGetMoreComments(true);
+			}, 500);
+		};
+		
+		var onPersonLoad = function(e) {
+			person = e[0];
+			updateHeader();
+			hideIndicator('person');
+		};
+		
+		var onPersonError= function(e) {
+			hideIndicator('person');
+		};
+		
+		var hasLastComment = false;
+		var ids = [];
+		var loadingCommentData = false; // True when loading comment data
+		
+		var options = {
+			start: 0,
+			limit: 15,
+			successCallback: function(e){ onCommentFetch(e); },
+			errorCallback: function(e){ onCommentFetchError(e); }
+		};
+		if (ipad) {
+			options.limit = 30;
+		}
+		
+		var resetTableView = function() {
+			loadingData = false; // reset state
+			hasLastComment = false;  // reset state
+			options.start = 0;
+			ids=[];
+			tableView.data = [{title: ''}]; // clear table
+		};
+		
+		var prevXhr;
+		var onGetMoreComments = function(force) {
+			debug('mh.ui.window.contact.onGetMoreComments');
+			if (loadingData || hasLastComment) { return; }
+			loadingData = true;
+			
+			if (force) {
+				tableView.updateLastUpdated();
+			}
+			
+			if (prevXhr && force) {
+				prevXhr.onload = function(){};
+				prevXhr.onerror = function(){};
+				if (tableView.reloading === true) { 
+					tableView.endReload();
+				}
+				hideIndicator('comments');
+				prevXhr.abort();
+			}
+			
+			showIndicator('comments');
+			prevXhr = mh.api.getFollowupComments(person.id, options);
+		};
+		
+		var onCommentFetch = function(e) {
+			debug('mh.ui.window.contact.onCommentFetch');
+			
+			if (e.length < options.limit) {
+				hasLastComment = true;
+			} else {
+				hasLastComment = false;
+			}
+			
+			options.start = options.limit + options.start;
+			
+			try {
+				tableViewHeader.commentField.blur();
+				tableViewHeader.commentField.enabled = false;
+			} catch (exception2) {}
+			
+			if (e.length > 0) {
+				tableView.data = [];
+			}
+			
+			for (var index in e) {
+				var followupComment = e[index];
+				if (followupComment) {
+					followupComment = followupComment.followup_comment;
+					if (followupComment.comment && followupComment.comment.id && ids.indexOf(followupComment.comment.id) < 0) {
+						tableView.appendRow(createTableRow(followupComment));
+						ids.push(followupComment.comment.id);
+					}
+				}
+			}
+			
+			if (tableView.data.length <= 0) {
+				try {
+					tableView.data = [{title:''}];
+				} catch(exception) {}
+			}
+			try {
+				tableViewHeader.commentField.enabled = true;
+			} catch (exception2) {}
+			
+			if (tableView.reloading === true) { 
+				tableView.endReload();
+			}
+			
+			hideIndicator('comments');
+			loadingData = false;
+		};
+		
+		var onCommentFetchError = function(e) {
+			debug('mh.ui.window.contact.onCommentFetchError');
+			if (tableView.reloading === true) { 
+				tableView.endReload();
+			}
+			hideIndicator('comments');
+			loadingData = false;
+		};
+		
+		var createTableRow = function(followupComment) {			
+			debug('mh.ui.window.contacts.createTableRow');
+			var row = Ti.UI.createTableViewRow({
+				className:"comment",
+				color: mh.config.colors.ctvTxt,
+				backgroundColor: mh.config.colors.ctvBg,
+				backgroundDisabledColor: mh.config.colors.ctvBgDisabled,
+				backgroundFocusedColor: mh.config.colors.ctvBgFocused,
+				backgroundSelectedColor: mh.config.colors.ctvBgSelected,
+				selectionStyle: mh.config.colors.ctvSelStyle,
+				height: 'auto'
+			});
+			
+			var image;
+			if (followupComment.comment.commenter.picture) {
+				image = followupComment.comment.commenter.picture+'?type=square';
+			} else {
+				image = '/images/default_contact.jpg';
+			}
+			
+			var img = Ti.UI.createImageView({
+				defaultImage: '/images/default_contact.jpg',
+				image: image,
+				top: 3,
+				left: 3,
+				width: 50,
+				height: 50
+			});
+			row.image = img;
+			row.add(img);
+			
+			var name = Ti.UI.createLabel({
+				color: 'black',
+				text: followupComment.comment.commenter.name,
+				top: 10,
+				left: 60,
+				height: 14,
+				width: Ti.Platform.displayCaps.platformWidth - 60,
+				font: { fontSize: 14, fontFamily: 'Helvetica' }
+			});
+			row.add(name);
+			
+			var status = Ti.UI.createLabel({
+				top: 10 + 14 + 4,
+				height: 'auto',
+				font: { fontSize: 12, fontFamily: 'Helvetica' },
+				width: Ti.Platform.displayCaps.platformWidth - 60,
+				text: followupComment.comment.comment,
+				left: 60
+			})
+			row.add(status);
+			
+			row.comment = followupComment;
+			return row;
 		};
 		
 		var createFooter = function() {
-			
 			tabbedBar = Ti.UI.createTabbedBar({
 				labels:[L('contact_contact'), L('contact_more_info')],
 				backgroundColor:'#333',
@@ -457,7 +565,6 @@
 			    index: 0
 			});
 			contactWindow.add(tabbedBar);
-			
 		};
 		
 		return {
