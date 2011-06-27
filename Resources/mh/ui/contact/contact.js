@@ -133,7 +133,8 @@
 				height: 97,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
-				top: tableViewHeader.contactView.height
+				top: tableViewHeader.contactView.height,
+				zIndex: 50
 			});
 			
 			tableViewHeader.rejoicablesView = Ti.UI.createView({
@@ -141,7 +142,8 @@
 				height: 97,
 				left: -(Ti.Platform.displayCaps.platformWidth),
 				width: Ti.Platform.displayCaps.platformWidth,
-				top: tableViewHeader.contactView.height
+				top: tableViewHeader.contactView.height,
+				zIndex: 99
 			});
 			tableViewHeader.add(tableViewHeader.rejoicablesView);
 			tableViewHeader.add(tableViewHeader.contactView);
@@ -257,8 +259,10 @@
 			
 			
 			var rejoiceDone = Ti.UI.createButton({
-				top: 5,
-				left: 5,
+				width: 32,
+				height: 32,
+				left: 8,
+				top: 8 + 46 + 4,
 				text: 'close'
 			})
 			tableViewHeader.rejoicablesView.add(rejoiceDone);
@@ -266,6 +270,59 @@
 				tableViewHeader.rejoicablesView.animate({left: -(Ti.Platform.displayCaps.platformWidth), duration:250});
 			});
 			
+			tableViewHeader.rejoicablesView.rejoiceSc = Ti.UI.createButton({
+				title: 'Spiritual Conversation',
+				left: 8 + 32 + 8,
+				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
+				top: 7,
+				height: 21
+			});
+			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceSc);
+			tableViewHeader.rejoicablesView.rejoiceSc.addEventListener('click', function(){
+				if (this.on) {
+					this.image = '';
+					this.on = false;
+				} else {
+					this.image = '/images/check.png';
+					this.on = true;
+				}
+			});
+			
+			tableViewHeader.rejoicablesView.rejoiceChrist = Ti.UI.createButton({
+				title: 'Prayed To Receive Christ',
+				left: 8 + 32 + 8,
+				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
+				top: 7 + 21 + 8,
+				height: 21
+			});
+			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceChrist);
+			tableViewHeader.rejoicablesView.rejoiceChrist.addEventListener('click', function(){
+				if (this.on) {
+					this.image = '';
+					this.on = false;
+				} else {
+					this.image = '/images/check.png';
+					this.on = true;
+				}
+			});
+			
+			tableViewHeader.rejoicablesView.rejoiceGospel = Ti.UI.createButton({
+				title: 'Gospel Presentation',
+				left: 8 + 32 + 8,
+				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
+				top: 7 + 21 + 8 + 21 + 8,
+				height: 21
+			});
+			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceGospel);
+			tableViewHeader.rejoicablesView.rejoiceGospel.addEventListener('click', function(){
+				if (this.on) {
+					this.image = '';
+					this.on = false;
+				} else {
+					this.image = '/images/check.png';
+					this.on = true;
+				}
+			});
 		};
 		
 		var updateHeader = function() {
@@ -281,8 +338,6 @@
 			}
 		};
 		
-		var rejoiceables = [];
-		
 		var onPost = function() {
 			var changedStatus = false;
 			var hasRejoice = false;
@@ -293,7 +348,18 @@
 				canPost = true;
 			}
 			
-			if (rejoiceables.length > 0) {
+			var rejoicables = [];
+			if (tableViewHeader.rejoicablesView.rejoiceSc.on) {
+				rejoicables.push('spiritual_conversation');
+			}
+			if (tableViewHeader.rejoicablesView.rejoiceChrist.on) {
+				rejoicables.push('prayed_to_receive');
+			}
+			if (tableViewHeader.rejoicablesView.rejoiceGospel.on) {
+				rejoicables.push('gospel_presentation');
+			}
+			
+			if (rejoicables.length > 0) {
 				hasRejoice = true;
 				canPost = true;
 			}
@@ -319,7 +385,7 @@
 						commenter_id: mh.app.person().id,
 						status: status,
 						comment: tableViewHeader.commentField.value,
-					}, rejoicables: rejoiceables};
+					}, rejoicables: rejoicables};
 				var options = {
 					successCallback: function(e) { postFollowUpSuccess(e) },
 					errorCallback: function(e) { postFollowUpError(e) }
@@ -340,7 +406,12 @@
 		var postFollowUpSuccess = function(e) {
 			tableViewHeader.postButton.enabled = true;
 			tableViewHeader.commentField.value = '';
-			rejoiceables = [];
+			tableViewHeader.rejoicablesView.rejoiceSc.on = false;
+			tableViewHeader.rejoicablesView.rejoiceSc.image = '';
+			tableViewHeader.rejoicablesView.rejoiceChrist.on = false;
+			tableViewHeader.rejoicablesView.rejoiceChrist.image = '';
+			tableViewHeader.rejoicablesView.rejoiceGospel.on = false;
+			tableViewHeader.rejoicablesView.rejoiceGospel.image = '';
 			hideIndicator('post');
 			refresh();
 		};
@@ -388,6 +459,13 @@
 		var onPersonLoad = function(e) {
 			person = e[0];
 			updateHeader();
+			switch(person.status) {
+				case 'uncontacted': statusSelector.cancel = 0; break;
+				case 'attempted_contact': statusSelector.cancel = 1; break;
+				case 'contacted': statusSelector.cancel = 2; break;
+				case 'completed': statusSelector.cancel = 3; break;
+				case 'do_not_contact': statusSelector.cancel = 4; statusSelector.destructive = -1; break;
+			}
 			hideIndicator('person');
 		};
 		
