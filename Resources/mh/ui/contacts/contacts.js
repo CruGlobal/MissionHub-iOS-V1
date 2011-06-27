@@ -243,8 +243,10 @@
 				hasLastContact = false;
 			}
 			
-			if(options.start === 0) {
-				tableView.data =[];
+			var noresults = false;
+			if (options.start === 0 && e.length === 0) {
+				tableView.data = [];
+				noresults = true;
 			}
 			
 			options.start = options.limit + options.start;
@@ -259,7 +261,7 @@
 				}
 			}
 			
-			if (tableView.data.length === 0) {
+			if (noresults) {
 				var row = Ti.UI.createTableViewRow();
 				row.add(Ti.UI.createLabel({
 					text: 'No Contacts',
@@ -347,7 +349,9 @@
 		};
 		
 		var tableViewClick = function(e) {
-			mh.ui.contact.window.open(e.row.person);
+			if (e.row.person) {
+				mh.ui.contact.window.open(e.row.person);
+			}
 		}
 		
 		var curTab = 0;
