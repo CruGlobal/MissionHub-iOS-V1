@@ -33,7 +33,7 @@
 			});
 			contactsWindow.add(contactsBar);
 			
-			var contactsLabel = Ti.UI.createLabel({
+			contactsWindow.contactsLabel = Ti.UI.createLabel({
 				text: L('contacts_title'),
 				color: 'white',
 				height: 22,
@@ -43,7 +43,7 @@
 				textAlign: 'center',
 				font: { fontSize: 20, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
-			contactsBar.add(contactsLabel);
+			contactsBar.add(contactsWindow.contactsLabel);
 
 			var doneButton = Ti.UI.createButton({
 				top: 4,
@@ -345,6 +345,7 @@
 				switch (index) {
 					case 0:	addOption('assigned_to_id', mh.app.person().id);
 							addFilter('status', 'not_finished');
+							contactsWindow.contactsLabel.text = L('contact_unassigned');
 							break;
 					case 1: addOption('assigned_to_id', mh.app.person().id);
 							addFilter('status', 'finished');
