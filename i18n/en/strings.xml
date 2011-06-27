@@ -36,6 +36,8 @@
 	<string name="contact_status_contacted">contacted</string>
 	<string name="contact_status_completed">completed</string>
 	<string name="contact_status_do_not_contact">do not contact</string>
+	<string name="contact_cannot_post">Cannot Post</string>
+	<string name="contact_cannot_post_msg">You must provide a message, change contact status, or add a rejoicable before posting!</string>
 	
 	<!-- Components -->
 	<string name="tableview_pull_to_reload">Pull to reload</string>

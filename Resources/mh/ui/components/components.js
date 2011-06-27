@@ -203,10 +203,6 @@
 		function setup() {
 			v.loaded = false;
 			
-			if (i == _params.image) {
-				return;
-			}
-			
 			var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 			if (regexp.test(_params.image)) {
 				// If File Is Remote
@@ -271,11 +267,12 @@
 		setup();
 		
 		v.defineImage = function(e) {
+			if (_params.image == e || e == i) {
+				return;
+			}
 			_params.image = e;
 			setup();
-			Ti.API.info(e);
 		};
-		
 		
 		return v;
 	};
