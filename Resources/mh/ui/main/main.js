@@ -40,7 +40,7 @@
 			var win = Titanium.UI.createWindow();
 			
 			mainWindow = Titanium.UI.createWindow({
-				backgroundImage: '/images/bg.png',  //############# BACKGROUND IMAGE #################
+				backgroundImage: '/images/MH_Background.png',  //############# BACKGROUND IMAGE #################
 				orientationModes: [Ti.UI.PORTRAIT],
 				navBarHidden: true
 			});
@@ -79,6 +79,8 @@
 			} else {
 				mh.auth.oauth.setToken(e.token);
 				mh.app.setPerson(response[0]);
+				mh.app.setOrgID(response[0].request_org_id);
+				info(response[0].request_org_id);
 				info("Logged in with access token: " + e.token);
 				refresh();
 			}
@@ -146,11 +148,11 @@
 			debug('running mh.ui.main.window.createHeader');
 			// Logo
 			var logoView = Ti.UI.createView({
-				backgroundImage: 'images/' + mh.app.lang() + '/logo_larger.png',   //###### LOGO ############
+				backgroundImage: 'images/' + mh.app.lang() + '/MH_Logo.png',   //###### LOGO ############
 				top: 80,
-				//left: Math.round((Ti.Platform.displayCaps.platformWidth-287)/2),
-				width:320,
-				height:75,
+				left: Math.round((Ti.Platform.displayCaps.platformWidth-180)/2),
+				width:180,
+				height:68,
 				visible: true
 			});
 			mainWindow.add(logoView);
@@ -216,6 +218,8 @@
 				width: 'auto',
 				color: '#999',
 				visible: false,
+				shadowColor: '#333',
+				shadowOffset: {x: -1, y: 2},
 				font: { fontSize: 10, fontFamily: 'Helvetica' },
 				text: L('main_signed_in_as')
 			});
@@ -263,8 +267,10 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
-				title: 'Contacts',
-				backgroundImage: '/images/BottomButton.png',   //CONTACTS BUTTON
+				title: L('profile_contacts_button'),
+				backgroundImage: '/images/MH_Button.png',   //CONTACTS BUTTON
+				shadowColor: 'black',
+				shadowOffset: {x: -2, y: 2},				
 				color: '#DDD',
 				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
@@ -295,9 +301,11 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
-				title: 'About',
+				title: L('profile_about_button'),
+				shadowColor: 'black',
+				shadowOffset: {x: -2, y: 2},
 				font: {fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
-				backgroundImage: '/images/TopButton.png'
+				backgroundImage: '/images/MH_Button.png'
 			});
 			tryNowButton.addEventListener('click', function() {
 				mh.ui.openLink({
@@ -316,7 +324,7 @@
 				height: 110,
 				title: 'Sign-In',
 				font:{fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
-				backgroundImage: '/images/BottomButton.png'
+				backgroundImage: '/images/MH_Button.png'
 			});
 			loggedOutView.add(signInButton);
 

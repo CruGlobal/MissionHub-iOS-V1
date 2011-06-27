@@ -266,6 +266,8 @@
 			} else {
 				mh.auth.oauth.setToken(response.access_token);
 				mh.app.setPerson(response.person);
+				mh.app.setOrgID(response.person.request_org_id);
+				info(response.person.request_org_id);
 				info("Logged in with access token: " + response.access_token);
 				destroy();
 				callback();

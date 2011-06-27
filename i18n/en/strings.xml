@@ -16,32 +16,37 @@
 	<!-- Contacts -->
 	<string name="contacts_title">Contacts</string>
 	<string name="contacts_btn_back">Back</string>
-	<string name="contacts_search_hint">search</string>
+	<string name="contacts_search_hint">Search</string>
 	<string name="contacts_my_contacts">My Contacts</string>
 	<string name="contacts_my_completed">My Completed</string>
 	<string name="contacts_my_unassigned">Unassigned</string>
-	<string name="contacts_status_uncontacted">uncontacted</string>
-	<string name="contacts_status_attempted_contact">contact attempted</string>
-	<string name="contacts_status_contacted">contacted</string>
-	<string name="contacts_status_completed">completed</string>
-	<string name="contacts_status_do_not_contact">do not contact</string>
+	<string name="contacts_status_uncontacted">Uncontacted</string>
+	<string name="contacts_status_attempted_contact">Attempted Contact</string>
+	<string name="contacts_status_contacted">Contacted</string>
+	<string name="contacts_status_completed">Completed</string>
+	<string name="contacts_status_do_not_contact">Do Not Contact</string>
 	
 	<!-- Contact -->
 	<string name="contact_title">Contact</string>
 	<string name="contact_btn_done">Back</string>
 	<string name="contact_contact">Contact</string>
 	<string name="contact_more_info">More Info</string>
-	<string name="contact_status_uncontacted">uncontacted</string>
-	<string name="contact_status_attempted_contact">contact attempted</string>
-	<string name="contact_status_contacted">contacted</string>
-	<string name="contact_status_completed">completed</string>
-	<string name="contact_status_do_not_contact">do not contact</string>
+	<string name="contact_status_uncontacted">Uncontacted</string>
+	<string name="contact_status_attempted_contact">Attempted Contact</string>
+	<string name="contact_status_contacted">Contacted</string>
+	<string name="contact_status_completed">Completed</string>
+	<string name="contact_status_do_not_contact">Do Not Contact</string>
 	<string name="contact_cannot_post">Cannot Post</string>
 	<string name="contact_cannot_post_msg">You must provide a message, change contact status, or add a rejoicable before posting!</string>
 	
 	<!-- Profile -->
-	<string name="profile_title">Profile</string>
-	
+	<string name="profile_title">My Profile</string>
+	<string name="profile_version">Version</string>
+	<string name="profile_button_done">Back</string>
+	<string name="profile_change_org">Change Current Organization</string>
+	<string name="profile_close_org">Click to Close</string>
+	<string name="profile_contacts_button">Contacts</string>
+	<string name="profile_about_button">About</string>
 	<!-- Information page -->
 	<string name="info_title">Information</string>
 	
