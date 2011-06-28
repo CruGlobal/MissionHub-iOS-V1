@@ -88,15 +88,16 @@
 				top: 40,
 				opacity: 0,
 				backgroundColor: 'white',
-				data: [{title:''}], // Fixes strange keyboard bug,
+				data: [{title:'', editable: false}], // Fixes strange keyboard bug,
 				editable:true,
 				allowsSelectionDuringEditing:true,
 				allowsSelection: false
 			}, refresh);
 			
 			tableView.addEventListener('delete', function(e) {
-				if (e.index === 0) {
-					tableView.data=[title:''];
+				if (tableView.data.length === 0) {
+					tableViewHeader.commentField.blur();
+					tableView.data = [{title:'', editable:false}];
 				}
 				if (e.row.comment) {
 					mh.api.deleteComment(e.row.comment.comment.id, {
@@ -563,9 +564,9 @@
 				}
 			}
 			
-			if (tableView.data.length <= 0) {
+			if (tableView.data.length <= 0 && e.length == 0) {
 				try {
-					tableView.data = [{title:''}];
+					tableView.data = [{title:'', editable:false}];
 				} catch(exception) {}
 			}
 			try {
