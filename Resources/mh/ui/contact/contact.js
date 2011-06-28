@@ -82,6 +82,12 @@
 				//backgroundColor: mh.config.colors.blue
 			});
 			
+			tableViewHeader.addEventListener('click', function(e){
+				try {
+					tableViewHeader.commentField.blur();
+				} catch (exception) {}
+			});
+			
 			tableView = mh.ui.components.createPullTableView({
 				headerView: tableViewHeader,
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -106,14 +112,6 @@
 						errorCallback: function() {}
 					});
 				}
-			});
-			
-			tableView.addEventListener('click', function(e){
-				//TODO
-			});
-			
-			tableView.addEventListener('nearbottom', function(e) {
-				//TODO
 			});
 			
 			contactWindow.add(tableView);
@@ -206,16 +204,23 @@
 				left: 8,
 				height: 46,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 8,
-				autocapitalization: Titanium.UI.TEXT_AUTOCAPITALIZATION_SENTENCES,
 				autoLink: false,
 				editable: true,
 				borderColor: mh.config.colors.commentTxtBorder,
 				borderWidth: 1,
+<<<<<<< HEAD
 				borderRadius: 3,
 				value: '',
 				opacity: 0.8,
 				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
 				color:'black'
+=======
+				borderRadius: 5,
+				value: '',
+				suppressReturn:false,
+				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT,
+				font: { fontSize: 13, fontFamily: 'Helvetica' }
+>>>>>>> branch 'master' of git@github.com:croemmich/MissionHub-Mobile.git
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
 			
@@ -667,15 +672,15 @@
 			
 			var status = Ti.UI.createLabel({
 				top: 6,
-				left: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10,
+				left: 60 + 150 + 10,
 				height: 13,
 				textAlign: 'right',
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
 				font: { fontSize: 13, fontFamily: 'Helvetica' },
-				backgroundColor: 'blue'
+				width: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10 - 5
 			});
-			status.width -= 5;
+			//status.width = status.width - 5;
 			row.add(status);
 			
 			if (followupComment.comment.comment && followupComment.comment.comment != '') {
