@@ -41,6 +41,7 @@
 	<string name="contact_status_do_not_contact">Do Not Contact</string>
 	<string name="contact_cannot_post">Cannot Post</string>
 	<string name="contact_cannot_post_msg">You must provide a message, change contact status, or add a rejoicable before posting!</string>
+	<string name="contact_questionnaire">Questionnaire</string>
 	
 	<!-- Profile -->
 	<string name="profile_title">My Profile</string>

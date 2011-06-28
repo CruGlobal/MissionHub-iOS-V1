@@ -4,7 +4,7 @@
 	
 	mh.ui.contact.window = function() {
 		
-		var contactWindow, person, tabbedBar, tableView, tableViewHeader, statusSelector, indicator;
+		var contactWindow, person, tabbedBar, tableView, tableViewHeader, statusSelector, indicator, secondaryTableView, moreInfoView, questionnaireView;
 		var showPhone = true;
 		var showSMS = true;
 		var showEmail = true;
@@ -24,6 +24,7 @@
 			createHeader();
 			createTableView();
 			createTableViewHeader();
+			
 			createFooter();
 			
 			refresh();
@@ -443,15 +444,15 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				showEmail = false;
 			}
 			
-//			if (!Titanium.Platform.canOpenURL('tel:' + person.phone_number)) {
-//				showPhone = false;
-//			}
-//			if (!Titanium.Platform.canOpenURL('sms:' + person.phone_number)) {
-//				showSMS = false;	
-//			}
-//			if (!Titanium.Platform.canOpenURL('mailto:' + person.email_address)) {
-//				showEmail = false;
-//			}
+			if (!Titanium.Platform.canOpenURL('tel:' + person.phone_number)) {
+				showPhone = false;
+			}
+			if (!Titanium.Platform.canOpenURL('sms:' + person.phone_number)) {
+				showSMS = false;	
+			}
+			if (!Titanium.Platform.canOpenURL('mailto:' + person.email_address)) {
+				showEmail = false;
+			}
 			debug("showPhone = " + showPhone);
 			debug("showSMS = " + showSMS);
 			debug("showEmail = " + showEmail);
@@ -805,7 +806,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 		
 		var createFooter = function() {
 			tabbedBar = Ti.UI.createTabbedBar({
-				labels:[L('contact_contact'), L('contact_more_info')],
+				labels:[L('contact_contact'), L('contact_more_info'), L('contact_questionnaire')],
 				backgroundColor:mh.config.colors.commentFooterBg,
 			    top:tableView.top+tableView.height,
 			    height:30,
@@ -814,6 +815,9 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 			    index: 0
 			});
 			contactWindow.add(tabbedBar);
+			tabbedBar.addEventListener('click', function(e){
+				tabbedBarOnClick(e.index);
+			});
 		};
 		
 		return {
