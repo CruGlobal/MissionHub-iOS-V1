@@ -159,7 +159,7 @@
 			
 			// Top Bar
 			var logoutBarView = Ti.UI.createView({
-				backgroundImage: 'images/top_bar.png',
+				backgroundImage: 'images/MH_TopBar.png',
 				top: -33,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -169,9 +169,11 @@
 			
 			// Top Bar Left 
 			var iButton = Ti.UI.createButton({
-				top: 6,
+				top: 3,
 				left: 9,
-				style: Titanium.UI.iPhone.SystemButton.INFO_LIGHT
+				backgroundImage: 'images/MH_Profile_Icon.png',
+				height:29,
+				width:29
 			});
 			iButton.addEventListener('click', function() {
 				mh.ui.profile.window.open();

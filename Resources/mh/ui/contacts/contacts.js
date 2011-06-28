@@ -9,7 +9,7 @@
 		var open = function() {
 			debug('running mh.ui.contacts.window.open');
 			contactsWindow = Ti.UI.createWindow({
-				backgroundImage: 'images/bg.png',
+				backgroundImage: 'images/MH_Background.png',
 				height: Ti.Platform.displayCaps.platformHeight,
 				width: Ti.Platform.displayCaps.platformWidth,
 				left: Ti.Platform.displayCaps.platformWidth
@@ -28,7 +28,7 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
-				backgroundImage: '/images/navbar_bg.png',
+				backgroundImage: 'images/MH_TopBar.png',  //'/images/navbar_bg.png',
 				zIndex: 99
 			});
 			contactsWindow.add(contactsBar);
@@ -78,7 +78,8 @@
 		
 		var createSearchFilters = function() {
 			search = Titanium.UI.createSearchBar({
-				barColor:'#333',
+				backgroundImage: 'images/Search_Band.png',
+				barColor: 'transparent',
 				showCancel:false,
 				hint: L('contacts_search_hint'),
 				left: 0,

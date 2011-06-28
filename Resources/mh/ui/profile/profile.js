@@ -43,7 +43,7 @@
 			person = mh.app.person();
 			mh.api.getPeople(1282204,options);
 			profileWindow = Ti.UI.createWindow({
-				backgroundImage: 'images/bg.png',
+				backgroundImage: 'images/MH_Background.png',
 				height: Ti.Platform.displayCaps.platformHeight,
 				width: Ti.Platform.displayCaps.platformWidth,
 				left: -(Ti.Platform.displayCaps.platformWidth)
@@ -150,7 +150,7 @@
 				left: 131,
 				text: person.name,
 				color: 'white',
-				shadowColor: '#919292',
+				shadowColor: '#333',
 				shadowOffset: {x: -1, y:2},
 				font: { fontSize:20, fontFamily: 'ArialRoundedMTBold' }
 			});
@@ -162,7 +162,7 @@
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
 				zindex: 60,
-				backgroundImage: 'images/navbar_bg.png'
+				backgroundImage: 'images/MH_TopBar.png'
 			});
 			profileWindow.add(profileBar);
 

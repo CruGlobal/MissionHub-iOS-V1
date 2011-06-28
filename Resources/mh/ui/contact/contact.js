@@ -12,7 +12,7 @@
 			person = p;
 			
 			contactWindow = Ti.UI.createWindow({
-				backgroundImage: 'images/bg.png',
+				backgroundImage: 'images/MH_Background.png',
 				height: Ti.Platform.displayCaps.platformHeight,
 				width: Ti.Platform.displayCaps.platformWidth,
 				left: Ti.Platform.displayCaps.platformWidth
@@ -34,7 +34,7 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
-				backgroundImage: 'images/navbar_bg.png'
+				backgroundImage: 'images/MH_TopBar.png'
 			});
 			contactWindow.add(contactBar);
 			
