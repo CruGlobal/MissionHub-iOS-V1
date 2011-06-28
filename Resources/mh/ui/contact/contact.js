@@ -95,8 +95,10 @@
 			}, refresh);
 			
 			tableView.addEventListener('delete', function(e) {
+				if (e.index === 0) {
+					tableView.data=[title:''];
+				}
 				if (e.row.comment) {
-					info(e.row.comment.comment.id);
 					mh.api.deleteComment(e.row.comment.comment.id, {
 						successCallback: function() {},
 						errorCallback: function() {}
@@ -514,10 +516,6 @@
 			if (loadingData || hasLastComment) { return; }
 			loadingData = true;
 			
-			if (force) {
-				tableView.updateLastUpdated();
-			}
-			
 			if (prevXhr && force) {
 				prevXhr.onload = function(){};
 				prevXhr.onerror = function(){};
@@ -526,7 +524,12 @@
 			}
 			
 			showIndicator('comments');
-			prevXhr = mh.api.getFollowupComments(person.id, options);
+						
+			if (force) {
+				prevXhr = mh.api.getFollowupComments(person.id, mh.util.mergeJSON(options, {fresh: true}));
+			} else {
+				prevXhr = mh.api.getFollowupComments(person.id, options);
+			}
 		};
 		
 		var onCommentFetch = function(e) {
