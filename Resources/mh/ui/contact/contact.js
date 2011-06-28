@@ -1,15 +1,12 @@
-(function(){
-	
+(function() {
+
 	mh.ui.contact = {};
-	
+
 	mh.ui.contact.window = function() {
-		
-		var contactWindow, person, contact, tabbedBar, tableView, tableViewHeader, contactCard, statusSelector, indicator;
-		var showPhone = true;
-		var showSMS = true;
-		var showEmail = true;
-		
-		var open = function(p) {
+
+		var contactWindow, person, contact, comments, tabbedBar, tableView, tableViewHeader, contactCard, statusSelector, indicator;
+
+		var open = function(p) { /* Create And Open The Window For A Person (p) */
 			debug('running mh.ui.contact.window.open with contact: ' + p.name);
 			
 			person = p;
@@ -24,7 +21,6 @@
 			createHeader();
 			createTableView();
 			createTableViewHeader();
-			
 			createFooter();
 			
 			refresh();
@@ -32,7 +28,7 @@
 			mh.ui.nav.open(contactWindow);
 		};
 		
-		var createHeader = function() {
+		var createHeader = function() { /* Create The View Header And Back Button */
 			debug('running mh.ui.contact.window.createHeader');
 			var contactBar = Ti.UI.createView({
 				top: 0,
@@ -41,7 +37,7 @@
 				backgroundImage: 'images/MH_Nav_Bar.png'
 			});
 			contactWindow.add(contactBar);
-			
+
 			var contactLabel = Ti.UI.createLabel({
 				text: L('contact_title'),
 				color: 'white',
@@ -50,10 +46,13 @@
 				left: 65,
 				width: Ti.Platform.displayCaps.platformWidth-65-65,
 				textAlign: 'center',
-				font: { fontSize: 20, fontFamily: 'Helvetica-Bold'}
+				font: {
+					fontSize: 20,
+					fontFamily: 'Helvetica-Bold'
+				}
 			});
 			contactBar.add(contactLabel);
-			
+
 			var doneButton = Ti.UI.createButton({
 				top: 4,
 				left: 5,
@@ -61,14 +60,17 @@
 				width: 60,
 				backgroundImage: 'images/btn_done.png',
 				title: L('contact_btn_done'),
-				font: { fontSize: 12, fontFamily: 'Helvetica-Bold'},
+				font: {
+					fontSize: 12,
+					fontFamily: 'Helvetica-Bold'
+				},
 				color: mh.config.colors.navButton
 			});
 			doneButton.addEventListener('click', function() {
 				mh.ui.nav.pop();
 			});
 			contactBar.add(doneButton);
-			
+
 			indicator = Ti.UI.createActivityIndicator({
 				right: 10,
 				top: 9,
@@ -79,20 +81,28 @@
 			contactBar.add(indicator);
 		};
 		
-		var createTableView = function() {
+		TAB_COMMENTS = 0; // constant for comment tab
+		TAB_MORE_INFO = 1; // constant for more info tab
+		TAB_QUESTIONNAIRE = 2; // constant for questionnaire tab
+		
+		var tab = TAB_COMMENTS;
+		var commentData = [{title: '', editable:false}]; // Empty row to fix keyboard bug
+		var moreInfoData = [{title: '', editable:false}]; // Empty row to fix keyboard bug
+		var questionnaireData = [{title: '', editable:false}]; // Empty row to fix keyboard bug
+		
+		var createTableView = function() { /* Create the TableView */
 			tableViewHeader = Ti.UI.createView({
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 8+150+8+97,
 				backgroundImage: '/images/MH_Contact_Top_BG.png'
-				//backgroundColor: mh.config.colors.blue
 			});
-			
-			tableViewHeader.addEventListener('click', function(e){
+
+			tableViewHeader.addEventListener('click', function(e) {
 				try {
 					tableViewHeader.commentField.blur();
-				} catch (exception) {}
+				} catch (exception) {
+				}
 			});
-			
 			tableView = mh.ui.components.createPullTableView({
 				headerView: tableViewHeader,
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -100,67 +110,82 @@
 				top: 40,
 				opacity: 0,
 				backgroundColor: 'white',
-				data: [{title:'', editable: false}], // Fixes strange keyboard bug,
+				data: [{
+					title:'',
+					editable: false
+				}], // Fixes strange keyboard bug,
 				editable:true,
 				allowsSelectionDuringEditing:true,
 				allowsSelection: false
 			}, refresh);
-			
+
 			tableView.addEventListener('delete', function(e) {
-				if (tableView.data.length === 0) {
-					tableViewHeader.commentField.blur();
-					tableView.data = [{title:'', editable:false}];
-				}
-				if (e.row.comment) {
-					mh.api.deleteComment(e.row.comment.comment.id, {
-						successCallback: function() {},
-						errorCallback: function() {}
-					});
+				if (tab == TAB_COMMENTS) {
+					try{
+						tableViewHeader.commentField.blur();
+					} catch (exception) {}
+					var idx = commentData.indexOf(e.row);
+					if(idx!=-1) {
+						info('removed from array');
+						commentData.splice(idx, 1);
+					}
+					
+					if (commentData.length === 0) {
+						commentData = [{ title:'', editable:false }];
+						tableView.setData(commentData);
+					}
+					
+					if (e.row.comment) {
+						mh.api.deleteComment(e.row.comment.comment.id, {
+							successCallback: function() {
+							},
+							errorCallback: function() {
+							}
+						});
+					}
 				}
 			});
-			
 			contactWindow.add(tableView);
-			
-			setTimeout(function(){
-				tableView.animate({opacity: 1.0, duration: 300});
+
+			setTimeout( function() {
+				tableView.animate({
+					opacity: 1.0,
+					duration: 300
+				});
 			}, 250);
 		};
-		
-		var createTableViewHeader = function() {
-			
+		var createTableViewHeader = function() { /* Create the TableView Header and Post Area */
+
 			var defaultImage = '/images/facebook_question.gif';
 			if (person.gender && person.gender == 'female') {
 				defaultImage = '/images/facebook_female.gif';
 			} else if (person.gender && person.gender == 'male') {
 				defaultImage = '/images/facebook_male.gif';
 			}
-			
+
 			var image = defaultImage;
 			if (person.picture) {
 				image = person.picture+'?type=large';
 			}
-			
+
 			contactCard = Ti.UI.createView({
-				//backgroundColor: mh.config.colors.headerBg,
-				//backgroundImage: 'images/Carbon_Fiber_Contact_BG.png',
 				top: 0,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 150 + 8 + 8
 			});
-			
+
 			tableViewHeader.commentView = Ti.UI.createView({
-				backgroundColor: 'transparent',//mh.config.colors.commentBg,
+				backgroundColor: 'transparent',
 				height: 97,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				top: contactCard.height,
 				zIndex: 50
 			});
-			
+
 			tableViewHeader.rejoicablesView = Ti.UI.createView({
 				backgroundImage: 'images/MH_Rejoicable_BG.png',
-				//backgroundColor: mh.config.colors.rejoicablesBg,
 				height: 97,
 				left: -(Ti.Platform.displayCaps.platformWidth),
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -170,7 +195,7 @@
 			tableViewHeader.add(tableViewHeader.rejoicablesView);
 			tableViewHeader.add(contactCard);
 			tableViewHeader.add(tableViewHeader.commentView);
-			
+
 			tableViewHeader.profilePic = mh.ui.components.createMagicImage({
 				image: image,
 				defaultImage: defaultImage,
@@ -183,80 +208,79 @@
 				borderColor: mh.config.colors.profilePicBorder
 			});
 			contactCard.add(tableViewHeader.profilePic);
-			
-			tableViewHeader.profilePic.addEventListener('MagicImage:updated', function(e) {
-				tableViewHeader.profilePic.animate({top: (contactCard.height-e.height)/2, duration: 500});
-			});
-			
-			
 
-			
-			
+			tableViewHeader.profilePic.addEventListener('MagicImage:updated', function(e) {
+				tableViewHeader.profilePic.animate({
+					top: (contactCard.height-e.height)/2,
+					duration: 500
+				});
+			});
 			tableViewHeader.nv = Ti.UI.createView({
 				height: 8+150+8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 110 - 6 - 8,
 				left: 8 + 110 + 6 + 8
 			});
 			contactCard.add(tableViewHeader.nv);
-			
-		tableViewHeader.nv.phone = Ti.UI.createButton({
-		backgroundImage:'/images/75-phone2.png',
-		width: 47,
-		height: 38,
-		left: 0,
-		top: 70,
-		visible: false
-	});
-	
-		tableViewHeader.nv.phone.addEventListener('click', function(e) {
-		if (person.phone_number) {
-			Titanium.Platform.openURL('tel:' + person.phone_number);
-		}
-	});
-	
-		tableViewHeader.nv.add(tableViewHeader.nv.phone);
 
-tableViewHeader.nv.sms = Ti.UI.createButton({
-		backgroundImage:'/images/08-chat2.png',
-		height: 38,
-		width: 47,
-		//left: 50 + 5,
-		top: 70,
-		visible: false
-	});
-	
-tableViewHeader.nv.sms.addEventListener('click', function(e) {
-		if (person.phone_number) {
-			Titanium.Platform.openURL('sms:' + person.phone_number);
-		}
-	});
-	
-tableViewHeader.nv.add(tableViewHeader.nv.sms);
+			tableViewHeader.nv.phone = Ti.UI.createButton({
+				backgroundImage:'/images/75-phone2.png',
+				width: 47,
+				height: 38,
+				left: 0,
+				top: 70,
+				visible: false
+			});
 
-tableViewHeader.nv.email = Ti.UI.createButton({
-		image:'/images/18-envelope2.png',
-		height: 38,
-		width: 47,
-		//left: 100 + 10,
-		top: 70,
-		visible: false
-	});
-	tableViewHeader.nv.email.addEventListener('click', function(e) {
-		if (person.email_address) {
-			Titanium.Platform.openURL("mailto:" + person.email_address);
-		}
-	});
-	tableViewHeader.nv.add(tableViewHeader.nv.email);
-			
+			tableViewHeader.nv.phone.addEventListener('click', function(e) {
+				if (person.phone_number) {
+					Titanium.Platform.openURL('tel:' + person.phone_number);
+				}
+			});
+			tableViewHeader.nv.add(tableViewHeader.nv.phone);
+
+			tableViewHeader.nv.sms = Ti.UI.createButton({
+				backgroundImage:'/images/08-chat2.png',
+				height: 38,
+				width: 47,
+				//left: 50 + 5,
+				top: 70,
+				visible: false
+			});
+
+			tableViewHeader.nv.sms.addEventListener('click', function(e) {
+				if (person.phone_number) {
+					Titanium.Platform.openURL('sms:' + person.phone_number);
+				}
+			});
+			tableViewHeader.nv.add(tableViewHeader.nv.sms);
+
+			tableViewHeader.nv.email = Ti.UI.createButton({
+				image:'/images/18-envelope2.png',
+				height: 38,
+				width: 47,
+				//left: 100 + 10,
+				top: 70,
+				visible: false
+			});
+			tableViewHeader.nv.email.addEventListener('click', function(e) {
+				if (person.email_address) {
+					Titanium.Platform.openURL("mailto:" + person.email_address);
+				}
+			});
+			tableViewHeader.nv.add(tableViewHeader.nv.email);
+
 			tableViewHeader.name = Ti.UI.createLabel({
 				height: 44,
 				text: person.name,
 				color: mh.config.colors.headerNameTxt,
-				font: { fontSize:20, fontFamily: 'ArialRoundedMTBold' },
+				font: {
+					fontSize:20,
+					fontFamily: 'ArialRoundedMTBold'
+				},
 				top: 10
 			});
 			tableViewHeader.nv.add(tableViewHeader.name);
-			
+
 			tableViewHeader.nv.assignButton = Ti.UI.createButton({
 				backgroundImage: '/images/assign_button.png',
 				color: mh.config.colors.lightBlue,
@@ -264,12 +288,15 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				height: 30,
 				top: 8 + tableViewHeader.name.height + 47 + 20,
 				left: 0,
-				font: { fontSize:14, fontFamily: 'ArialRoundedMTBold' },
+				font: {
+					fontSize:14,
+					fontFamily: 'ArialRoundedMTBold'
+				},
 				title: 'Assign to Me'
 			});
-			
+
 			tableViewHeader.nv.add(tableViewHeader.nv.assignButton);
-			
+
 			// Comment View
 			tableViewHeader.commentField = Ti.UI.createTextArea({
 				top: 8,
@@ -283,28 +310,36 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				borderRadius: 3,
 				value: '',
 				opacity: 0.8,
-				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
+				font: {
+					fontSize: 14,
+					fontFamily: 'Helvetica-Bold'
+				},
 				color:'black',
 				suppressReturn:false,
 				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
-			
+
 			tableViewHeader.rejoicables = Ti.UI.createButton({
 				backgroundImage: 'images/rejoicables_button.png',
 				title: 'R',
-				font: {fontSize:16, fontFamily: 'Helvetica-Bold'},
+				font: {
+					fontSize:16,
+					fontFamily: 'Helvetica-Bold'
+				},
 				width: 37,
 				height: 30,
 				left: 8,
 				top: 8 + 46 + 4 - 1
 			});
 			tableViewHeader.commentView.add(tableViewHeader.rejoicables);
-			
+
 			tableViewHeader.rejoicables.addEventListener('click', function(e) {
-				tableViewHeader.rejoicablesView.animate({left: 0, duration: 250});
+				tableViewHeader.rejoicablesView.animate({
+					left: 0,
+					duration: 250
+				});
 			});
-			
 			tableViewHeader.postButton = Ti.UI.createButton({
 				backgroundImage: 'images/post_button.png',
 				title: 'Post',
@@ -312,11 +347,15 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				right: 8,
 				width: 60,
 				height: 30,
-				font: {fontSize:16, fontFamily: 'Helvetica-Bold'}
+				font: {
+					fontSize:16,
+					fontFamily: 'Helvetica-Bold'
+				}
 			});
 			tableViewHeader.commentView.add(tableViewHeader.postButton);
-			tableViewHeader.postButton.addEventListener('click', function(e){ onPost(); });
-			
+			tableViewHeader.postButton.addEventListener('click', function(e) {
+				onPost();
+			});
 			var options = [];
 			options[0]=L('contact_status_uncontacted');
 			options[1]=L('contact_status_attempted_contact');
@@ -328,18 +367,15 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				title:'Choose Status',
 				destructive: 4
 			});
-			
-			switch(person.status) {
-				case 'uncontacted': statusSelector.cancel = 0; break;
-				case 'attempted_contact': statusSelector.cancel = 1; break;
-				case 'contacted': statusSelector.cancel = 2; break;
-				case 'completed': statusSelector.cancel = 3; break;
-				case 'do_not_contact': statusSelector.cancel = 4; statusSelector.destructive = -1; break;
-			}
-			
+
+			updateStatus();
+
 			tableViewHeader.statusButton = Ti.UI.createButton({
 				title: L('contact_status_'+person.status),
-				font: {fontFamily:'Helvetica-Bold', fontSize:16},
+				font: {
+					fontFamily:'Helvetica-Bold',
+					fontSize:16
+				},
 				left: 8 + 32 + 4 + 7,
 				height: 30,
 				top: 8 + 46 + 4 - 1,
@@ -347,19 +383,19 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				backgroundImage: 'images/status_button.png'
 			});
 			tableViewHeader.commentView.add(tableViewHeader.statusButton);
-			tableViewHeader.statusButton.addEventListener('click', function(e){
+			tableViewHeader.statusButton.addEventListener('click', function(e) {
 				statusSelector.show();
 			});
-			
-			statusSelector.addEventListener('click', function(e){
+			statusSelector.addEventListener('click', function(e) {
 				tableViewHeader.statusButton.title = L(options[e.index]);
 			});
-			
-			
 			var rejoiceDone = Ti.UI.createButton({
 				backgroundImage: 'images/rejoicables_button.png',
 				title: 'R',
-				font: {fontSize:16, fontFamily: 'Helvetica-Bold'},
+				font: {
+					fontSize:16,
+					fontFamily: 'Helvetica-Bold'
+				},
 				width: 37,
 				height: 30,
 				left: 8,
@@ -368,12 +404,17 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 
 			tableViewHeader.rejoicablesView.add(rejoiceDone);
 			rejoiceDone.addEventListener('click', function(e) {
-				tableViewHeader.rejoicablesView.animate({left: -(Ti.Platform.displayCaps.platformWidth), duration:250});
+				tableViewHeader.rejoicablesView.animate({
+					left: -(Ti.Platform.displayCaps.platformWidth),
+					duration:250
+				});
 			});
-			
 			tableViewHeader.rejoicablesView.rejoiceSc = Ti.UI.createButton({
 				backgroundImage: 'images/status_button.png',
-				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
+				font: {
+					fontSize: 14,
+					fontFamily: 'Helvetica-Bold'
+				},
 				title: 'Spiritual Conversation',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
@@ -381,7 +422,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				height: 24
 			});
 			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceSc);
-			tableViewHeader.rejoicablesView.rejoiceSc.addEventListener('click', function(){
+			tableViewHeader.rejoicablesView.rejoiceSc.addEventListener('click', function() {
 				if (this.on) {
 					this.image = '';
 					this.on = false;
@@ -390,10 +431,12 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 					this.on = true;
 				}
 			});
-			
 			tableViewHeader.rejoicablesView.rejoiceChrist = Ti.UI.createButton({
 				backgroundImage: 'images/status_button.png',
-				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
+				font: {
+					fontSize: 14,
+					fontFamily: 'Helvetica-Bold'
+				},
 				title: 'Prayed To Receive Christ',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
@@ -401,7 +444,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				height: 24
 			});
 			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceChrist);
-			tableViewHeader.rejoicablesView.rejoiceChrist.addEventListener('click', function(){
+			tableViewHeader.rejoicablesView.rejoiceChrist.addEventListener('click', function() {
 				if (this.on) {
 					this.image = '';
 					this.on = false;
@@ -410,10 +453,12 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 					this.on = true;
 				}
 			});
-			
 			tableViewHeader.rejoicablesView.rejoiceGospel = Ti.UI.createButton({
 				backgroundImage: 'images/status_button.png',
-				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
+				font: {
+					fontSize: 14,
+					fontFamily: 'Helvetica-Bold'
+				},
 				title: 'Gospel Presentation',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
@@ -421,7 +466,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				height: 24
 			});
 			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceGospel);
-			tableViewHeader.rejoicablesView.rejoiceGospel.addEventListener('click', function(){
+			tableViewHeader.rejoicablesView.rejoiceGospel.addEventListener('click', function() {
 				if (this.on) {
 					this.image = '';
 					this.on = false;
@@ -431,8 +476,33 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				}
 			});
 		};
+
+		var processes = [];
+		var showIndicator = function(process) { /* Show the ActivityIndicator for a process */
+			processes.push(process);
+			indicator.show();
+		};
+		var hideIndicator = function(process) { /* Hides the ActivityIndicator and Ends Table Pull to Refresh */
+			var idx = processes.indexOf(process);
+			if(idx!=-1) {
+				processes.splice(idx, 1);
+			}
+
+			if (processes.length <= 0) {
+				if (tableView.reloading === true) {
+					tableView.endReload();
+				}
+				indicator.hide();
+			}
+		};
 		
-		var updateHeader = function() {
+		var refresh = function() { /* Refresh The Entire View */
+			debug('running mh.ui.window.contact.refresh');			
+			getContact(true);
+			getComments(true)
+		};
+		
+		var updateHeader = function() { /* Update The Header Content */
 			debug('mh.ui.window.contact.updateHeader');
 			if (person.picture) {
 				tableViewHeader.profilePic.defineImage(person.picture+'?type=large');
@@ -443,11 +513,11 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 			if (person.status) {
 				tableViewHeader.statusButton.title = L('contact_status_' + person.status);
 			}
-			
-			showPhone = true;
-			showSMS = true;
-			showEmail = true;
-			
+
+			var showPhone = true;
+			var showSMS = true;
+			var showEmail = true;
+
 			if (!person.phone_number) {
 				showPhone = false;
 				showSMS = false;
@@ -455,16 +525,16 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 			debug("phone # : " + person.phone_number);
 			debug("email : " + person.email_address);
 			debug("person " + JSON.stringify(person));
-			
+
 			if (!person.email_address) {
 				showEmail = false;
 			}
-			
+
 			if (!Titanium.Platform.canOpenURL('tel:' + person.phone_number)) {
 				showPhone = false;
 			}
 			if (!Titanium.Platform.canOpenURL('sms:' + person.phone_number)) {
-				showSMS = false;	
+				showSMS = false;
 			}
 			if (!Titanium.Platform.canOpenURL('mailto:' + person.email_address)) {
 				showEmail = false;
@@ -476,29 +546,39 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				tableViewHeader.nv.phone.left = 0;
 				tableViewHeader.nv.phone.show();
 			}
-			
+
 			if (showSMS) {
 				if (showPhone) {
-					tableViewHeader.nv.sms.left = tableViewHeader.nv.phone.left + tableViewHeader.nv.phone.width + 17;	
+					tableViewHeader.nv.sms.left = tableViewHeader.nv.phone.left + tableViewHeader.nv.phone.width + 17;
 				} else {
 					tableViewHeader.nv.sms.left = 0;
 				}
 				tableViewHeader.nv.sms.show();
 			}
-			
+
 			if (showEmail) {
 				if (showPhone && showSMS) {
-					tableViewHeader.nv.email.left = tableViewHeader.nv.sms.left + tableViewHeader.nv.sms.width + 17;	
+					tableViewHeader.nv.email.left = tableViewHeader.nv.sms.left + tableViewHeader.nv.sms.width + 17;
 				} else if (showPhone || showSMS) {
-					tableViewHeader.nv.email.left = tableViewHeader.nv.phone.left + tableViewHeader.nv.phone.width + 17;	
+					tableViewHeader.nv.email.left = tableViewHeader.nv.phone.left + tableViewHeader.nv.phone.width + 17;
 				} else {
-					tableViewHeader.nv.email.left = 0;	
+					tableViewHeader.nv.email.left = 0;
 				}
 				tableViewHeader.nv.email.show();
 			}
 		};
+		var updateStatus = function() { /* Update The Status Selector */
+			switch(person.status) {
+				case 'uncontacted':	statusSelector.cancel = 0; break;
+				case 'attempted_contact': statusSelector.cancel = 1; break;
+				case 'contacted': statusSelector.cancel = 2; break;
+				case 'completed': statusSelector.cancel = 3; break;
+				case 'do_not_contact': statusSelector.cancel = 4; statusSelector.destructive = -1; break;
+			}
+		};
 		
-		var onPost = function() {
+		/* Post Comment */
+		var onPost = function() { /* On Post Button Push */
 			var changedStatus = false;
 			var hasRejoice = false;
 			var hasMessage = false;
@@ -507,7 +587,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				changedStatus = true;
 				canPost = true;
 			}
-			
+
 			var rejoicables = [];
 			if (tableViewHeader.rejoicablesView.rejoiceSc.on) {
 				rejoicables.push('spiritual_conversation');
@@ -518,39 +598,45 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 			if (tableViewHeader.rejoicablesView.rejoiceGospel.on) {
 				rejoicables.push('gospel_presentation');
 			}
-			
+
 			if (rejoicables.length > 0) {
 				hasRejoice = true;
 				canPost = true;
 			}
-			
+
 			if (tableViewHeader.commentField.value.length > 0) {
 				hasMessage = true;
 				canPost = true;
 			}
-			
+
 			var status;
 			if (canPost) {
 				switch (tableViewHeader.statusButton.title) {
 					case L('contact_status_uncontacted'): status='uncontacted'; break;
-					case L('contact_status_attempted_contact'): status='attempted_contact'; break;
+					case L('contact_status_attempted_contact'):	status='attempted_contact'; break;
 					case L('contact_status_contacted'): status='contacted'; break;
-					case L('contact_status_completed'): status='completed'; break;
+					case L('contact_status_completed'): status='completed';	break;
 					case L('contact_status_do_not_contact'): status='do_not_contact'; break;
 				}
-				var data = { 
+				var data = {
 					followup_comment: {
 						organization_id: person.request_org_id,
 						contact_id: person.id,
 						commenter_id: mh.app.person().id,
 						status: status,
 						comment: tableViewHeader.commentField.value,
-					}, rejoicables: rejoicables};
-				var options = {
-					successCallback: function(e) { postFollowUpSuccess(e) },
-					errorCallback: function(e) { postFollowUpError(e) }
+					},
+					rejoicables: rejoicables
 				};
-				
+				var options = {
+					successCallback: function(e) {
+						postSuccess(e)
+					},
+					errorCallback: function(e) {
+						postError(e)
+					}
+				};
+
 				showIndicator('post');
 				tableViewHeader.postButton.enabled = false;
 				debug("about to post followup comment:" + JSON.stringify(data));
@@ -564,8 +650,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				});
 			}
 		};
-		
-		var postFollowUpSuccess = function(e) {
+		var postSuccess = function(e) { /* On Successful Post */
 			tableViewHeader.postButton.enabled = true;
 			tableViewHeader.commentField.value = '';
 			tableViewHeader.rejoicablesView.rejoiceSc.on = false;
@@ -575,163 +660,108 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 			tableViewHeader.rejoicablesView.rejoiceGospel.on = false;
 			tableViewHeader.rejoicablesView.rejoiceGospel.image = '';
 			hideIndicator('post');
-			refresh();
+			getComments(true);
 		};
-		
-		var postFollowUpError = function(e) {
+		var postError = function(e) { /* On Post Error */
 			tableViewHeader.postButton.enabled = true;
 			hideIndicator('post');
-			//TODO
 		};
 		
-		var processes = [];
-	
-		var showIndicator = function(process) {
-			processes.push(process);
-			indicator.show();
-		};
-		
-		var hideIndicator = function(process) {
-			var idx = processes.indexOf(process);
-			if(idx!=-1) { processes.splice(idx, 1); }
-			
-			if (processes.length <= 0) {
-				if (tableView.reloading === true) {
-					tableView.endReload();
+		/* Get Contact */
+		var getContact = function(fresh) { /* Get Full Contact From MissionHub */
+			debug('running mh.ui.window.contact.getContact');
+			showIndicator('contact');
+			var options = {
+				successCallback: function(e) {
+					onContactLoad(e);
+				},
+				errorCallback: function(e) {
+					onContactError(e);
 				}
-				indicator.hide();
+			};
+			if (fresh) {
+				mh.api.getContacts(person.id, mh.util.mergeJSON(options, {fresh: true}));
+			} else {
+				mh.api.getContacts(person.id, options);
 			}
 		};
+		var onContactLoad = function(e) { /* On Contact Loaded */
+			debug('running mh.ui.window.contact.onContactLoad');
+			contact = e;
+			person = e.people[0].person;
+			updateHeader();
+			updateStatus();
+			createInfoRows();
+			createQuestionnaireRows();
+			hideIndicator('contact');
+		};
+		var onContactError= function(e) { /* On Contact Load Error */
+			debug('running mh.ui.window.contact.onContactError');
+			//TODO:
+			hideIndicator('contact');
+		};
 		
-		var refresh = function() {
-			try {
+		/* Get Comments */
+		var getComments = function(fresh) { /* Get A Contact's Comments */
+			debug('running mh.ui.window.contact.getComments');
+			showIndicator('comments');
+			try { 
+				// Stupid Keyboard Bug
 				tableViewHeader.commentField.blur();
 				tableViewHeader.commentField.enabled = false;
 			} catch(e) {}
-			
-			showIndicator('person');
-			mh.api.getPeople(person.id, {
-				successCallback: function(e) { onPersonLoad(e); },
-				errorCallback: function(e) { onPersonError(e); }
-			});
-			
-			resetTableView();
-			onGetMoreComments(true);
-		};
-		
-		var onPersonLoad = function(e) {
-			person = e[0];
-			updateHeader();
-			switch(person.status) {
-				case 'uncontacted': statusSelector.cancel = 0; break;
-				case 'attempted_contact': statusSelector.cancel = 1; break;
-				case 'contacted': statusSelector.cancel = 2; break;
-				case 'completed': statusSelector.cancel = 3; break;
-				case 'do_not_contact': statusSelector.cancel = 4; statusSelector.destructive = -1; break;
-			}
-			hideIndicator('person');
-		};
-		
-		var onPersonError= function(e) {
-			hideIndicator('person');
-		};
-		
-		var hasLastComment = false;
-		var ids = [];
-		var loadingCommentData = false; // True when loading comment data
-		
-		var options = {
-			start: 0,
-			limit: 15,
-			successCallback: function(e){ onCommentFetch(e); },
-			errorCallback: function(e){ onCommentFetchError(e); }
-		};
-		if (ipad) {
-			options.limit = 30;
-		}
-		
-		var resetTableView = function() {
-			loadingData = false; // reset state
-			hasLastComment = false;  // reset state
-			options.start = 0;
-			ids=[];
-			tableView.data = [{title: ''}]; // clear table
-		};
-		
-		var prevXhr;
-		var onGetMoreComments = function(force) {
-			debug('mh.ui.window.contact.onGetMoreComments');
-			if (loadingData || hasLastComment) { return; }
-			loadingData = true;
-			
-			if (prevXhr && force) {
-				prevXhr.onload = function(){};
-				prevXhr.onerror = function(){};
-				hideIndicator('comments');
-				prevXhr.abort();
-			}
-			
-			showIndicator('comments');
-						
-			if (force) {
-				prevXhr = mh.api.getFollowupComments(person.id, mh.util.mergeJSON(options, {fresh: true}));
+			var options = {
+				successCallback: function(e) {
+					onCommentLoad(e);
+				},
+				errorCallback: function(e) {
+					onCommentError(e);
+				}
+			};
+			if (fresh) {
+				mh.api.getFollowupComments(person.id, mh.util.mergeJSON(options,{fresh: true}));
 			} else {
-				prevXhr = mh.api.getFollowupComments(person.id, options);
+				mh.api.getFollowupComments(person.id, options);
 			}
 		};
+		var onCommentLoad = function(e) { /* On Comments Loaded */
+			debug('running mh.ui.window.contact.onCommentLoad');
+			comments = e;
+			createCommentRows();
+			try { 
+				// Stupid Keyboard Bug
+				tableViewHeader.commentField.enabled = true;
+			} catch(e) {}
+			hideIndicator('comments');
+		};
+		var onCommentError = function(e) { /* On Comments Load Error */
+			debug('running mh.ui.window.contact.onCommentError');
+			//TODO;
+			hideIndicator('comments');
+		};
 		
-		var onCommentFetch = function(e) {
-			debug('mh.ui.window.contact.onCommentFetch');
-			
-			if (e.length < options.limit) {
-				hasLastComment = true;
+		/* Table View Content */
+		var createCommentRows = function() { /* Create The TableView Content For Comments Tab */
+			if(comments.length == 0) {
+				commentData = [{title: '', editable:false}];
 			} else {
-				hasLastComment = false;
-			}
-			
-			if (e.length > 0 && options.start == 0) {
-				tableView.data = [];
-			}
-			
-			options.start = options.limit + options.start;
-			
-			try {
-				tableViewHeader.commentField.blur();
-				tableViewHeader.commentField.enabled = false;
-			} catch (exception2) {}
-			
-			for (var index in e) {
-				var followupComment = e[index];
-				if (followupComment) {
-					followupComment = followupComment.followup_comment;
-					if (followupComment.comment && followupComment.comment.id && ids.indexOf(followupComment.comment.id) < 0) {
-						tableView.appendRow(createTableRow(followupComment));
-						ids.push(followupComment.comment.id);
+				commentData = [];
+				for (var index in comments) {
+					var followupComment = comments[index];
+					if (followupComment) {
+						followupComment = followupComment.followup_comment;
+						if (followupComment.comment) {
+							commentData.push(createCommentRow(followupComment));
+						}
 					}
 				}
 			}
-			
-			if (ids.length == 0) {
-				try {
-					tableView.data = [{title:'', editable:false}];
-				} catch(exception) {}
+			if (tab == TAB_COMMENTS) {
+				tableView.setData(commentData);
 			}
-			try {
-				tableViewHeader.commentField.enabled = true;
-			} catch (exception2) {}
-			
-			hideIndicator('comments');
-			loadingData = false;
 		};
-		
-		var onCommentFetchError = function(e) {
-			debug('mh.ui.window.contact.onCommentFetchError');
-			hideIndicator('comments');
-			loadingData = false;
-		};
-		
-		var createTableRow = function(followupComment) {			
-			debug('mh.ui.window.contacts.createTableRow');
+		var createCommentRow = function(followupComment) { /* Create A Comment TableView Row */
+			debug('mh.ui.window.contacts.createCommentRow');
 			var row = Ti.UI.createTableViewRow({
 				className:"comment",
 				color: mh.config.colors.ctvTxt,
@@ -743,7 +773,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				height: 'auto',
 				editable: false
 			});
-			
+
 			if (mh.app.getRole() == mh.app.ROLE_ADMIN) {
 				row.editable = true;
 			} else if (mh.app.getRole() == mh.app.ROLE_LEADER) {
@@ -751,14 +781,14 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 					row.editable = true;
 				}
 			}
-			
+
 			var image;
 			if (followupComment.comment.commenter.picture) {
 				image = followupComment.comment.commenter.picture+'?type=square';
 			} else {
 				image = '/images/default_contact.jpg';
 			}
-			
+
 			var minSize = Ti.UI.createView({
 				left: 0,
 				top: 0,
@@ -766,7 +796,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				width: Ti.Platform.displayCaps.platformWidth,
 			});
 			row.add(minSize);
-			
+
 			var img = Ti.UI.createImageView({
 				defaultImage: '/images/default_contact.jpg',
 				image: image,
@@ -777,7 +807,7 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 			});
 			row.image = img;
 			row.add(img);
-			
+
 			var name = Ti.UI.createLabel({
 				color: mh.config.colors.commentRowTxt,
 				text: followupComment.comment.commenter.name,
@@ -785,10 +815,13 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				left: 60,
 				height: 14,
 				width: 150,
-				font: { fontSize: 14, fontFamily: 'Helvetica' }
+				font: {
+					fontSize: 14,
+					fontFamily: 'Helvetica'
+				}
 			});
 			row.add(name);
-			
+
 			var status = Ti.UI.createLabel({
 				top: 6,
 				left: 60 + 150 + 10,
@@ -796,18 +829,24 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				textAlign: 'right',
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
-				font: { fontSize: 13, fontFamily: 'Helvetica' },
+				font: {
+					fontSize: 13,
+					fontFamily: 'Helvetica'
+				},
 				width: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10 - 5
 			});
 			//status.width = status.width - 5;
 			row.add(status);
-			
+
 			if (followupComment.comment.comment && followupComment.comment.comment != '') {
 				var comment = Ti.UI.createLabel({
 					color: mh.config.colors.commentRowCommentTxt,
 					top: status.top + status.height + 2,
 					height: 'auto',
-					font: { fontSize: 13, fontFamily: 'Helvetica' },
+					font: {
+						fontSize: 13,
+						fontFamily: 'Helvetica'
+					},
 					width: Ti.Platform.displayCaps.platformWidth - 60 - 5,
 					text: followupComment.comment.comment,
 					left: 60
@@ -815,49 +854,50 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				comment.height += 6;
 				row.add(comment);
 			}
-			
+
 			row.comment = followupComment;
 			return row;
 		};
+		var createInfoRows = function() { /* Create TableView Content For More Info Tab */
+			if (tab == TAB_MORE_INFO) {
+				tableView.setData(moreInfoData);
+			}
+		};
+		var createQuestionnaireRows = function() { /* Create TableView Content For Quesitonnaire Tab */
+			if (tab == TAB_QUESTIONNAIRE) {
+				tableView.setData(questionnaireData);
+			}
+		}
 		
-		var createFooter = function() {
+		var createFooter = function() { /* Create The Footer Bar */
 			tabbedBar = Ti.UI.createTabbedBar({
 				labels:[L('contact_contact'), L('contact_more_info'), L('contact_questionnaire')],
 				backgroundColor:mh.config.colors.commentFooterBg,
-			    top:tableView.top+tableView.height,
-			    height:30,
-			    style: Titanium.UI.iPhone.SystemButtonStyle.BAR,
-			    width:Ti.Platform.displayCaps.platformWidth,
-			    index: 0
+				top:tableView.top+tableView.height,
+				height:30,
+				style: Titanium.UI.iPhone.SystemButtonStyle.BAR,
+				width:Ti.Platform.displayCaps.platformWidth,
+				index: 0
 			});
 			contactWindow.add(tabbedBar);
-			tabbedBar.addEventListener('click', function(e){
+			tabbedBar.addEventListener('click', function(e) {
 				tabbedBarOnClick(e.index);
 			});
 		};
 		
-		var curTab = 0;
-		
-		var commentData = [];
-		var moreInfoData = [];
-		var questionnaireData = [];
-		
-		var tabbedBarOnClick = function(index) {
-			if (curTab != index) {
-				switch(curTab) {
-					case 0: commentData = tableView.data; break;
-					case 1: moreInfoData = tableView.data; break;
-					case 2: questionnaireData = tableView.data; break;
-				}
+		var tabbedBarOnClick = function(index) { /* Handle Change Tabs */
+			if (tab != index) {
 				if (index == 0) {
 					tableView.headerView = null;
 					tableView.setData(commentData);
+					contactCard.backgroundImage = '';
 					tableViewHeader.add(contactCard);
 					tableView.headerView = tableViewHeader;
 				} else {
-					if (curTab == 0) {
+					if (tab == 0) {
 						tableView.headerView = null;
 						tableViewHeader.remove(contactCard);
+						contactCard.backgroundImage = 'images/MH_Contact_Very_Top_BG.png';
 						tableView.headerView = contactCard
 					}
 					if (index == 1) {
@@ -866,13 +906,12 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 						tableView.setData(questionnaireData);
 					}
 				}
-				curTab = index;
+				tab = index;
 			}
 		};
-		
 		return {
-			open: open	
+			open: open
 		};
-		
+
 	}();
 })();
