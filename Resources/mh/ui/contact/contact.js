@@ -162,7 +162,6 @@
 			tableViewHeader.add(tableViewHeader.contactView);
 			tableViewHeader.add(tableViewHeader.commentView);
 			
-			
 			tableViewHeader.profilePic = mh.ui.components.createMagicImage({
 				image: image,
 				defaultImage: defaultImage,
@@ -447,6 +446,9 @@
 			if(idx!=-1) { processes.splice(idx, 1); }
 			
 			if (processes.length <= 0) {
+				if (tableView.reloading === true) {
+					tableView.endReload();
+				}
 				indicator.hide();
 			}
 		};
@@ -463,10 +465,8 @@
 				errorCallback: function(e) { onPersonError(e); }
 			});
 			
-			setTimeout(function() {
-				resetTableView();
-				onGetMoreComments(true);
-			}, 500);
+			resetTableView();
+			onGetMoreComments(true);
 		};
 		
 		var onPersonLoad = function(e) {
@@ -521,9 +521,6 @@
 			if (prevXhr && force) {
 				prevXhr.onload = function(){};
 				prevXhr.onerror = function(){};
-				if (tableView.reloading === true) { 
-					tableView.endReload();
-				}
 				hideIndicator('comments');
 				prevXhr.abort();
 			}
@@ -541,16 +538,16 @@
 				hasLastComment = false;
 			}
 			
+			if (e.length > 0 && options.start == 0) {
+				tableView.data = [];
+			}
+			
 			options.start = options.limit + options.start;
 			
 			try {
 				tableViewHeader.commentField.blur();
 				tableViewHeader.commentField.enabled = false;
 			} catch (exception2) {}
-			
-			if (e.length > 0) {
-				tableView.data = [];
-			}
 			
 			for (var index in e) {
 				var followupComment = e[index];
@@ -572,19 +569,12 @@
 				tableViewHeader.commentField.enabled = true;
 			} catch (exception2) {}
 			
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
-			
 			hideIndicator('comments');
 			loadingData = false;
 		};
 		
 		var onCommentFetchError = function(e) {
 			debug('mh.ui.window.contact.onCommentFetchError');
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
 			hideIndicator('comments');
 			loadingData = false;
 		};
@@ -656,9 +646,9 @@
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
 				font: { fontSize: 13, fontFamily: 'Helvetica' },
-				backgroundColor: 'blue',
+				backgroundColor: 'blue'
 			});
-			width -= 5;
+			status.width -= 5;
 			row.add(status);
 			
 			if (followupComment.comment.comment && followupComment.comment.comment != '') {
@@ -674,8 +664,6 @@
 				comment.height += 6;
 				row.add(comment);
 			}
-			
-			info(followupComment);
 			
 			row.comment = followupComment;
 			return row;
