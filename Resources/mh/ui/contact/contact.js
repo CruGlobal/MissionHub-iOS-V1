@@ -132,7 +132,7 @@
 					
 					if (commentData.length === 0) {
 						commentData = [{ title:'', editable:false }];
-						tableView.setData(commentData);
+						tableView.setData(commentData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 					}
 					
 					if (e.row.comment) {
@@ -757,7 +757,7 @@
 				}
 			}
 			if (tab == TAB_COMMENTS) {
-				tableView.setData(commentData);
+				tableView.setData(commentData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 			}
 		};
 		var createCommentRow = function(followupComment) { /* Create A Comment TableView Row */
@@ -860,12 +860,12 @@
 		};
 		var createInfoRows = function() { /* Create TableView Content For More Info Tab */
 			if (tab == TAB_MORE_INFO) {
-				tableView.setData(moreInfoData);
+				tableView.setData(moreInfoData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 			}
 		};
 		var createQuestionnaireRows = function() { /* Create TableView Content For Quesitonnaire Tab */
 			if (tab == TAB_QUESTIONNAIRE) {
-				tableView.setData(questionnaireData);
+				tableView.setData(questionnaireData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 			}
 		}
 		
@@ -889,10 +889,10 @@
 			if (tab != index) {
 				if (index == 0) {
 					tableView.headerView = null;
-					tableView.setData(commentData);
 					contactCard.backgroundImage = '';
 					tableViewHeader.add(contactCard);
 					tableView.headerView = tableViewHeader;
+					tableView.setData(commentData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 				} else {
 					if (tab == 0) {
 						tableView.headerView = null;
@@ -901,9 +901,9 @@
 						tableView.headerView = contactCard
 					}
 					if (index == 1) {
-						tableView.setData(moreInfoData);
+						tableView.setData(moreInfoData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 					} else {
-						tableView.setData(questionnaireData);
+						tableView.setData(questionnaireData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 					}
 				}
 				tab = index;
