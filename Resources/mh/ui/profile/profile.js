@@ -17,6 +17,8 @@
 		var initialOrgID;
 		var orgPickerViewShown = false;
 		var profilePicView;
+		var orgOptions = [];
+		var signOutLabel;
 		
 		var options = {
 			successCallback: function(e) {
@@ -59,6 +61,7 @@
 		
 		orgPicker = Ti.UI.createPicker();
 		orgPicker.selectionIndicator = true;
+		getOrgOptions();
 
 		
 		orgPicker.addEventListener('change', function(e) {
@@ -76,20 +79,21 @@
 		profileWindow.add(button);
 		profileWindow.add(profilePicView);
 		profileWindow.add(orgPickerView);
+		profileWindow.add(signOutLabel);
 		profileWindow.open();
 		profileWindow.animate({duration: 250, left: 0});
 		}
 		
 		//draw the picker with vars
 
-		var updateOrgPicker = function() {
-			var orgOptions = [];
+		var getOrgOptions = function() {
 			var counter=0;
 			for (var x = 0; x < person.organization_membership.length; x++ ) {
 				if (person.organization_membership[x].role == 'admin' || person.organization_membership[x].role == 'leader') {
 					info("in for loop with true if statement" + person.organization_membership[x].name);
 					if (person.organization_membership[x].primary == 'true') {
 						orgPickerPosition = counter;
+						currentPickerOrgName = person.organization_membership[x].name;
 					}
 					orgOptions[counter] = Ti.UI.createPickerRow({
 						title: person.organization_membership[x].name,
@@ -99,6 +103,10 @@
 					counter++;
 				}
 			}
+		}
+
+		var updateOrgPicker = function() {
+
 			info(JSON.stringify(orgOptions));
 			orgPicker.add(orgOptions);
 			orgPickerView.add(orgPicker);
@@ -118,25 +126,49 @@
 				image = person.picture+'?type=large';
 			}
 			
-			bottomView = Ti.UI.createView({
-				width: Ti.Platform.displayCaps.platformWidth,
-				height: 160,
-				top: 50 + 160,
-				backgroundColor: 'transparent'
+			// bottomView = Ti.UI.createView({
+				// width: Ti.Platform.displayCaps.platformWidth,
+				// height: 160,
+				// top: 50 + 160,
+				// backgroundColor: 'transparent'
+			// });
+// 			
+			// bottomView.orgName = Ti.UI.createLabel({
+				// height: 44,
+				// width: Ti.Platform.displayCaps.platformWidth-131-10,
+				// top: (bottomView.height-44)/2,
+				// left: 131,
+				// text: person.name,
+				// color: 'white',
+				// shadowColor: '#333',
+				// shadowOffset: {x: -1, y:2},
+				// font: { fontSize:20, fontFamily: 'ArialRoundedMTBold' }
+			// });
+			//bottomView.add(bottomView.orgName);
+			//profileWindow.add(bottomView);
+			
+			signOutLabel = Ti.UI.createLabel({
+				top: 10,
+				left: 9,
+				height: 31,
+				width: 'auto',
+				color: mh.config.colors.blue,
+				textAlign: 'left',
+				font: { fontSize: 11, fontFamily: 'Helvetica-Bold' },
+				text: L('main_sign_out')
 			});
 			
-			bottomView.orgName = Ti.UI.createLabel({
-				height: 44,
-				width: Ti.Platform.displayCaps.platformWidth-131-10,
-				top: (bottomView.height-44)/2,
-				left: 131,
-				text: person.name,
-				color: 'white',
-				shadowColor: '#333',
-				shadowOffset: {x: -1, y:2},
-				font: { fontSize:20, fontFamily: 'ArialRoundedMTBold' }
+
+			signOutLabel.addEventListener('click', function(e) {
+				var animation = Ti.UI.createAnimation({duration: 250, left: -(Ti.Platform.displayCaps.platformWidth)});
+				mh.auth.oauth.logout(function() {
+					animation.addEventListener('complete', function() {
+					profileWindow.close();
+				});
+				profileWindow.animate(animation);
+				mh.ui.main.window.refresh();
+				});
 			});
-			bottomView.add(bottomView.orgName);
 			
 			profilePicView = Ti.UI.createView({
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -166,7 +198,7 @@
 			profilePicView.name = Ti.UI.createLabel({
 				height: 44,
 				width: Ti.Platform.displayCaps.platformWidth-131-10,
-				top: (profilePicView.height-44)/2,
+				top: (profilePicView.height-44)/2 - 30,
 				left: 131,
 				text: person.name,
 				color: 'white',
@@ -177,6 +209,7 @@
 			profilePicView.add(profilePicView.name);
 			
 			debug('running mh.ui.profile.window.createHeader');
+			
 			var profileBar = Ti.UI.createView({
 				top: 10,
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -232,6 +265,7 @@
 				mh.app.setOrgID(currentPickerOrgID);
 				info("just set orgid = " + currentPickerOrgID);
 				if (orgChanged) {
+					currentOrgNameLabel.text = currentPickerOrgName;
 					orgPicker.setSelectedRow(0,orgPickerPosition,true);
 					alert("You successfully changed your current organization to: " + currentPickerOrgName);
 					orgChanged = false;
@@ -288,6 +322,19 @@
 				font: { fontSize: 12, fontFamily: 'Helvetica-Bold'}
 			});
 			profileWindow.add(versionLabel);
+
+			var currentOrgNameLabel = Ti.UI.createLabel({
+				text: currentPickerOrgName,
+				backgroundColor: 'transparent',
+				color: '#CCC',
+				top: 125,
+				left: 132,
+				height: 40,
+				width: 200,
+				zindex: 50,
+				font: { fontSize: 14, fontFamily: 'Helvetica-Bold'}
+			});
+			profileWindow.add(currentOrgNameLabel);
 		};
 		
 		return {

@@ -32,7 +32,7 @@
 	
 	mh.ui.main.window = function() {
 	
-		var mainWindow, loggedOutView, loggedInView;
+		var mainWindow, loggedOutView, loggedInView, logoView;
 		
 		var open = function() {
 			debug('running mh.ui.main.window.open');
@@ -40,7 +40,7 @@
 			var win = Titanium.UI.createWindow();
 			
 			mainWindow = Titanium.UI.createWindow({
-				backgroundImage: '/images/MH_Background.png',  //############# BACKGROUND IMAGE #################
+				backgroundImage: '/images/MH_Background3.png',  //############# BACKGROUND IMAGE #################
 				orientationModes: [Ti.UI.PORTRAIT],
 				navBarHidden: true
 			});
@@ -146,12 +146,12 @@
 		var createHeader = function() {
 			debug('running mh.ui.main.window.createHeader');
 			// Logo
-			var logoView = Ti.UI.createView({
-				backgroundImage: 'images/' + mh.app.lang() + '/MH_Logo.png',   //###### LOGO ############
-				top: 80,
-				left: Math.round((Ti.Platform.displayCaps.platformWidth-180)/2),
-				width:180,
-				height:68,
+			logoView = Ti.UI.createView({
+				backgroundImage: 'images/' + mh.app.lang() + '/MH_Logo2.png',   //###### LOGO ############
+				top: 65,
+				left: Math.round((Ti.Platform.displayCaps.platformWidth-285)/2),
+				width:285,
+				height:103,
 				visible: true
 			});
 			mainWindow.add(logoView);
@@ -238,12 +238,12 @@
 			
 			showLogoutBar = function() {
 				logoutBarView.animate({ top: 0 });
-				logoView.animate({ top: 90 });
+				logoView.animate({ top: 140 });
 			};
 
 			hideLogoutBar = function() {
 				logoutBarView.animate({ top: -33 });
-				logoView.animate({ top: 90 });
+				logoView.animate({ top: 65 });
 			};
 			
 			configureLogoutBar = function() {
@@ -265,14 +265,14 @@
 			var createPostButton = Titanium.UI.createButton({
 				//image: 'images/' + mh.app.lang() + '/home_button_create_post.png',
 				left: 0,
-				top: 0,
+				top: 111,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: L('profile_contacts_button'),
 				backgroundImage: '/images/MH_Button.png',   //CONTACTS BUTTON
 				shadowColor: 'black',
 				shadowOffset: {x: -2, y: 2},				
-				color: '#DDD',
+				color: 'white',
 				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
 			createPostButton.addEventListener('click', function() {
@@ -299,7 +299,7 @@
 			var tryNowButton = Titanium.UI.createButton({
 				// TODO: image: 'images/' + mh.app.lang() + '/home_button_tryitnow.png',
 				left: 0,
-				top: 0,
+				top: 1,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: L('profile_about_button'),
@@ -320,7 +320,7 @@
 			var signInButton = Titanium.UI.createButton({
 				// TODO: image: 'images/' + meme.app.lang() + '/home_button_signin.png',
 				left: 0,
-				top: 110,
+				top: 111,
 				width: Ti.Platform.displayCaps.platformWidth, 
 				height: 110,
 				title: 'Sign-In',

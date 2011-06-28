@@ -50,6 +50,7 @@
 	<string name="profile_close_org">Click to Close</string>
 	<string name="profile_contacts_button">Contacts</string>
 	<string name="profile_about_button">About</string>
+	<string name="profile_current_organization">Current Organization</string>
 	<!-- Information page -->
 	<string name="info_title">Information</string>
 	
