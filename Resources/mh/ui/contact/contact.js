@@ -34,7 +34,7 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
-				backgroundImage: 'images/MH_TopBar.png'
+				backgroundImage: 'images/MH_Nav_Bar.png'
 			});
 			contactWindow.add(contactBar);
 			
@@ -78,7 +78,8 @@
 			tableViewHeader = Ti.UI.createView({
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 8+150+8+97,
-				backgroundColor: mh.config.colors.blue
+				backgroundImage: '/images/MH_Contact_Top_BG.png'
+				//backgroundColor: mh.config.colors.blue
 			});
 			
 			tableView = mh.ui.components.createPullTableView({
@@ -137,7 +138,8 @@
 			}
 			
 			tableViewHeader.contactView = Ti.UI.createView({
-				backgroundColor: mh.config.colors.headerBg,
+				//backgroundColor: mh.config.colors.headerBg,
+				//backgroundImage: 'images/Carbon_Fiber_Contact_BG.png',
 				top: 0,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -145,7 +147,7 @@
 			});
 			
 			tableViewHeader.commentView = Ti.UI.createView({
-				backgroundColor: mh.config.colors.commentBg,
+				backgroundColor: 'transparent',//mh.config.colors.commentBg,
 				height: 97,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -154,7 +156,8 @@
 			});
 			
 			tableViewHeader.rejoicablesView = Ti.UI.createView({
-				backgroundColor: mh.config.colors.rejoicablesBg,
+				backgroundImage: 'images/MH_Rejoicable_BG.png',
+				//backgroundColor: mh.config.colors.rejoicablesBg,
 				height: 97,
 				left: -(Ti.Platform.displayCaps.platformWidth),
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -172,8 +175,8 @@
 				left: 8,
 				maxHeight: 150,
 				maxWidth: 110,
-				borderWidth: 3,
-				borderRadius: 5,
+				borderWidth: 2,
+				borderRadius: 1,
 				borderColor: mh.config.colors.profilePicBorder
 			});
 			tableViewHeader.contactView.add(tableViewHeader.profilePic);
@@ -208,17 +211,22 @@
 				editable: true,
 				borderColor: mh.config.colors.commentTxtBorder,
 				borderWidth: 1,
-				borderRadius: 5,
-				value: ''
+				borderRadius: 3,
+				value: '',
+				opacity: 0.8,
+				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
+				color:'black'
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
 			
 			tableViewHeader.rejoicables = Ti.UI.createButton({
-				title: 'rejoice',
-				width: 32,
-				height: 32,
+				backgroundImage: 'images/rejoicables_button.png',
+				title: 'R',
+				font: {fontSize:16, fontFamily: 'Helvetica-Bold'},
+				width: 37,
+				height: 30,
 				left: 8,
-				top: 8 + 46 + 4
+				top: 8 + 46 + 4 - 1
 			});
 			tableViewHeader.commentView.add(tableViewHeader.rejoicables);
 			
@@ -227,11 +235,13 @@
 			});
 			
 			tableViewHeader.postButton = Ti.UI.createButton({
+				backgroundImage: 'images/post_button.png',
 				title: 'Post',
 				top: 8 + 46 + 4,
 				right: 8,
-				width: 70,
-				height: 32
+				width: 60,
+				height: 30,
+				font: {fontSize:16, fontFamily: 'Helvetica-Bold'}
 			});
 			tableViewHeader.commentView.add(tableViewHeader.postButton);
 			tableViewHeader.postButton.addEventListener('click', function(e){ onPost(); });
@@ -258,10 +268,12 @@
 			
 			tableViewHeader.statusButton = Ti.UI.createButton({
 				title: L('contact_status_'+person.status),
-				left: 8 + 32 + 4,
-				height: 32,
-				top: 8 + 46 + 4,
-				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 4 - 70 - 4 - 8
+				font: {fontFamily:'Helvetica-Bold', fontSize:16},
+				left: 8 + 32 + 4 + 7,
+				height: 30,
+				top: 8 + 46 + 4 - 1,
+				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 4 - 70 - 4 - 8,
+				backgroundImage: 'images/status_button.png'
 			});
 			tableViewHeader.commentView.add(tableViewHeader.statusButton);
 			tableViewHeader.statusButton.addEventListener('click', function(e){
@@ -274,18 +286,23 @@
 			
 			
 			var rejoiceDone = Ti.UI.createButton({
-				width: 32,
-				height: 32,
+				backgroundImage: 'images/rejoicables_button.png',
+				title: 'R',
+				font: {fontSize:16, fontFamily: 'Helvetica-Bold'},
+				width: 37,
+				height: 30,
 				left: 8,
-				top: 8 + 46 + 4,
-				title: 'rejoice',
-			})
+				top: 8 + 46 + 4 - 1
+			});
+
 			tableViewHeader.rejoicablesView.add(rejoiceDone);
 			rejoiceDone.addEventListener('click', function(e) {
 				tableViewHeader.rejoicablesView.animate({left: -(Ti.Platform.displayCaps.platformWidth), duration:250});
 			});
 			
 			tableViewHeader.rejoicablesView.rejoiceSc = Ti.UI.createButton({
+				backgroundImage: 'images/status_button.png',
+				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
 				title: 'Spiritual Conversation',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
@@ -304,6 +321,8 @@
 			});
 			
 			tableViewHeader.rejoicablesView.rejoiceChrist = Ti.UI.createButton({
+				backgroundImage: 'images/status_button.png',
+				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
 				title: 'Prayed To Receive Christ',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
@@ -322,6 +341,8 @@
 			});
 			
 			tableViewHeader.rejoicablesView.rejoiceGospel = Ti.UI.createButton({
+				backgroundImage: 'images/status_button.png',
+				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
 				title: 'Gospel Presentation',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,

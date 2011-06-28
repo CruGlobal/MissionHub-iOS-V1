@@ -118,6 +118,26 @@
 				image = person.picture+'?type=large';
 			}
 			
+			bottomView = Ti.UI.createView({
+				width: Ti.Platform.displayCaps.platformWidth,
+				height: 160,
+				top: 50 + 160,
+				backgroundColor: 'transparent'
+			});
+			
+			bottomView.orgName = Ti.UI.createLabel({
+				height: 44,
+				width: Ti.Platform.displayCaps.platformWidth-131-10,
+				top: (bottomView.height-44)/2,
+				left: 131,
+				text: person.name,
+				color: 'white',
+				shadowColor: '#333',
+				shadowOffset: {x: -1, y:2},
+				font: { fontSize:20, fontFamily: 'ArialRoundedMTBold' }
+			});
+			bottomView.add(bottomView.orgName);
+			
 			profilePicView = Ti.UI.createView({
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 160,
@@ -167,6 +187,8 @@
 			profileWindow.add(profileBar);
 
 			button = Ti.UI.createButton({
+				backgroundImage: 'images/status_button.png',
+				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
 				title:L('profile_change_org'),
 				top:230,
 				width:240,
