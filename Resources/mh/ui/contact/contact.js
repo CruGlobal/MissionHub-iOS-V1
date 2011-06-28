@@ -82,7 +82,6 @@
 			});
 			
 			tableViewHeader.addEventListener('click', function(e){
-				info(e);
 				try {
 					tableViewHeader.commentField.blur();
 				} catch (exception) {}
@@ -112,14 +111,6 @@
 						errorCallback: function() {}
 					});
 				}
-			});
-			
-			tableView.addEventListener('click', function(e){
-				//TODO
-			});
-			
-			tableView.addEventListener('nearbottom', function(e) {
-				//TODO
 			});
 			
 			contactWindow.add(tableView);
@@ -655,15 +646,15 @@
 			
 			var status = Ti.UI.createLabel({
 				top: 6,
-				left: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10,
+				left: 60 + 150 + 10,
 				height: 13,
 				textAlign: 'right',
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
 				font: { fontSize: 13, fontFamily: 'Helvetica' },
-				backgroundColor: 'blue'
+				width: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10 - 5
 			});
-			status.width -= 5;
+			//status.width = status.width - 5;
 			row.add(status);
 			
 			if (followupComment.comment.comment && followupComment.comment.comment != '') {
