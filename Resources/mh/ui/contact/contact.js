@@ -4,7 +4,7 @@
 	
 	mh.ui.contact.window = function() {
 		
-		var contactWindow, person, tabbedBar, tableView, tableViewHeader, statusSelector, indicator, secondaryTableView, moreInfoView, questionnaireView;
+		var contactWindow, person, contact, tabbedBar, tableView, tableViewHeader, contactCard, statusSelector, indicator;
 		var showPhone = true;
 		var showSMS = true;
 		var showEmail = true;
@@ -140,7 +140,7 @@
 				image = person.picture+'?type=large';
 			}
 			
-			tableViewHeader.contactView = Ti.UI.createView({
+			contactCard = Ti.UI.createView({
 				//backgroundColor: mh.config.colors.headerBg,
 				//backgroundImage: 'images/Carbon_Fiber_Contact_BG.png',
 				top: 0,
@@ -154,7 +154,7 @@
 				height: 97,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
-				top: tableViewHeader.contactView.height,
+				top: contactCard.height,
 				zIndex: 50
 			});
 			
@@ -164,11 +164,11 @@
 				height: 97,
 				left: -(Ti.Platform.displayCaps.platformWidth),
 				width: Ti.Platform.displayCaps.platformWidth,
-				top: tableViewHeader.contactView.height,
+				top: contactCard.height,
 				zIndex: 99
 			});
 			tableViewHeader.add(tableViewHeader.rejoicablesView);
-			tableViewHeader.add(tableViewHeader.contactView);
+			tableViewHeader.add(contactCard);
 			tableViewHeader.add(tableViewHeader.commentView);
 			
 			tableViewHeader.profilePic = mh.ui.components.createMagicImage({
@@ -182,10 +182,10 @@
 				borderRadius: 1,
 				borderColor: mh.config.colors.profilePicBorder
 			});
-			tableViewHeader.contactView.add(tableViewHeader.profilePic);
+			contactCard.add(tableViewHeader.profilePic);
 			
 			tableViewHeader.profilePic.addEventListener('MagicImage:updated', function(e) {
-				tableViewHeader.profilePic.animate({top: (tableViewHeader.contactView.height-e.height)/2, duration: 500});
+				tableViewHeader.profilePic.animate({top: (contactCard.height-e.height)/2, duration: 500});
 			});
 			
 			
@@ -197,7 +197,7 @@
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 110 - 6 - 8,
 				left: 8 + 110 + 6 + 8
 			});
-			tableViewHeader.contactView.add(tableViewHeader.nv);
+			contactCard.add(tableViewHeader.nv);
 			
 		tableViewHeader.nv.phone = Ti.UI.createButton({
 		backgroundImage:'/images/75-phone2.png',
@@ -834,6 +834,40 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 			tabbedBar.addEventListener('click', function(e){
 				tabbedBarOnClick(e.index);
 			});
+		};
+		
+		var curTab = 0;
+		
+		var commentData = [];
+		var moreInfoData = [];
+		var questionnaireData = [];
+		
+		var tabbedBarOnClick = function(index) {
+			if (curTab != index) {
+				switch(curTab) {
+					case 0: commentData = tableView.data; break;
+					case 1: moreInfoData = tableView.data; break;
+					case 2: questionnaireData = tableView.data; break;
+				}
+				if (index == 0) {
+					tableView.headerView = null;
+					tableView.setData(commentData);
+					tableViewHeader.add(contactCard);
+					tableView.headerView = tableViewHeader;
+				} else {
+					if (curTab == 0) {
+						tableView.headerView = null;
+						tableViewHeader.remove(contactCard);
+						tableView.headerView = contactCard
+					}
+					if (index == 1) {
+						tableView.setData(moreInfoData);
+					} else {
+						tableView.setData(questionnaireData);
+					}
+				}
+				curTab = index;
+			}
 		};
 		
 		return {
