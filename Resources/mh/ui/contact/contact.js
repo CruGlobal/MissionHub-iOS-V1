@@ -187,6 +187,10 @@
 				tableViewHeader.profilePic.animate({top: (tableViewHeader.contactView.height-e.height)/2, duration: 500});
 			});
 			
+			
+
+			
+			
 			tableViewHeader.nv = Ti.UI.createView({
 				height: 8+150+8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 110 - 6 - 8,
@@ -195,7 +199,6 @@
 			tableViewHeader.contactView.add(tableViewHeader.nv);
 			
 		tableViewHeader.nv.phone = Ti.UI.createButton({
-			//mh.ui.components.createMagicImage({
 		backgroundImage:'/images/75-phone2.png',
 		width: 47,
 		height: 38,
@@ -252,6 +255,19 @@ tableViewHeader.nv.email = Ti.UI.createButton({
 				top: 10
 			});
 			tableViewHeader.nv.add(tableViewHeader.name);
+			
+			tableViewHeader.nv.assignButton = Ti.UI.createButton({
+				backgroundImage: '/images/assign_button.png',
+				color: mh.config.colors.lightBlue,
+				width: 177,
+				height: 30,
+				top: 8 + tableViewHeader.name.height + 47 + 20,
+				left: 0,
+				font: { fontSize:14, fontFamily: 'ArialRoundedMTBold' },
+				title: 'Assign to Me'
+			});
+			
+			tableViewHeader.nv.add(tableViewHeader.nv.assignButton);
 			
 			// Comment View
 			tableViewHeader.commentField = Ti.UI.createTextArea({

@@ -80,7 +80,6 @@
 				mh.auth.oauth.setToken(e.token);
 				mh.app.setPerson(response[0]);
 				mh.app.setOrgID(response[0].request_org_id);
-				info(response[0].request_org_id);
 				info("Logged in with access token: " + e.token);
 				refresh();
 			}
