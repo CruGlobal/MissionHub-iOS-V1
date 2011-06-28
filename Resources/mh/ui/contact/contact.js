@@ -5,6 +5,9 @@
 	mh.ui.contact.window = function() {
 		
 		var contactWindow, person, tabbedBar, tableView, tableViewHeader, statusSelector, indicator;
+		var showPhone = true;
+		var showSMS = true;
+		var showEmail = true;
 		
 		var open = function(p) {
 			debug('running mh.ui.contact.window.open with contact: ' + p.name);
@@ -57,7 +60,8 @@
 				width: 60,
 				backgroundImage: 'images/btn_done.png',
 				title: L('contact_btn_done'),
-				font: { fontSize: 12, fontFamily: 'Helvetica-Bold'}
+				font: { fontSize: 12, fontFamily: 'Helvetica-Bold'},
+				color: mh.config.colors.navButton
 			});
 			doneButton.addEventListener('click', function() {
 				mh.ui.nav.pop();
@@ -184,17 +188,68 @@
 			});
 			
 			tableViewHeader.nv = Ti.UI.createView({
-				height: 81,
+				height: 8+150+8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 110 - 6 - 8,
 				left: 8 + 110 + 6 + 8
 			});
 			tableViewHeader.contactView.add(tableViewHeader.nv);
 			
+		tableViewHeader.nv.phone = Ti.UI.createButton({
+			//mh.ui.components.createMagicImage({
+		backgroundImage:'/images/75-phone2.png',
+		width: 47,
+		height: 38,
+		left: 0,
+		top: 70,
+		visible: false
+	});
+	
+		tableViewHeader.nv.phone.addEventListener('click', function(e) {
+		if (person.phone_number) {
+			Titanium.Platform.openURL('tel:' + person.phone_number);
+		}
+	});
+	
+		tableViewHeader.nv.add(tableViewHeader.nv.phone);
+
+tableViewHeader.nv.sms = Ti.UI.createButton({
+		backgroundImage:'/images/08-chat2.png',
+		height: 38,
+		width: 47,
+		//left: 50 + 5,
+		top: 70,
+		visible: false
+	});
+	
+tableViewHeader.nv.sms.addEventListener('click', function(e) {
+		if (person.phone_number) {
+			Titanium.Platform.openURL('sms:' + person.phone_number);
+		}
+	});
+	
+tableViewHeader.nv.add(tableViewHeader.nv.sms);
+
+tableViewHeader.nv.email = Ti.UI.createButton({
+		image:'/images/18-envelope2.png',
+		height: 38,
+		width: 47,
+		//left: 100 + 10,
+		top: 70,
+		visible: false
+	});
+	tableViewHeader.nv.email.addEventListener('click', function(e) {
+		if (person.email_address) {
+			Titanium.Platform.openURL("mailto:" + person.email_address);
+		}
+	});
+	tableViewHeader.nv.add(tableViewHeader.nv.email);
+			
 			tableViewHeader.name = Ti.UI.createLabel({
 				height: 44,
 				text: person.name,
 				color: mh.config.colors.headerNameTxt,
-				font: { fontSize:20, fontFamily: 'ArialRoundedMTBold' }
+				font: { fontSize:20, fontFamily: 'ArialRoundedMTBold' },
+				top: 10
 			});
 			tableViewHeader.nv.add(tableViewHeader.name);
 			
@@ -208,19 +263,13 @@
 				editable: true,
 				borderColor: mh.config.colors.commentTxtBorder,
 				borderWidth: 1,
-<<<<<<< HEAD
 				borderRadius: 3,
 				value: '',
 				opacity: 0.8,
 				font: {fontSize: 14, fontFamily: 'Helvetica-Bold'},
-				color:'black'
-=======
-				borderRadius: 5,
-				value: '',
+				color:'black',
 				suppressReturn:false,
-				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT,
-				font: { fontSize: 13, fontFamily: 'Helvetica' }
->>>>>>> branch 'master' of git@github.com:croemmich/MissionHub-Mobile.git
+				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
 			
@@ -376,6 +425,59 @@
 			}
 			if (person.status) {
 				tableViewHeader.statusButton.title = L('contact_status_' + person.status);
+			}
+			
+			showPhone = true;
+			showSMS = true;
+			showEmail = true;
+			
+			if (!person.phone_number) {
+				showPhone = false;
+				showSMS = false;
+			}
+			debug("phone # : " + person.phone_number);
+			debug("email : " + person.email_address);
+			debug("person " + JSON.stringify(person));
+			
+			if (!person.email_address) {
+				showEmail = false;
+			}
+			
+//			if (!Titanium.Platform.canOpenURL('tel:' + person.phone_number)) {
+//				showPhone = false;
+//			}
+//			if (!Titanium.Platform.canOpenURL('sms:' + person.phone_number)) {
+//				showSMS = false;	
+//			}
+//			if (!Titanium.Platform.canOpenURL('mailto:' + person.email_address)) {
+//				showEmail = false;
+//			}
+			debug("showPhone = " + showPhone);
+			debug("showSMS = " + showSMS);
+			debug("showEmail = " + showEmail);
+			if (showPhone) {
+				tableViewHeader.nv.phone.left = 0;
+				tableViewHeader.nv.phone.show();
+			}
+			
+			if (showSMS) {
+				if (showPhone) {
+					tableViewHeader.nv.sms.left = tableViewHeader.nv.phone.left + tableViewHeader.nv.phone.width + 17;	
+				} else {
+					tableViewHeader.nv.sms.left = 0;
+				}
+				tableViewHeader.nv.sms.show();
+			}
+			
+			if (showEmail) {
+				if (showPhone && showSMS) {
+					tableViewHeader.nv.email.left = tableViewHeader.nv.sms.left + tableViewHeader.nv.sms.width + 17;	
+				} else if (showPhone || showSMS) {
+					tableViewHeader.nv.email.left = tableViewHeader.nv.phone.left + tableViewHeader.nv.phone.width + 17;	
+				} else {
+					tableViewHeader.nv.email.left = 0;	
+				}
+				tableViewHeader.nv.email.show();
 			}
 		};
 		

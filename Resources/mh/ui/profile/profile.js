@@ -182,7 +182,7 @@
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
 				zindex: 60,
-				backgroundImage: 'images/MH_TopBar.png'
+				backgroundImage: 'images/MH_Nav_Bar.png'
 			});
 			profileWindow.add(profileBar);
 
@@ -265,7 +265,8 @@
 				zindex: 41,
 				backgroundImage: 'images/btn_done.png',
 				title: L('profile_button_done'),
-				font: { fontSize: 12, fontFamily: 'Helvetica-Bold' }
+				font: { fontSize: 12, fontFamily: 'Helvetica-Bold' },
+				color: mh.config.colors.navButton
 			});
 			
 			doneButton.addEventListener('click', function() {

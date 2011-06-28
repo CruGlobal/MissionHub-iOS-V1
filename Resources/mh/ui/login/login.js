@@ -63,7 +63,7 @@
 
 				//Close button
 				var btn_close = Titanium.UI.createButton({
-					backgroundImage: 'images/close3.png',
+					backgroundImage: 'images/close5.png',
 					width: 20,
 					height: 20,
 					top: 14,
@@ -154,7 +154,7 @@
 				
 				if (params.authorization) {
 					destroy();
-					mh.ui.main.indicator.message = "  Logging In...  ";
+					mh.ui.main.indicator.message = "    Logging In...  ";
 					mh.ui.main.showIndicator('grantAccess'); 
 					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
 				}
@@ -213,7 +213,7 @@
 					mh.error.handleError('', options, 'authentication');
 				}
 			} else {
-				mh.ui.main.indicator.message = "  Logging In...  ";
+				mh.ui.main.indicator.message = "    Logging In...  ";
 				mh.ui.main.showIndicator('getToken');
 				mh.auth.oauth.getTokenFromCode(response.code, getTokenOnLoad, getTokenOnError);
 			}

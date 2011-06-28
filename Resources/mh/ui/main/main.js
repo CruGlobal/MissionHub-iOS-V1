@@ -186,9 +186,9 @@
 				right: 9,
 				height: 31,
 				width: 'auto',
-				color: mh.config.colors.green,
+				color: mh.config.colors.blue,
 				textAlign: 'right',
-				font: { fontSize: 11, fontFamily: 'Helvetica' },
+				font: { fontSize: 11, fontFamily: 'Helvetica-Bold' },
 				text: L('main_sign_out')
 			});
 			signOutLabel.addEventListener('click', function(e) {

@@ -28,7 +28,7 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
-				backgroundImage: 'images/MH_TopBar.png',  //'/images/navbar_bg.png',
+				backgroundImage: 'images/MH_Nav_Bar.png',  //'/images/navbar_bg.png',
 				zIndex: 99
 			});
 			contactsWindow.add(contactsBar);
@@ -52,7 +52,8 @@
 				width: 60,
 				backgroundImage: '/images/btn_done.png',
 				title: L('contacts_btn_back'),
-				font: { fontSize: 12, fontFamily: 'Helvetica-Bold'}
+				font: { fontSize: 12, fontFamily: 'Helvetica-Bold'},
+				color: mh.config.colors.navButton
 			});
 			doneButton.addEventListener('click', function() {
 				var animation = Ti.UI.createAnimation({duration: 250, left: Ti.Platform.displayCaps.platformWidth});

@@ -13,6 +13,7 @@
 	mh.config.colors.tabBg = '#000';
 	mh.config.colors.tabFoc = mh.config.colors.blue;
 	mh.config.colors.tabSel = mh.config.colors.blue;
+	mh.config.colors.navButton = '#d5d5d5';
 	
 	/* Contacts Tab Bar */
 	mh.config.colors.ctbBorder = '#666';
