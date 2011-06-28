@@ -408,6 +408,8 @@
 				
 				showIndicator('post');
 				tableViewHeader.postButton.enabled = false;
+				debug("about to post followup comment:" + JSON.stringify(data));
+				debug("and the options:" + options);
 				mh.api.postFollowupComment(data, options);
 			} else {
 				mh.ui.alert({
