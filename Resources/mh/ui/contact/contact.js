@@ -81,6 +81,13 @@
 				backgroundColor: mh.config.colors.blue
 			});
 			
+			tableViewHeader.addEventListener('click', function(e){
+				info(e);
+				try {
+					tableViewHeader.commentField.blur();
+				} catch (exception) {}
+			});
+			
 			tableView = mh.ui.components.createPullTableView({
 				headerView: tableViewHeader,
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -203,13 +210,15 @@
 				left: 8,
 				height: 46,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 8,
-				autocapitalization: Titanium.UI.TEXT_AUTOCAPITALIZATION_SENTENCES,
 				autoLink: false,
 				editable: true,
 				borderColor: mh.config.colors.commentTxtBorder,
 				borderWidth: 1,
 				borderRadius: 5,
-				value: ''
+				value: '',
+				suppressReturn:false,
+				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT,
+				font: { fontSize: 13, fontFamily: 'Helvetica' }
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
 			
