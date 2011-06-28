@@ -22,8 +22,10 @@ var mh = {};
 		return 'en';
 	};
 	
-	var person;
-	var orgID = null;
+	var person, orgID, role;
+	
+	mh.app.ROLE_ADMIN = 0;
+	mh.app.ROLE_LEADER = 1;
 	
 	mh.app.person = function() {
 		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
@@ -31,8 +33,13 @@ var mh = {};
 		}
 	};
 	
+	mh.app.getRole = function() {
+		return role;
+	};
+	
 	mh.app.setPerson = function(p) {
 		person = p;
+		calculateRole();
 	};
 	
 	mh.app.orgID = function() {
@@ -43,7 +50,31 @@ var mh = {};
 	
 	mh.app.setOrgID = function(o) {
 		orgID = o;
+		calculateRole();
 	};
+	
+	function calculateRole() {
+		for (var index in person.organization_membership) {
+			var org = person.organization_membership[index];
+			if (orgID) {
+				if (org.org_id == orgID) {
+					if (org.role == 'admin') {
+						role = mh.app.ROLE_ADMIN;
+					} else if (org.role == 'leader') {
+						role = mh.app.ROLE_LEADER;
+					}
+				}
+			} else {
+				if (org.primary === true) {
+					if (org.role == 'admin') {
+						role = mh.app.ROLE_ADMIN;
+					} else if (org.role == 'leader') {
+						role = mh.app.ROLE_LEADER;
+					}
+				}
+			}
+		}
+	}
 	
 })();
 

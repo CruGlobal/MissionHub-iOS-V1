@@ -88,8 +88,21 @@
 				top: 40,
 				opacity: 0,
 				backgroundColor: 'white',
-				data: [{title:''}] // Fixes strange keyboard bug
+				data: [{title:''}], // Fixes strange keyboard bug,
+				editable:true,
+				allowsSelectionDuringEditing:true,
+				allowsSelection: false
 			}, refresh);
+			
+			tableView.addEventListener('delete', function(e) {
+				if (e.row.comment) {
+					info(e.row.comment.comment.id);
+					mh.api.deleteComment(e.row.comment.comment.id, {
+						successCallback: function() {},
+						errorCallback: function() {}
+					});
+				}
+			});
 			
 			tableView.addEventListener('click', function(e){
 				//TODO
@@ -148,7 +161,6 @@
 			tableViewHeader.add(tableViewHeader.rejoicablesView);
 			tableViewHeader.add(tableViewHeader.contactView);
 			tableViewHeader.add(tableViewHeader.commentView);
-			
 			
 			tableViewHeader.profilePic = mh.ui.components.createMagicImage({
 				image: image,
@@ -434,6 +446,9 @@
 			if(idx!=-1) { processes.splice(idx, 1); }
 			
 			if (processes.length <= 0) {
+				if (tableView.reloading === true) {
+					tableView.endReload();
+				}
 				indicator.hide();
 			}
 		};
@@ -450,10 +465,8 @@
 				errorCallback: function(e) { onPersonError(e); }
 			});
 			
-			setTimeout(function() {
-				resetTableView();
-				onGetMoreComments(true);
-			}, 500);
+			resetTableView();
+			onGetMoreComments(true);
 		};
 		
 		var onPersonLoad = function(e) {
@@ -508,9 +521,6 @@
 			if (prevXhr && force) {
 				prevXhr.onload = function(){};
 				prevXhr.onerror = function(){};
-				if (tableView.reloading === true) { 
-					tableView.endReload();
-				}
 				hideIndicator('comments');
 				prevXhr.abort();
 			}
@@ -528,16 +538,16 @@
 				hasLastComment = false;
 			}
 			
+			if (e.length > 0 && options.start == 0) {
+				tableView.data = [];
+			}
+			
 			options.start = options.limit + options.start;
 			
 			try {
 				tableViewHeader.commentField.blur();
 				tableViewHeader.commentField.enabled = false;
 			} catch (exception2) {}
-			
-			if (e.length > 0) {
-				tableView.data = [];
-			}
 			
 			for (var index in e) {
 				var followupComment = e[index];
@@ -559,19 +569,12 @@
 				tableViewHeader.commentField.enabled = true;
 			} catch (exception2) {}
 			
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
-			
 			hideIndicator('comments');
 			loadingData = false;
 		};
 		
 		var onCommentFetchError = function(e) {
 			debug('mh.ui.window.contact.onCommentFetchError');
-			if (tableView.reloading === true) { 
-				tableView.endReload();
-			}
 			hideIndicator('comments');
 			loadingData = false;
 		};
@@ -586,8 +589,17 @@
 				backgroundFocusedColor: mh.config.colors.ctvBgFocused,
 				backgroundSelectedColor: mh.config.colors.ctvBgSelected,
 				selectionStyle: mh.config.colors.ctvSelStyle,
-				height: 'auto'
+				height: 'auto',
+				editable: false
 			});
+			
+			if (mh.app.getRole() == mh.app.ROLE_ADMIN) {
+				row.editable = true;
+			} else if (mh.app.getRole() == mh.app.ROLE_LEADER) {
+				if (followupComment.comment.commenter.id == mh.app.person().id) {
+					row.editable = true;
+				}
+			}
 			
 			var image;
 			if (followupComment.comment.commenter.picture) {
@@ -628,14 +640,15 @@
 			
 			var status = Ti.UI.createLabel({
 				top: 6,
-				right: 5,
+				left: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10,
 				height: 13,
 				textAlign: 'right',
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
 				font: { fontSize: 13, fontFamily: 'Helvetica' },
-				width: 100,
+				backgroundColor: 'blue'
 			});
+			status.width -= 5;
 			row.add(status);
 			
 			if (followupComment.comment.comment && followupComment.comment.comment != '') {
@@ -651,7 +664,6 @@
 				comment.height += 6;
 				row.add(comment);
 			}
-			
 			
 			row.comment = followupComment;
 			return row;
