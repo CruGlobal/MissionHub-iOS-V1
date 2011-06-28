@@ -52,6 +52,8 @@
 	
 	//input a string response straight from the server
 	mh.error.validResponse = function(response) {
+		debug("response in validResponse: " + response);
+		debug("validJSON return in validResponse: " + mh.util.validJSON(response));
 		if (response) {
 			if (mh.util.validJSON(response)) {
 				return mh.error.VALID_RESPONSE;
@@ -69,6 +71,8 @@
 		var hash = {};
 		var error_code='';
 		var message='Unknown Error.';
+		debug("in handleError: " + JSON.stringify(code));
+		debug("and the alt:  " + alt);
 		
 		hash.onClick = options.errorCallback;
 		if (options.buttonNames) {

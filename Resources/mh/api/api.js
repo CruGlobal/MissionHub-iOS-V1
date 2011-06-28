@@ -140,7 +140,7 @@
 	mh.api.postFollowupComment = function (data, options) {
 		realData = { json: JSON.stringify(data) };
 		realData.access_token = mh.auth.oauth.getToken();
-		var requestURL = mh.config.api_url + '/followup_comments/';
+		var requestURL = mh.config.api_url + '/followup_comments.json';
 		return firePostRequest(requestURL, options, realData);
 	};
 
@@ -203,9 +203,10 @@
 		};
 		
 		xhr.onerror = function(e) {
-			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
-			var response = mh.util.makeValid(this.responseText);
 			debug("whoops... in mh.api.firePostRequest.xhr.onerror");
+			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
+			debug("response: " + this.responseText);
+			var response = mh.util.makeValid(this.responseText);
 			mh.error.handleResponse(this.responseText,options);
 		};
 		
