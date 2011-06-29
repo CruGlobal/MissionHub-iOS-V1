@@ -15,7 +15,7 @@
 		// api_url: 'http://test.ccci.us:8881/api/v1',
 		
 		cache: {
-			disable: true,
+			disable: false,
 			cache_expiration_interval: 60
 		}
 	};
