@@ -1165,7 +1165,7 @@
 					
 					if (edu.year) {
 						if (value.length > 0) {
-							value += ' ' + L('contact_info_class_of', 'Class Of') + ' ';
+							value += ' ' + L('contact_info_class_of', 'Class of') + ' ';
 						}
 						value += edu.year.name; 
 					}
@@ -1222,7 +1222,7 @@
 				for (var i in keyword.questions) {
 					var row = createQuestionnaireRow(keyword.questions[i]);
 					if (i == 0) {
-						row.header = keyword.name;
+						row.header = L('contact_questionnaire_keyword', "Keyword") + ': ' + keyword.name;
 					}
 					questionnaireData.push(row);
 				}

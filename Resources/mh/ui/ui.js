@@ -38,6 +38,7 @@
 		if (!options.message) {
 			options.message = L('alert_openlink_message');
 		}
+		options.buttonNames = [L('alert_btn_ok'), L('alert_btn_cancel')];
 		options.onClick = function(e) {
 				if (e.index === 0) {
 					Ti.Platform.openURL(options.url);
