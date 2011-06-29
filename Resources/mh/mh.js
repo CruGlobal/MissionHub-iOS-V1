@@ -69,13 +69,15 @@ var mh = {};
 		for (var index in person.organization_membership) {
 			var org_membership = person.organization_membership[index];
 			roles[org_membership.org_id] = {name: org_membership.name};
-			if (org_membership.primary === true) {
+			
+			if (org_membership.primary == 'true' || org_membership.primary === 'true') {
 				orgID = org_membership.org_id;
 				roles[org_membership.org_id].primary = true;
 			} else {
 				roles[org_membership.org_id].primary = false;
 			}
 			roles[org_membership.org_id].role = mh.app.ROLE_NONE;
+			roles[org_membership.org_id].org_id = org_membership.org_id;
 		}
 		for (var index in person.organizational_roles) {
 			var role = person.organizational_roles[index];
