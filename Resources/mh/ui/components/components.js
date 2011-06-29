@@ -46,7 +46,7 @@
 		});
 		tableHeader.add(border);
 		var arrow = Ti.UI.createView({
-			backgroundImage:"/images/whiteArrow.png",
+			backgroundImage:mh.util.getBackgroundImage("/images/whiteArrow.png"),
 			width:23,
 			height:60,
 			bottom:10,
@@ -54,8 +54,7 @@
 		});
 		var statusLabel = Ti.UI.createLabel({
 			textid: 'tableview_pull_to_reload',
-			left:65,
-			width:200,
+			width:Ti.Platform.displayCaps.platformWidth,
 			bottom:30,
 			height:"auto",
 			color:"#576c89",
@@ -66,8 +65,7 @@
 		});
 		var lastUpdatedLabel = Ti.UI.createLabel({
 			text: L('tableview_last_updated') + ': ' + mh.util.formatedNow(),
-			left:65,
-			width:200,
+			width: Ti.Platform.displayCaps.platformWidth,
 			bottom:15,
 			height:"auto",
 			color:"#576c89",
@@ -86,8 +84,6 @@
 		
 		if (ipad) {
 			arrow.left = arrow.left + 224;
-			statusLabel.left = statusLabel.left + 224;
-			lastUpdatedLabel.left = lastUpdatedLabel.left + 224;
 			actInd.left = actInd.left + 224;
 		}
 		

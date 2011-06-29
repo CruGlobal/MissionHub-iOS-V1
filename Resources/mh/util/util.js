@@ -91,6 +91,26 @@
 		return (m) ? new Date(utc) : undefined;
 	};
 	
+	mh.util.getBackgroundImage = function(image) {	
+		if (Titanium.Platform.osname == 'ipad') {
+			var img = image.toString().replace('.png', '@ipad.png');
+			var file = Titanium.Filesystem.getFile(Titanium.Filesystem.resourcesDirectory, img);
+			if (file.exists()) {
+				return img;
+			} else {
+				img = image.toString().replace('.png', '@2x.png');
+				file = Titanium.Filesystem.getFile(Titanium.Filesystem.resourcesDirectory, img);
+				if (file.exists()) {
+					return img;
+				} else {
+					return image;
+				}
+			}
+		} else {
+			return image;
+		}
+	};
+	
 })();
 
 /* Globals Platform Vars */

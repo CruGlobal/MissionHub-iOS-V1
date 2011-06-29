@@ -67,14 +67,11 @@
 
 			mh.api.getPeople(mh.app.getPerson().id,options);
 			profileWindow = Ti.UI.createWindow({
-				backgroundImage: 'images/MH_Background.png',
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png'),
 				height: Ti.Platform.displayCaps.platformHeight,
 				width: Ti.Platform.displayCaps.platformWidth,
 				left: -(Ti.Platform.displayCaps.platformWidth)
 			});
-			if (ipad) {
-				profileWindow.backgroundImage = 'images/MH_Background@2x.png';
-			}
 
 			orgPickerView = Titanium.UI.createView({
 				backgroundColor: 'transparent',
@@ -240,18 +237,15 @@
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
 				zindex: 60,
-				backgroundImage: 'images/MH_Nav_Bar.png'
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Nav_Bar.png')
 			});
-			if (ipad) {
-				profileBar.backgroundImage = 'images/MH_Nav_Bar@2x.png';
-			}
 			
 			profileWindow.add(profileBar);
 
 			debug('running mh.ui.profile.window.createHeader2');
 
 			button = Ti.UI.createButton({
-				backgroundImage: 'images/status_button.png',
+				backgroundImage: mh.util.getBackgroundImage('images/status_button.png'),
 				font: {
 					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
@@ -261,9 +255,6 @@
 				width:240,
 				height:30
 			});
-			if (ipad) {
-				button.backgroundImage = 'images/status_button@2x.png';
-			}
 
 			debug('running mh.ui.profile.window.createHeader3');
 
@@ -341,7 +332,7 @@
 				height: 30,
 				width: 60,
 				zindex: 41,
-				backgroundImage: 'images/btn_done.png',
+				backgroundImage: mh.util.getBackgroundImage('images/btn_done.png'),
 				title: L('profile_button_done'),
 				font: {
 					fontSize: 12,
@@ -349,9 +340,6 @@
 				},
 				color: mh.config.colors.navButton
 			});
-			if (ipad) {
-				doneButton.backgroundImage = 'images/btn_done@2x.png'
-			}
 
 			doneButton.addEventListener('click', function() {
 				var animation = Ti.UI.createAnimation({

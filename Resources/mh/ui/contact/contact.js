@@ -23,7 +23,7 @@
 			person = p;
 			
 			contactWindow = Ti.UI.createWindow({
-				backgroundImage: 'images/MH_Background.png',
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png'),
 				height: Ti.Platform.displayCaps.platformHeight,
 				width: Ti.Platform.displayCaps.platformWidth,
 				left: Ti.Platform.displayCaps.platformWidth
@@ -47,7 +47,7 @@
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 40,
-				backgroundImage: 'images/MH_Nav_Bar.png'
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Nav_Bar.png')
 			});
 			contactWindow.add(contactBar);
 
@@ -71,7 +71,7 @@
 				left: 5,
 				height: 30,
 				width: 60,
-				backgroundImage: 'images/btn_done.png',
+				backgroundImage: mh.util.getBackgroundImage('images/btn_done.png'),
 				title: L('contact_btn_done'),
 				font: {
 					fontSize: 12,
@@ -79,6 +79,7 @@
 				},
 				color: mh.config.colors.navButton
 			});
+			
 			doneButton.addEventListener('click', function() {
 				mh.ui.nav.pop();
 			});
@@ -110,7 +111,7 @@
 			tableViewHeader = Ti.UI.createView({
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 8+150+8+97,
-				backgroundImage: '/images/MH_Contact_Top_BG.png'
+				backgroundImage: mh.util.getBackgroundImage('/images/MH_Contact_Top_BG.png')
 			});
 
 			tableViewHeader.addEventListener('click', function(e) {
@@ -202,7 +203,7 @@
 			});
 
 			tableViewHeader.rejoicablesView = Ti.UI.createView({
-				backgroundImage: 'images/MH_Rejoicable_BG.png',
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Rejoicable_BG.png'),
 				height: 97,
 				left: -(Ti.Platform.displayCaps.platformWidth),
 				width: Ti.Platform.displayCaps.platformWidth,
@@ -244,7 +245,7 @@
 			contactCard.add(tableViewHeader.nv);
 
 			tableViewHeader.nv.phone = Ti.UI.createButton({
-				backgroundImage:'/images/75-phone2.png',
+				backgroundImage: mh.util.getBackgroundImage('/images/75-phone2.png'),
 				width: 47,
 				height: 38,
 				left: 0,
@@ -260,7 +261,7 @@
 			tableViewHeader.nv.add(tableViewHeader.nv.phone);
 
 			tableViewHeader.nv.sms = Ti.UI.createButton({
-				backgroundImage:'/images/08-chat2.png',
+				backgroundImage:mh.util.getBackgroundImage('/images/08-chat2.png'),
 				height: 38,
 				width: 47,
 				//left: 50 + 5,
@@ -276,7 +277,7 @@
 			tableViewHeader.nv.add(tableViewHeader.nv.sms);
 
 			tableViewHeader.nv.email = Ti.UI.createButton({
-				image:'/images/18-envelope2.png',
+				image: mh.util.getBackgroundImage('/images/18-envelope2.png'),
 				height: 38,
 				width: 47,
 				//left: 100 + 10,
@@ -304,7 +305,7 @@
 
 			// Assign To Me button
 			tableViewHeader.nv.assignButton = Ti.UI.createButton({
-				backgroundImage: '/images/assign_button.png',
+				backgroundImage: mh.util.getBackgroundImage('/images/assign_button.png'),
 				color: mh.config.colors.lightBlue,
 				width: 177,
 				height: 30,
@@ -409,7 +410,7 @@
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
 
 			tableViewHeader.rejoicables = Ti.UI.createButton({
-				backgroundImage: 'images/rejoicables_button.png',
+				backgroundImage: mh.util.getBackgroundImage('images/rejoicables_button.png'),
 				title: 'R',
 				font: {
 					fontSize:16,
@@ -429,7 +430,7 @@
 				});
 			});
 			tableViewHeader.postButton = Ti.UI.createButton({
-				backgroundImage: 'images/post_button.png',
+				backgroundImage: mh.util.getBackgroundImage('images/post_button.png'),
 				title: 'Post',
 				top: 8 + 46 + 4,
 				right: 8,
@@ -467,7 +468,7 @@
 				height: 30,
 				top: 8 + 46 + 4 - 1,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 4 - 70 - 4 - 8,
-				backgroundImage: 'images/status_button.png'
+				backgroundImage: mh.util.getBackgroundImage('images/status_button.png')
 			});
 			tableViewHeader.commentView.add(tableViewHeader.statusButton);
 			tableViewHeader.statusButton.addEventListener('click', function(e) {
@@ -477,7 +478,7 @@
 				tableViewHeader.statusButton.title = L(options[e.index]);
 			});
 			var rejoiceDone = Ti.UI.createButton({
-				backgroundImage: 'images/rejoicables_button.png',
+				backgroundImage: mh.util.getBackgroundImage('images/rejoicables_button.png'),
 				title: 'R',
 				font: {
 					fontSize:16,
@@ -497,7 +498,7 @@
 				});
 			});
 			tableViewHeader.rejoicablesView.rejoiceSc = Ti.UI.createButton({
-				backgroundImage: 'images/status_button.png',
+				backgroundImage: mh.util.getBackgroundImage('images/status_button.png'),
 				font: {
 					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
@@ -514,12 +515,12 @@
 					this.image = '';
 					this.on = false;
 				} else {
-					this.image = '/images/check.png';
+					this.image = mh.util.getBackgroundImage('/images/check.png');
 					this.on = true;
 				}
 			});
 			tableViewHeader.rejoicablesView.rejoiceChrist = Ti.UI.createButton({
-				backgroundImage: 'images/status_button.png',
+				backgroundImage: mh.util.getBackgroundImage('images/status_button.png'),
 				font: {
 					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
@@ -536,12 +537,12 @@
 					this.image = '';
 					this.on = false;
 				} else {
-					this.image = '/images/check.png';
+					this.image = mh.util.getBackgroundImage('/images/check.png');
 					this.on = true;
 				}
 			});
 			tableViewHeader.rejoicablesView.rejoiceGospel = Ti.UI.createButton({
-				backgroundImage: 'images/status_button.png',
+				backgroundImage: mh.util.getBackgroundImage('images/status_button.png'),
 				font: {
 					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
@@ -558,7 +559,7 @@
 					this.image = '';
 					this.on = false;
 				} else {
-					this.image = '/images/check.png';
+					this.image = mh.util.getBackgroundImage('/images/check.png');
 					this.on = true;
 				}
 			});
@@ -1010,16 +1011,16 @@
 					var rejoicable = followupComment.rejoicables[index];
 					var image;
 					switch(rejoicable.what) {
-						case 'spiritual_conversation': image = 'blue'; break;
-						case 'prayed_to_receive': image = 'red'; break;
-						case 'gospel_presentation': image = 'green'; break;
+						case 'spiritual_conversation': image = mh.util.getBackgroundImage('images/icons/icon-s-convo.png'); break;
+						case 'prayed_to_receive': image = mh.util.getBackgroundImage('images/icons/icon-r-christ.png'); break;
+						case 'gospel_presentation': image = mh.util.getBackgroundImage('images/icons/icon-g-present.png'); break;
 					}
 					
 					var icon = Ti.UI.createView({
-						backgroundColor: image,
+						backgroundImage: image,
 						width: 16,
 						height: 16,
-						right: index * 18,
+						right: index * 20,
 						top: 0,
 					})
 					bottomBar.add(icon);
@@ -1293,7 +1294,7 @@
 		var tabbedBarOnClick = function(index) { /* Handle Change Tabs */
 			if (tab != index) {
 				var x = Ti.UI.createView({
-					backgroundImage: 'images/MH_Contact_Very_Top_BG.png',
+					backgroundImage: mh.util.getBackgroundImage('images/MH_Contact_Very_Top_BG.png'),
 					height: 166,
 					width:Ti.Platform.displayCaps.platformWidth
 				});
@@ -1312,7 +1313,7 @@
 					if (tab == 0) {
 						tableView.headerView = x;
 						tableViewHeader.remove(contactCard);
-						contactCard.backgroundImage = 'images/MH_Contact_Very_Top_BG.png';
+						contactCard.backgroundImage = mh.util.getBackgroundImage('images/MH_Contact_Very_Top_BG.png');
 						tableView.headerView = contactCard
 					}
 					if (index == 1) {

@@ -205,12 +205,9 @@
 		info("requestURL: " + requestURL);
 				
 		var xhr = Ti.Network.createHTTPClient();
-		xhr.trys = 0;
 	
 		xhr.onload = function(e) {
 			debug("in mh.api.firePostRequest.xhr.onload");
-			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
-			
 			if (mh.error.handleResponse(this.responseText, options)) {
 				var response = mh.util.makeValid(this.responseText);
 				return options.successCallback(response);
@@ -219,16 +216,8 @@
 		
 		xhr.onerror = function(e) {
 			debug("whoops... in mh.api.firePostRequest.xhr.onerror");
-			if (xhr.trys < 3) {
-				info("retrying...");
-				xhr.trys++;
-				xhr.open('POST',requestURL);
-				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-				xhr.send(data);
-			} else {
-				debug("response: " + this.responseText);
-				mh.error.handleResponse(this.responseText,options);
-			}
+			debug("response: " + this.responseText);
+			mh.error.handleResponse(this.responseText,options);
 		};
 		
 		xhr.open('POST',requestURL);
@@ -261,10 +250,8 @@
 		
 		if (!jsonResponse) {
 			xhr = Ti.Network.createHTTPClient();
-			xhr.trys = 0;
 
 			xhr.onload = function(e) {
-				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
 				if (mh.error.handleResponse(this.responseText, options)) {
 					if (options.cacheKey) {
 						if (options.fresh) {
@@ -280,15 +267,8 @@
 			};
 
 			xhr.onerror = function(e) {
-				if (xhr.trys < 3) {
-					debug("retrying...");
-					xhr.trys++;
-					xhr.open('GET', requestURL);
-					xhr.send();
-				} else {
-					debug("whoops... mh.api.fireGetRequest.xhr.onerror");
-					mh.error.handleResponse(this.responseText,options);
-				}
+				debug("whoops... mh.api.fireGetRequest.xhr.onerror");
+				mh.error.handleResponse(this.responseText,options);
 			};
 
 		xhr.open('GET', requestURL);
