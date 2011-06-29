@@ -215,6 +215,10 @@
 			});
 			contactCard.add(tableViewHeader.profilePic);
 
+			tableViewHeader.profilePic.addEventListener('click', function(e) {
+				mh.ui.openLink({ url: 'http://facebook.com/profile.php?id='+person.fb_id , message: L('contact_open_facebook_msg', 'Open Facebook page in browser?')});
+			});
+
 			tableViewHeader.profilePic.addEventListener('MagicImage:updated', function(e) {
 				tableViewHeader.profilePic.animate({
 					top: (contactCard.height-e.height)/2,
