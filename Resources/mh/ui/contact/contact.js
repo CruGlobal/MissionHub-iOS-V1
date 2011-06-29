@@ -1021,14 +1021,101 @@
 			return row;
 		};
 		var createInfoRows = function() { /* Create TableView Content For More Info Tab */
+			
+			moreInfoData = [];
+			
+			if (moreInfoData.length <= 0) {
+				moreInfoData = [{title:'', editable: false}];
+			}
 			if (tab == TAB_MORE_INFO) {
 				tableView.setData(moreInfoData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 			}
 		};
 		var createQuestionnaireRows = function() { /* Create TableView Content For Quesitonnaire Tab */
+			
+			// Consolidate Questions And Answers
+			var questions = {};
+			for (var index in contact.people[0].form) {
+				var answer = contact.people[0].form[index];
+				questions[answer.q] = {answer: answer.a};
+			}
+			for (var index in contact.questions) {
+				var question = contact.questions[index];
+				questions[question.id] = mh.util.mergeJSON(questions[question.id], question);
+			}
+			
+			// Merge Keywords And Questions
+			var keywords = [];
+			for (var index in contact.keywords) {
+				var keyword = contact.keywords[index];
+				keywords.push(keyword);
+				var idx = keywords.indexOf(keyword);
+				var qs = [];
+				for (var i in keyword.questions) {
+					var question_id = keyword.questions[i];
+					qs.push(questions[question_id]);
+				}
+				keywords[idx] = mh.util.mergeJSON(keyword, {questions: qs});
+			}
+			
+			questionnaireData = [];
+			
+			// Create TableView Rows
+			for (var index in keywords) {
+				var keyword = keywords[index];
+				for (var i in keyword.questions) {
+					var row = createQuestionnaireRow(keyword.questions[i]);
+					if (i == 0) {
+						row.header = keyword.name;
+					}
+					questionnaireData.push(row);
+				}
+			}
+			
+			if (questionnaireData.length <= 0) {
+				questionnaireData = [{title:'', editable: false}];
+			}
+			
 			if (tab == TAB_QUESTIONNAIRE) {
 				tableView.setData(questionnaireData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 			}
+		}
+		var createQuestionnaireRow = function(question) {			
+			var row = Ti.UI.createTableViewRow({editable: false, className: 'questionanswer', height: 'auto'});
+			
+			var q = Ti.UI.createLabel({
+				left: 5,
+				top: 5,
+				text: question.label,
+				font: {	fontSize: 14, fontFamily: 'Helvetica' },
+				width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
+				height: 'auto'
+			})
+			row.add(q);
+			
+			var answerText = question.answer;
+			if (answerText == '') {
+				answerText = 'not answered';
+			}
+			
+			var a = Ti.UI.createLabel({
+				left: 5,
+				top: q.top + q.height,
+				text: answerText,
+				font: {	fontSize: 14, fontFamily: 'Helvetica' },
+				width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
+				height: 'auto'
+			});
+			row.add(a);
+			
+			if (question.answer == '') {
+				a.color = '#999';
+			} else {
+				a.color = '#333';
+			}
+			a.height += 5;
+			
+			return row;
 		}
 		
 		var createFooter = function() { /* Create The Footer Bar */
