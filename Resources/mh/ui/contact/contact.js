@@ -1065,7 +1065,7 @@
 			if (person.fb_id) {
 				var fbRow = createSimpleRow(L('contact_info_facebook', 'Facebook'), 'http://facebook.com/profile.php?id='+person.fb_id);
 				fbRow.addEventListener('click', function(e){
-					mh.ui.openLink({ link: 'http://facebook.com/profile.php?id='+person.fb_id });
+					mh.ui.openLink({ url: 'http://facebook.com/profile.php?id='+person.fb_id });
 				});
 				moreInfoData.push(fbRow);
 			}
@@ -1077,9 +1077,6 @@
 			
 			if (person.first_contact_date) {
 				var date = mh.util.dateFromString(person.first_contact_date);
-				
-				info(date);
-				
 				var contactDate = createSimpleRow(L('contact_info_date', 'First Contact Date'), date.toLocaleDateString());
 				moreInfoData.push(contactDate);
 			}
