@@ -55,6 +55,9 @@
 				orientationModes: [Ti.UI.PORTRAIT],
 				navBarHidden: true
 			});
+			if (ipad) {
+				mainWindow.backgroundImage = '/images/MH_Background3@2x.png';
+			}
 			
 			mainWindow.add(mh.ui.main.indicator);
 			
@@ -187,6 +190,9 @@
 				height:103,
 				visible: true
 			});
+			if (ipad) {
+				backgroundImage = 'images/' + mh.app.lang() + '/MH_Logo2@2x.png'	
+			}
 			mainWindow.add(logoView);
 			
 			// Top Bar
@@ -197,6 +203,9 @@
 				width: Ti.Platform.displayCaps.platformWidth,
 				height: 33
 			});
+			if (ipad) {
+				backgroundImage = 'images/MH_TopBar@2x.png';
+			}
 			mainWindow.add(logoutBarView);
 			
 			// Top Bar Left 
@@ -207,6 +216,10 @@
 				height:29,
 				width:29
 			});
+			if (ipad) {
+				backgroundImage = 'images/MH_Profile_Icon@2x.png';
+			}
+			
 			iButton.addEventListener('click', function() {
 				mh.ui.profile.window.open();
 			});
@@ -295,8 +308,7 @@
 			});
 			mainWindow.add(loggedInView);
 			
-			var createPostButton = Titanium.UI.createButton({
-				//image: 'images/' + mh.app.lang() + '/home_button_create_post.png',
+			var contactsButton = Titanium.UI.createButton({
 				left: 0,
 				top: 111,
 				width: Ti.Platform.displayCaps.platformWidth, 
@@ -308,11 +320,15 @@
 				color: 'white',
 				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
 			});
-			createPostButton.addEventListener('click', function() {
+			if (ipad) {
+				contactsButton.backgroundImage = '/images/MH_Button@2x.png';
+			}
+			
+			contactsButton.addEventListener('click', function() {
 				mh.ui.contacts.window.open();
 			});
 			
-			loggedInView.add(createPostButton);
+			loggedInView.add(contactsButton);
 
 			configureLoggedInView = function() {
 				//TODO If needed
@@ -330,7 +346,6 @@
 			mainWindow.add(loggedOutView);
 			
 			var tryNowButton = Titanium.UI.createButton({
-				// TODO: image: 'images/' + mh.app.lang() + '/home_button_tryitnow.png',
 				left: 0,
 				top: 1,
 				width: Ti.Platform.displayCaps.platformWidth, 
@@ -341,6 +356,10 @@
 				font: {fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
 				backgroundImage: '/images/MH_Button.png'
 			});
+			if (ipad) {
+				tryNowButton.backgroundColor = '/images/MH_Button@2x.png';
+			}
+			
 			tryNowButton.addEventListener('click', function() {
 				mh.ui.openLink({
 					title: L('home_about_alert_title'),
@@ -351,7 +370,6 @@
 			loggedOutView.add(tryNowButton);
 
 			var signInButton = Titanium.UI.createButton({
-				// TODO: image: 'images/' + meme.app.lang() + '/home_button_signin.png',
 				left: 0,
 				top: 111,
 				width: Ti.Platform.displayCaps.platformWidth, 
@@ -360,6 +378,9 @@
 				font:{fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
 				backgroundImage: '/images/MH_Button.png'
 			});
+			if (ipad) {
+				signInButton.backgroundColor = '/images/MH_Button@.png'
+			}
 			loggedOutView.add(signInButton);
 
 			var signInButtonClick = function(continuation) {

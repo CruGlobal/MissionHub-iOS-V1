@@ -42,7 +42,7 @@
 			
 			options = {		
 				successCallback: function(e) {
-					var response = mh.util.makeValid(e.response);
+					var response = mh.util.makeValid(e);
 					if (response.error) {
 						profileWindow.close();
 						mh.error.handleError(response.error, {errorCallback: function() {}});
@@ -58,7 +58,7 @@
 				},
 				errorCallback: function(e) {
 					profileWindow.close();
-					var response = mh.util.makeValid(e.response);
+					var response = mh.util.makeValid(e);
 					mh.error.handleError(response.error, {errorCallback: function() {}});
 				},
 				fresh: true,
@@ -72,6 +72,9 @@
 				width: Ti.Platform.displayCaps.platformWidth,
 				left: -(Ti.Platform.displayCaps.platformWidth)
 			});
+			if (ipad) {
+				profileWindow.backgroundImage = 'images/MH_Background@2x.png';
+			}
 
 			orgPickerView = Titanium.UI.createView({
 				backgroundColor: 'transparent',
@@ -134,11 +137,10 @@
 					counter++;
 				}
 			}
-			
 			updateOrgPicker();
 		};
 		var updateOrgPicker = function() {
-			if (orgOptions.legnth > 0) {
+			if (orgOptions.length > 0) {
 				orgPicker.add(orgOptions);
 			}
 			orgPickerView.add(orgPicker);
@@ -240,6 +242,10 @@
 				zindex: 60,
 				backgroundImage: 'images/MH_Nav_Bar.png'
 			});
+			if (ipad) {
+				profileBar.backgroundImage = 'images/MH_Nav_Bar@2x.png';
+			}
+			
 			profileWindow.add(profileBar);
 
 			debug('running mh.ui.profile.window.createHeader2');
@@ -255,6 +261,9 @@
 				width:240,
 				height:30
 			});
+			if (ipad) {
+				button.backgroundImage = 'images/status_button@2x.png';
+			}
 
 			debug('running mh.ui.profile.window.createHeader3');
 
@@ -340,6 +349,9 @@
 				},
 				color: mh.config.colors.navButton
 			});
+			if (ipad) {
+				doneButton.backgroundImage = 'images/btn_done@2x.png'
+			}
 
 			doneButton.addEventListener('click', function() {
 				var animation = Ti.UI.createAnimation({
@@ -357,7 +369,7 @@
 				text: L('profile_version') + ' ' + Ti.App.version,
 				color: '#CCC',
 				bottom: 5,
-				left: 120,
+				textAlign: 'center',
 				height: 30,
 				zindex: 50,
 				font: {

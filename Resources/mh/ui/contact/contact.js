@@ -452,8 +452,7 @@
 			options[4]=L('contact_status_do_not_contact');
 			statusSelector = Ti.UI.createOptionDialog({
 				options:options,
-				title:'Choose Status',
-				destructive: 4
+				title:'Choose Status'
 			});
 
 			updateStatus();
@@ -708,6 +707,7 @@
 			}
 		};
 		var updateStatus = function() { /* Update The Status Selector */
+			if (ipad) { return }
 			switch(person.status) {
 				case 'uncontacted':	statusSelector.cancel = 0; break;
 				case 'attempted_contact': statusSelector.cancel = 1; break;
