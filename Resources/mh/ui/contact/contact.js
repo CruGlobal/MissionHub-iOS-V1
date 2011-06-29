@@ -348,8 +348,10 @@
 					fontFamily: 'Helvetica-Bold'
 				},
 				color:'black',
-				suppressReturn:false,
-				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT
+				suppressReturn:true,
+				hintText: 'comment',
+				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT,
+			    returnKeyType:Titanium.UI.RETURNKEY_DONE
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
 
@@ -806,7 +808,7 @@
 			}
 		};
 		var createCommentRow = function(followupComment) { /* Create A Comment TableView Row */
-			debug('mh.ui.window.contacts.createCommentRow');
+			//debug('mh.ui.window.contacts.createCommentRow');
 			var row = Ti.UI.createTableViewRow({
 				className:"comment",
 				color: mh.config.colors.ctvTxt,
@@ -859,44 +861,75 @@
 				top: 5,
 				left: 60,
 				height: 14,
-				width: 150,
-				font: {
-					fontSize: 14,
-					fontFamily: 'Helvetica'
-				}
+				width: 140,
+				font: {	fontSize: 14, fontFamily: 'Helvetica' }
 			});
 			row.add(name);
 
 			var status = Ti.UI.createLabel({
-				top: 6,
-				left: 60 + 150 + 10,
+				top: 5,
+				left: 60 + 130 + 10,
 				height: 13,
 				textAlign: 'right',
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
-				font: {
-					fontSize: 13,
-					fontFamily: 'Helvetica'
-				},
-				width: Ti.Platform.displayCaps.platformWidth - 60 - 150 - 10 - 5
+				font: {	fontSize: 13, fontFamily: 'Helvetica' },
+				width: Ti.Platform.displayCaps.platformWidth - 60 - 130 - 10 - 5
 			});
 			//status.width = status.width - 5;
 			row.add(status);
-
+			
+			
+			var bottomBar = Ti.UI.createView({
+				top: 5 + 33,
+				left: 60,
+				height: 16+5,
+				width: Ti.Platform.displayCaps.platformWidth - 60 - 5
+			});
+			row.add(bottomBar);
+			
+			var time = Ti.UI.createLabel({
+				left: 0,
+				top: 0,
+				color: '#666',
+				font: {	fontSize: 12, fontFamily: 'Helvetica' },
+				text: followupComment.comment.created_at
+			})
+			bottomBar.add(time);
+			
+			if (followupComment.rejoicables) {
+				for (var index in followupComment.rejoicables) {
+					var rejoicable = followupComment.rejoicables[index];
+					var image;
+					switch(rejoicable.what) {
+						case 'spiritual_conversation': image = 'blue'; break;
+						case 'prayed_to_receive': image = 'red'; break;
+						case 'gospel_presentation': image = 'green'; break;
+					}
+					
+					var icon = Ti.UI.createView({
+						backgroundColor: image,
+						width: 16,
+						height: 16,
+						right: index * 18,
+						top: 0,
+					})
+					bottomBar.add(icon);
+				}
+			}
+			
 			if (followupComment.comment.comment && followupComment.comment.comment != '') {
 				var comment = Ti.UI.createLabel({
 					color: mh.config.colors.commentRowCommentTxt,
 					top: status.top + status.height + 2,
 					height: 'auto',
-					font: {
-						fontSize: 13,
-						fontFamily: 'Helvetica'
-					},
+					font: {	fontSize: 13, fontFamily: 'Helvetica' },
 					width: Ti.Platform.displayCaps.platformWidth - 60 - 5,
 					text: followupComment.comment.comment,
 					left: 60
 				})
-				comment.height += 6;
+				comment.height += 2;
+				bottomBar.top = comment.height + comment.top;
 				row.add(comment);
 			}
 

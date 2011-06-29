@@ -191,6 +191,7 @@
 		info("requestURL: " + requestURL);
 				
 		var xhr = Ti.Network.createHTTPClient();
+		xhr.trys = 0;
 	
 		xhr.onload = function(e) {
 			debug("in mh.api.firePostRequest.xhr.onload");
@@ -204,10 +205,16 @@
 		
 		xhr.onerror = function(e) {
 			debug("whoops... in mh.api.firePostRequest.xhr.onerror");
-			//TODO: HALT LOADING INDICATOR HERE w.indicator.hide();
-			debug("response: " + this.responseText);
-			var response = mh.util.makeValid(this.responseText);
-			mh.error.handleResponse(this.responseText,options);
+			if (xhr.trys < 3) {
+				info("retrying...");
+				xhr.trys++;
+				xhr.open('POST',requestURL);
+				xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+				xhr.send(data);
+			} else {
+				debug("response: " + this.responseText);
+				mh.error.handleResponse(this.responseText,options);
+			}
 		};
 		
 		xhr.open('POST',requestURL);
@@ -231,7 +238,7 @@
 			if (jsonResponse) {
 				var response = mh.util.makeValid(jsonResponse);
 				if (mh.error.handleResponse(jsonResponse, options)) {
-					info("I'm using a cached response");
+					debug("I'm using a cached response");
 					xhr = false;
 					return options.successCallback(response);
 				}
@@ -240,6 +247,7 @@
 		
 		if (!jsonResponse) {
 			xhr = Ti.Network.createHTTPClient();
+			xhr.trys = 0;
 
 			xhr.onload = function(e) {
 				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
@@ -258,9 +266,15 @@
 			};
 
 			xhr.onerror = function(e) {
-				//TODO: TURN OFF LOADING INDICATOR   w.indicator.hide();
-				debug("whoops... mh.api.fireGetRequest.xhr.onerror");
-				mh.error.handleResponse(this.responseText,options);
+				if (xhr.trys < 3) {
+					debug("retrying...");
+					xhr.trys++;
+					xhr.open('GET', requestURL);
+					xhr.send();
+				} else {
+					debug("whoops... mh.api.fireGetRequest.xhr.onerror");
+					mh.error.handleResponse(this.responseText,options);
+				}
 			};
 
 		xhr.open('GET', requestURL);

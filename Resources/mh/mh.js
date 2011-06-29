@@ -22,10 +22,13 @@ var mh = {};
 		return 'en';
 	};
 	
-	var person, orgID, role;
+	var person, orgID;
+	var roles = {};
 	
+	mh.app.ROLE_NONE = -1;
 	mh.app.ROLE_ADMIN = 0;
 	mh.app.ROLE_LEADER = 1;
+	mh.app.ROLE_CONTACT = 2;
 	
 	mh.app.getPerson = function() {
 		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
@@ -33,13 +36,13 @@ var mh = {};
 		}
 	};
 	
-	mh.app.getRole = function() {
-		return role;
+	mh.app.getRoles = function() {
+		return roles;
 	};
 	
 	mh.app.setPerson = function(p) {
 		person = p;
-		calculateRole();
+		calculateRoles();
 	};
 	
 	mh.app.orgID = function() {
@@ -50,28 +53,32 @@ var mh = {};
 	
 	mh.app.setOrgID = function(o) {
 		orgID = o;
-		calculateRole();
+		calculateRoles();
 	};
 	
-	function calculateRole() {
+	function calculateRoles() {
+		roles = {};
 		for (var index in person.organization_membership) {
-			var org = person.organization_membership[index];
-			if (orgID) {
-				if (org.org_id == orgID) {
-					if (org.role == 'admin') {
-						role = mh.app.ROLE_ADMIN;
-					} else if (org.role == 'leader') {
-						role = mh.app.ROLE_LEADER;
-					}
-				}
+			var org_membership = person.organization_membership[index];
+			roles[org_membership.org_id] = {name: org_membership.name};
+			if (org_membership.primary === true) {
+				orgID = org_membership.org_id;
+				roles[org_membership.org_id].primary = true;
 			} else {
-				if (org.primary === true) {
-					if (org.role == 'admin') {
-						role = mh.app.ROLE_ADMIN;
-					} else if (org.role == 'leader') {
-						role = mh.app.ROLE_LEADER;
-					}
-				}
+				roles[org_membership.org_id].primary = false;
+			}
+			roles[org_membership.org_id].role = mh.app.ROLE_NONE;
+		}
+		for (var index in person.organizational_roles) {
+			var role = person.organizational_roles[index];
+			if (role.role == 'admin') {
+				roles[role.org_id].role = mh.app.ROLE_ADMIN;
+			} else if (role.role == 'leader') {
+				roles[role.org_id].role = mh.app.ROLE_LEADER;
+			} else if (role.role == 'contact') {
+				roles[role.org_id].role = mh.app.ROLE_CONTACT;
+			} else {
+				roles[role.org_id].role = mh.app.ROLE_NONE;
 			}
 		}
 	}
