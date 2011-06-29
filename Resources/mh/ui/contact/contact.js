@@ -4,7 +4,7 @@
 
 	mh.ui.contact.window = function() {
 
-		var contactWindow, person, contact, comments, tabbedBar, tableView, tableViewHeader, contactCard, statusSelector, indicator;
+		var contactWindow, person, contact, comments, tabbedBar, tableView, tableViewHeader, contactCard, statusSelector, indicator, assigned;
 
 		var open = function(p) { /* Create And Open The Window For A Person (p) */
 			debug('running mh.ui.contact.window.open with contact: ' + p.name);
@@ -84,6 +84,8 @@
 		TAB_COMMENTS = 0; // constant for comment tab
 		TAB_MORE_INFO = 1; // constant for more info tab
 		TAB_QUESTIONNAIRE = 2; // constant for questionnaire tab
+		CONTACT_ASSIGNED = 1;
+		CONTACT_UNASSIGNED = 0;
 		
 		var tab = TAB_COMMENTS;
 		var commentData = [{title: '', editable:false}]; // Empty row to fix keyboard bug
@@ -281,6 +283,7 @@
 			});
 			tableViewHeader.nv.add(tableViewHeader.name);
 
+			// Assign To Me button
 			tableViewHeader.nv.assignButton = Ti.UI.createButton({
 				backgroundImage: '/images/assign_button.png',
 				color: mh.config.colors.lightBlue,
@@ -292,9 +295,39 @@
 					fontSize:14,
 					fontFamily: 'ArialRoundedMTBold'
 				},
-				title: 'Assign to Me'
+				title: L('contact_assign_to_me')
 			});
+			
+			assigned = CONTACT_UNASSIGNED;
+			
+			var onAssignButtonClick = function() {
+				var assignSuccessCallback = function () {
+					debug('assignSuccessCallback()');
+					assigned = CONTACT_ASSIGNED;
+					tableViewHeader.nv.assignButton.title = L('contact_unassigned');
+				}
+				
+				var assignErrorCallback = function () {
+					debug('assignErrorCallback()');
+				}
+				
+				var dataForRequest = {
+					ids: person.id,
+					assign_to: mh.app.getPerson().id,
+					org_id: mh.app.getOrgID()	
+				};
+				
+				var optionsForRequest = {
+					successCallback: assignSuccessCallback,
+					errorCallback: assignErrorCallback
+				}
 
+				mh.api.createContactAssignment(dataForRequest, optionsForRequest); 			
+		}
+
+
+			tableViewHeader.nv.assignButton.addEventListener('click',onAssignButtonClick);
+			
 			tableViewHeader.nv.add(tableViewHeader.nv.assignButton);
 
 			// Comment View
@@ -513,6 +546,18 @@
 			if (person.status) {
 				tableViewHeader.statusButton.title = L('contact_status_' + person.status);
 			}
+			
+			var person_assigned_to_ids = [];
+			
+			if (person.assignment) {
+				if (person.assignment.person_assigned_to) {
+					for (var y = 0; y < person.assignment.person_assigned_to.length; y++) {
+						if (person.assignment.person_assigned_to[y].id == person.id) {
+							assigned = CONTACT_ASSIGNED;
+						}
+					}
+				}
+			}
 
 			var showPhone = true;
 			var showSMS = true;
@@ -622,7 +667,7 @@
 					followup_comment: {
 						organization_id: person.request_org_id,
 						contact_id: person.id,
-						commenter_id: mh.app.person().id,
+						commenter_id: mh.app.getPerson().id,
 						status: status,
 						comment: tableViewHeader.commentField.value,
 					},
@@ -777,7 +822,7 @@
 			if (mh.app.getRole() == mh.app.ROLE_ADMIN) {
 				row.editable = true;
 			} else if (mh.app.getRole() == mh.app.ROLE_LEADER) {
-				if (followupComment.comment.commenter.id == mh.app.person().id) {
+				if (followupComment.comment.commenter.id == mh.app.getPerson().id) {
 					row.editable = true;
 				}
 			}
@@ -887,15 +932,20 @@
 		
 		var tabbedBarOnClick = function(index) { /* Handle Change Tabs */
 			if (tab != index) {
+					var x = Ti.UI.createView({
+						backgroundImage: 'images/MH_Contact_Very_Top_BG.png',
+						height: 166,
+						width:Ti.Platform.displayCaps.platformWidth
+					});
 				if (index == 0) {
-					tableView.headerView = null;
+					tableView.headerView = x;
 					contactCard.backgroundImage = '';
 					tableViewHeader.add(contactCard);
 					tableView.headerView = tableViewHeader;
 					tableView.setData(commentData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 				} else {
 					if (tab == 0) {
-						tableView.headerView = null;
+						tableView.headerView = x;
 						tableViewHeader.remove(contactCard);
 						contactCard.backgroundImage = 'images/MH_Contact_Very_Top_BG.png';
 						tableView.headerView = contactCard

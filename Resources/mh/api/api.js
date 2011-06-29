@@ -157,7 +157,7 @@
 	//  errorCallback:     function fired when request fails
 	mh.api.createContactAssignment = function (data, options) {
 		data.access_token = mh.auth.oauth.getToken();
-		var requestURL = mh.config.api_url + '/contact_assignments/';
+		var requestURL = mh.config.api_url + '/contact_assignments.json';
 		return firePostRequest(requestURL, options, data);
 	};
 

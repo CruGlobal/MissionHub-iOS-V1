@@ -27,7 +27,7 @@ var mh = {};
 	mh.app.ROLE_ADMIN = 0;
 	mh.app.ROLE_LEADER = 1;
 	
-	mh.app.person = function() {
+	mh.app.getPerson = function() {
 		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
 			return person;
 		}

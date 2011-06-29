@@ -362,11 +362,11 @@
 				curTab = index;
 				resetTableView();
 				switch (index) {
-					case 0:	addOption('assigned_to_id', mh.app.person().id);
+					case 0:	addOption('assigned_to_id', mh.app.getPerson().id);
 							addFilter('status', 'not_finished');
 							contactsWindow.contactsLabel.text = L('contacts_title_my');
 							break;
-					case 1: addOption('assigned_to_id', mh.app.person().id);
+					case 1: addOption('assigned_to_id', mh.app.getPerson().id);
 							addFilter('status', 'finished');
 							contactsWindow.contactsLabel.text = L('contacts_title_completed');
 							break;

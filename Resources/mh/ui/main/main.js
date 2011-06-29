@@ -247,7 +247,7 @@
 			};
 			
 			configureLogoutBar = function() {
-				usernameLabel.text = mh.app.person().name;
+				usernameLabel.text = mh.app.getPerson().name;
 			};
 		};
 		
