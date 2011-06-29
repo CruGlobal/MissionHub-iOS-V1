@@ -40,6 +40,14 @@ var mh = {};
 		return roles;
 	};
 	
+	mh.app.getRole = function(org) {
+		if (org) {
+			return roles[org].role;
+		} else {
+			return roles[orgID].role;
+		}
+	};
+	
 	mh.app.setPerson = function(p) {
 		person = p;
 		calculateRoles();

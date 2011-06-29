@@ -820,7 +820,7 @@
 				height: 'auto',
 				editable: false
 			});
-
+			
 			if (mh.app.getRole() == mh.app.ROLE_ADMIN) {
 				row.editable = true;
 			} else if (mh.app.getRole() == mh.app.ROLE_LEADER) {
