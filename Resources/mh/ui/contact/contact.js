@@ -630,6 +630,10 @@
 			var hasRejoice = false;
 			var hasMessage = false;
 			var canPost = false;
+			
+			info('Current: ' +tableViewHeader.statusButton.title);
+			info('Person Status: '+L('contact_status_'+person.status));
+			
 			if (tableViewHeader.statusButton.title != L('contact_status_'+person.status)) {
 				changedStatus = true;
 				canPost = true;
@@ -706,6 +710,14 @@
 			tableViewHeader.rejoicablesView.rejoiceChrist.image = '';
 			tableViewHeader.rejoicablesView.rejoiceGospel.on = false;
 			tableViewHeader.rejoicablesView.rejoiceGospel.image = '';
+			switch(tableViewHeader.statusButton.title) {
+				case L('contact_status_uncontacted'): person.status='uncontacted'; break;
+				case L('contact_status_attempted_contact'):	person.status='attempted_contact'; break;
+				case L('contact_status_contacted'): person.status='contacted'; break;
+				case L('contact_status_completed'): person.status='completed';	break;
+				case L('contact_status_do_not_contact'): person.status='do_not_contact'; break;
+			}
+			updateStatus();
 			hideIndicator('post');
 			getComments(true);
 		};
