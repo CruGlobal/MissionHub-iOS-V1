@@ -149,11 +149,11 @@
 					debug("params.error : " + params.error);
 
 					var options = {
-						errorCallback: function(e) {
-							if (e.index === 0) {
+						errorCallback: function(click) {
+							if (click.index === 0) {
 								authWebView.url = mh.auth.wvUrl;								
 							}
-							if (e.index === 1) {
+							if (click.index === 1) {
 								destroy();
 							}
 						},
@@ -187,14 +187,14 @@
 			mh.ui.main.hideIndicator('webViewLoad');
 
 			var options = {
-				errorCallback: function(e) {
-						if (e.index === 0) {
-								authWebView.url = mh.auth.wvUrl;
-							}
-							if (e.index === 1) {
-								destroy();
-							}
-					},
+				errorCallback: function(click) {
+					if (click.index === 0) {
+						authWebView.url = mh.auth.wvUrl;
+					}
+					if (click.index === 1) {
+						destroy();
+					}
+				},
 				buttonNames: [L('retry'),L('cancel')]
 			};
 			mh.error.handleError('', options, 'no_data');
@@ -204,8 +204,8 @@
 			debug('running mh.ui.login.window.grantAccessOnLoad');
 			
 			var options = {
-				errorCallback: function(e) {
-					if (e.index === 0) {
+				errorCallback: function(click) {
+					if (click.index === 0) {
 						mh.auth.oauth.grantAccess(e.authorization, grantAccessOnLoad, grantAccessOnError);
 					}
 				},
@@ -234,8 +234,8 @@
 
 			info(e);
 			var options = {
-				errorCallback: function(e) {
-					if (e.index === 0) {
+				errorCallback: function(click) {
+					if (click.index === 0) {
 						mh.auth.oauth.grantAccess(e.authorization, grantAccessOnLoad, grantAccessOnError);
 					}
 				},
@@ -249,8 +249,8 @@
 			debug('running mh.ui.login.window.getTokenOnLoad');
 			
 			var options = {
-				errorCallback: function(e) {
-					if (e.index === 0) {
+				errorCallback: function(click) {
+					if (click.index === 0) {
 						mh.auth.oauth.getTokenFromCode(e.code, getTokenOnLoad, getTokenOnError);
 					}
 				},
@@ -280,8 +280,8 @@
 		var getTokenOnError = function(e) {
 			debug('running mh.ui.login.window.getTokenOnError');
 			var options = {
-				errorCallback: function(e) {
-					if (e.index === 0) {
+				errorCallback: function(click) {
+					if (click.index === 0) {
 						mh.auth.oauth.getTokenFromCode(e.code, getTokenOnLoad, getTokenOnError);
 					}
 				},

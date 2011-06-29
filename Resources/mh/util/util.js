@@ -110,13 +110,13 @@ if (Titanium.Platform.osname == 'android') {
 
 /* Easy Log */
 function debug(msg) {
-	//Ti.API.debug(msg);
+	Ti.API.debug(msg);
 }
 
 function info(msg) {
-	//Ti.API.info(msg);
+	Ti.API.info(msg);
 }
 
 function error(msg) {
-	//Ti.API.error(msg);
+	Ti.API.error(msg);
 }
