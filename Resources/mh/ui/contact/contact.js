@@ -23,6 +23,8 @@
 			createTableViewHeader();
 			createFooter();
 			
+			tab = TAB_COMMENTS;
+			
 			refresh();
 			
 			mh.ui.nav.open(contactWindow);
@@ -905,7 +907,7 @@
 				top: 0,
 				color: '#666',
 				font: {	fontSize: 12, fontFamily: 'Helvetica' },
-				text: followupComment.comment.created_at
+				text: followupComment.comment.created_at_words
 			})
 			bottomBar.add(time);
 			
@@ -951,6 +953,137 @@
 		var createInfoRows = function() { /* Create TableView Content For More Info Tab */
 			
 			moreInfoData = [];
+			
+			function createSimpleRow(title, value) {
+				var row = Ti.UI.createTableViewRow({editable: false, className: 'moreinfo', height: 'auto'});
+				
+				var t = Ti.UI.createLabel({
+					left: 5,
+					top: 5,
+					text: title,
+					font: {	fontSize: 14, fontFamily: 'Helvetica-Bold' },
+					width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
+					height: 'auto',
+					color: mh.config.colors.blue
+				})
+				row.add(t);
+				
+				var v = Ti.UI.createLabel({
+					left: 5,
+					color: '#555',
+					top: t.top + t.height,
+					text: value,
+					font: {	fontSize: 14, fontFamily: 'Helvetica' },
+					width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
+					height: 'auto'
+				});
+				row.add(v);
+				v.height += 5;
+				
+				return row;
+			}
+			
+			if (person.fb_id) {
+				var fbRow = createSimpleRow(L('contact_info_facebook', 'Facebook'), 'http://facebook.com/profile.php?id='+person.fb_id);
+				fbRow.addEventListener('click', function(e){
+					mh.ui.openLink({ link: 'http://facebook.com/profile.php?id='+person.fb_id });
+				});
+				moreInfoData.push(fbRow);
+			}
+			
+			if (person.assignment.person_assigned_to.length > 0) {	
+				var assignmentRow = createSimpleRow(L('contact_info_assignment', 'Assigned To'), person.assignment.person_assigned_to[0].name);
+				moreInfoData.push(assignmentRow);
+			}
+			
+			if (person.first_contact_date) {
+				var date = mh.util.dateFromString(person.first_contact_date);
+				var contactDate = createSimpleRow(L('contact_info_date', 'First Contact Date'), date.toDateString());
+				moreInfoData.push(contactDate);
+			}
+			
+			function formatPhone(phonenum) {
+			    var regexObj = /^(?:\+?1[-. ]?)?(?:\(?([0-9]{3})\)?[-. ]?)?([0-9]{3})[-. ]?([0-9]{4})$/;
+			    if (regexObj.test(phonenum)) {
+			        var parts = phonenum.match(regexObj);
+			        var phone = "";
+			        if (parts[1]) { phone += "+1 (" + parts[1] + ") "; }
+			        phone += parts[2] + "-" + parts[3];
+			        return phone;
+			    }
+			    else {
+			        return phonenum;
+			    }
+			}
+			
+			if (person.phone_number) {
+				var phoneNumber = createSimpleRow(L('contact_info_phone', 'Phone Number'), formatPhone(person.phone_number));
+				if (Titanium.Platform.canOpenURL('tel:' + person.phone_number)) {
+					phoneNumber.addEventListener('click', function(e){
+						Titanium.Platform.openURL('tel:' + person.phone_number);
+					});
+				}
+				moreInfoData.push(phoneNumber);
+			}
+			
+			if (person.email_address) {
+				var emailAddress = createSimpleRow(L('contact_info_email', 'Email Address'), person.email_address);
+				if (Titanium.Platform.canOpenURL('mailto:' + person.email_address)) {
+					emailAddress.addEventListener('click', function(e){
+						Titanium.Platform.openURL('mailto:' + person.email_address);
+					});
+				}
+				moreInfoData.push(emailAddress);
+			}
+			
+			if (person.birthday) {
+				var birthday = createSimpleRow(L('contact_info_birthday', 'Birthday'), person.birthday);
+				moreInfoData.push(birthday);
+			}
+			
+			if (person.interests.length > 0) {
+				var interests = '';
+				for (var i in person.interests) {
+					 var interest = person.interests[i];
+					 interests += interest.name;
+					 if (i+1 < person.interests) {
+					 	interests += ', ';
+					 }
+				}
+				var interest = createSimpleRow(L('contact_info_interests', 'Interests'), interests);
+				moreInfoData.push(interest);
+			}
+			
+			if (person.education.length > 0) {
+				for (var i in person.education) {
+					var edu = person.education[i];
+					
+					var title = edu.type;
+					if (!title) {
+						title = L('contact_info_education', 'Education');
+					}
+					
+					var value = '';
+					if (edu.school) {
+						value += edu.school.name;
+					}
+					
+					if (edu.year) {
+						if (value.length > 0) {
+							value += ' ' + L('contact_info_class_of', 'Class Of') + ' ';
+						}
+						value += edu.year.name; 
+					}
+					
+					var school = createSimpleRow(title, value);
+					moreInfoData.push(school);
+				}
+			}
+			
+			if (person.location) {
+				var location = createSimpleRow(L('contact_info_location', 'Location'), person.location.name);
+				moreInfoData.push(location);
+			}
 			
 			if (moreInfoData.length <= 0) {
 				moreInfoData = [{title:'', editable: false}];
@@ -1015,9 +1148,10 @@
 				left: 5,
 				top: 5,
 				text: question.label,
-				font: {	fontSize: 14, fontFamily: 'Helvetica' },
+				font: {	fontSize: 14, fontFamily: 'Helvetica-Bold' },
 				width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
-				height: 'auto'
+				height: 'auto',
+				color: mh.config.colors.blue
 			})
 			row.add(q);
 			
@@ -1064,18 +1198,23 @@
 		
 		var tabbedBarOnClick = function(index) { /* Handle Change Tabs */
 			if (tab != index) {
-					var x = Ti.UI.createView({
-						backgroundImage: 'images/MH_Contact_Very_Top_BG.png',
-						height: 166,
-						width:Ti.Platform.displayCaps.platformWidth
-					});
+				var x = Ti.UI.createView({
+					backgroundImage: 'images/MH_Contact_Very_Top_BG.png',
+					height: 166,
+					width:Ti.Platform.displayCaps.platformWidth
+				});
 				if (index == 0) {
+					tableView.editable = true;
+					tableView.allowsSelectionDuringEditing = true;
+					tableView.allowsSelection = false;
 					tableView.headerView = x;
 					contactCard.backgroundImage = '';
 					tableViewHeader.add(contactCard);
 					tableView.headerView = tableViewHeader;
 					tableView.setData(commentData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 				} else {
+					tableView.editable = false;
+					tableView.allowsSelectionDuringEditing = false;
 					if (tab == 0) {
 						tableView.headerView = x;
 						tableViewHeader.remove(contactCard);
@@ -1083,8 +1222,10 @@
 						tableView.headerView = contactCard
 					}
 					if (index == 1) {
+						tableView.allowsSelection = true;
 						tableView.setData(moreInfoData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 					} else {
+						tableView.allowsSelection = false;
 						tableView.setData(questionnaireData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 					}
 				}
