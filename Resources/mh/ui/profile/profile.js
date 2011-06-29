@@ -24,13 +24,19 @@
 			successCallback: function(e) {
 				info("success in calling my person");
 				person = e[0];
+				mh.app.setPerson(person);
+				
 				if (mh.app.orgID() != null) {
 					currentPickerOrgID = mh.app.orgID(); 
 				}
 				else {
 					currentPickerOrgID = person.request_org_id;
 				}
+				debug("here");
+				getOrgOptions();
+				debug("here2");
 				updateOrgPicker();
+				debug("here3");
 			},
 			errorCallback: function(e) {
 				info(e);
@@ -42,6 +48,7 @@
 		
 		var open = function() {
 			debug('running mh.ui.profile.window.open');
+			person = mh.app.getPerson();
 			mh.api.getPeople(mh.app.getPerson().id,options);
 			profileWindow = Ti.UI.createWindow({
 				backgroundImage: 'images/MH_Background.png',
@@ -60,7 +67,6 @@
 		
 		orgPicker = Ti.UI.createPicker();
 		orgPicker.selectionIndicator = true;
-		getOrgOptions();
 
 		
 		orgPicker.addEventListener('change', function(e) {
@@ -86,17 +92,18 @@
 		//draw the picker with vars
 
 		var getOrgOptions = function() {
-			var counter=0;
-			for (var x = 0; x < person.organization_membership.length; x++ ) {
-				if (person.organization_membership[x].role == 'admin' || person.organization_membership[x].role == 'leader') {
-					info("in for loop with true if statement" + person.organization_membership[x].name);
-					if (person.organization_membership[x].primary == 'true') {
+			var roles = mh.app.getRoles();
+			var counter = 0;
+			
+			for (var org in roles) {
+				if (org.role == mh.app.ROLE_ADMIN || org.role == mh.app.ROLE_LEADER ) {
+					if (org.primary == 1) {
 						orgPickerPosition = counter;
-						currentPickerOrgName = person.organization_membership[x].name;
+						currentPickerOrgName = org.name;
 					}
 					orgOptions[counter] = Ti.UI.createPickerRow({
-						title: person.organization_membership[x].name,
-						org_id: person.organization_membership[x].org_id,
+						title: org.name,
+						org_id: org.org_id,
 						index: counter
 					});
 					counter++;
@@ -114,6 +121,7 @@
 		var createHeader = function() {
 			
 			var defaultImage = '/images/facebook_question.gif';
+			
 			if (person.gender && person.gender == 'female') {
 				defaultImage = '/images/facebook_female.gif';
 			} else if (person.gender && person.gender == 'male') {
