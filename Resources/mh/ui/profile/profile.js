@@ -22,7 +22,6 @@
 		var options;
 		var nonDefaultOrg;
 		
-		
 		var orgPickerView;
 		
 		var open = function() {

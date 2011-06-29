@@ -3,7 +3,7 @@
 	mh.ui = {};
 	
 	mh.ui.alert = function(options) {
-		var buttonNames = [L('alert_btn_ok'), L('alert_btn_cancel')];
+		var buttonNames = [L('alert_btn_ok')];
 		if (options.buttonNames) {
 			buttonNames = options.buttonNames;
 		}

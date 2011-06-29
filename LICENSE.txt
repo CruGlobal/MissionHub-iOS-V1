@@ -1,1 +1,1 @@
-Place your license text here.  This file will be incorporated with your app at package time.
+Copyright 2011 Campus Crusade For Christ International, All Rights Reserved.

@@ -7,14 +7,13 @@
         <target device="blackberry">false</target>
         <target device="android">false</target>
     </deployment-targets>
-<id>us.ccci.hub</id>
+<id>com.missionhub.iphone</id>
 <name>MissionHub</name>
 <version>1.0</version>
 <publisher>Campus Crusade for Christ International</publisher>
-<url>http://www.ccci.org</url>
+<url>https://www.missionhub.com</url>
 <description>No description provided</description>
 <copyright>Campus Crusade for Christ International</copyright>
-<property name="ti.android.threadstacksize" type="int">131072</property>
 <icon>default_app_logo.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>

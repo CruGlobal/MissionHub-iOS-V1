@@ -195,10 +195,7 @@
 			var options = {
 				errorCallback: function(e) {
 					if (e.index === 0) {
-						authWebView.url = mh.auth.wvUrl;
-					}
-					if (e.index === 1) {
-						destroy();
+						mh.auth.oauth.grantAccess(e.authorization, grantAccessOnLoad, grantAccessOnError);
 					}
 				},
 				buttonNames: [L('retry'),L('cancel')]
@@ -228,10 +225,7 @@
 			var options = {
 				errorCallback: function(e) {
 					if (e.index === 0) {
-						authWebView.url = mh.auth.wvUrl;
-					}
-					if (e.index === 1) {
-						destroy();
+						mh.auth.oauth.grantAccess(e.authorization, grantAccessOnLoad, grantAccessOnError);
 					}
 				},
 				buttonNames: [L('retry'),L('cancel')]
@@ -246,10 +240,7 @@
 			var options = {
 				errorCallback: function(e) {
 					if (e.index === 0) {
-						authWebView.url = mh.auth.wvUrl;
-					}
-					if (e.index === 1) {
-						destroy();
+						mh.auth.oauth.getTokenFromCode(e.code, getTokenOnLoad, getTokenOnError);
 					}
 				},
 				buttonNames: [L('retry'),L('cancel')]
@@ -277,13 +268,10 @@
 		
 		var getTokenOnError = function(e) {
 			debug('running mh.ui.login.window.getTokenOnError');
-						var options = {
+			var options = {
 				errorCallback: function(e) {
 					if (e.index === 0) {
-						authWebView.url = mh.auth.wvUrl;
-					}
-					if (e.index === 1) {
-						destroy();
+						mh.auth.oauth.getTokenFromCode(e.code, getTokenOnLoad, getTokenOnError);
 					}
 				},
 				buttonNames: [L('retry'),L('cancel')]

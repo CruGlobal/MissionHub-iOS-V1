@@ -112,14 +112,16 @@
 			xhr.onload = function(e) {
 				onLoadCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					code: code
 				});
 			};
 			
 			xhr.onerror = function(e) {
 				onErrorCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					code: code
 				});
 			};
 			
@@ -142,14 +144,16 @@
 			xhr.onload = function(e) {
 				onLoadCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					authorization: authorization
 				});
 			};
 			
 			xhr.onerror = function(e) {
 				onErrorCallback({
 					location: this.location,
-					response: this.responseText
+					response: this.responseText,
+					authorization: authorization
 				});
 			};
 			

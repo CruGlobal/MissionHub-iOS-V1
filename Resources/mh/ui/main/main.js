@@ -67,9 +67,21 @@
 		
 		var checkTokenOnLoad = function(e) {
 			debug('running mh.ui.login.window.getTokenOnLoad');
-			
+			mh.ui.main.hideIndicator('checkToken');
 			var response = mh.util.makeValid(e.response);
 			if (response.error || !response || !e.token) {
+				
+				var options = {
+					errorCallback: function(e) {
+						if (e.index === 0) {
+							if (mh.auth.oauth.checkToken(checkTokenOnLoad, checkTokenOnError)){
+								mh.ui.main.showIndicator('checkToken');
+							}
+						}
+					},
+					buttonNames: [L('retry'),L('cancel')]
+				};
+				
 				if (response.error) {
 					mh.error.handleError(response.error, options);
 				}
@@ -83,12 +95,22 @@
 				info("Logged in with access token: " + e.token);
 				refresh();
 			}
-			mh.ui.main.hideIndicator('checkToken');
 		};
 		
 		var checkTokenOnError = function(e) {
-			mh.error.handleError('',options, 'access_token_fetch');
+			debug('running mh.ui.login.window.getTokenOnError');
 			mh.ui.main.hideIndicator('checkToken');
+			var options = {
+				errorCallback: function(e) {
+					if (e.index === 0) {
+						if (mh.auth.oauth.checkToken(checkTokenOnLoad, checkTokenOnError)){
+							mh.ui.main.showIndicator('checkToken');
+						}
+					}
+				},
+				buttonNames: [L('retry'),L('cancel')]
+			};
+			mh.error.handleError('',options, 'access_token_fetch');
 		};
 		
 		var show = function() {
