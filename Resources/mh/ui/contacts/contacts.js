@@ -231,7 +231,7 @@
 			}
 			
 			indicator.show();
-			
+			debug("options hash:" + JSON.stringify(options));
 			options.filters = filters;
 			prevXhr = mh.api.getContactsList(options);
 		};
@@ -358,6 +358,7 @@
 		
 		var curTab = 0;
 		var changeTab = function(index, force) {
+			addOption('org_id', mh.app.orgID());
 			if (index !== curTab || force) {
 				curTab = index;
 				resetTableView();

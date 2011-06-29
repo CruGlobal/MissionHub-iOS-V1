@@ -4,7 +4,7 @@
 
 	mh.ui.contact.window = function() {
 
-		var contactWindow, person, contact, comments, tabbedBar, tableView, tableViewHeader, contactCard, statusSelector, indicator, assigned;
+		var contactWindow, person, contact, comments, tabbedBar, tableView, tableViewHeader, contactCard, statusSelector, indicator, assigned, assignedName;
 
 		var open = function(p) { /* Create And Open The Window For A Person (p) */
 			debug('running mh.ui.contact.window.open with contact: ' + p.name);
@@ -86,7 +86,8 @@
 		TAB_COMMENTS = 0; // constant for comment tab
 		TAB_MORE_INFO = 1; // constant for more info tab
 		TAB_QUESTIONNAIRE = 2; // constant for questionnaire tab
-		CONTACT_ASSIGNED = 1;
+		CONTACT_ASSIGNED_TO_OTHER = 2;
+		CONTACT_ASSIGNED_TO_ME = 1;
 		CONTACT_UNASSIGNED = 0;
 		
 		var tab = TAB_COMMENTS;
@@ -144,7 +145,8 @@
 							successCallback: function() {
 							},
 							errorCallback: function() {
-							}
+							},
+							org_id: mh.app.orgID()
 						});
 					}
 				}
@@ -295,37 +297,71 @@
 				left: 0,
 				font: {
 					fontSize:14,
-					fontFamily: 'ArialRoundedMTBold'
+					fontFamily: 'Helvetica-Bold'
 				},
-				title: L('contact_assign_to_me')
+				title: L('contact_assign_to_me'),
+				visible: false
 			});
 			
-			assigned = CONTACT_UNASSIGNED;
+			tableViewHeader.nv.assignedToOtherLabel = Ti.UI.createLabel({
+				height: 40,
+				width: 177,
+				top: 8 + tableViewHeader.name.height + 47 + 5,
+				left: 0,
+				font: {
+					fontSize: 14,
+					fontFamily: 'Helvetica-Bold'
+				},
+				text: L('contact_assigned_to') + ': ' + assignedName,
+				color: '#ccc',
+				visible: false,
+				zindex: 200
+			});
+			
+			tableViewHeader.nv.add(tableViewHeader.nv.assignedToOtherLabel);
 			
 			var onAssignButtonClick = function() {
 				var assignSuccessCallback = function () {
 					debug('assignSuccessCallback()');
-					assigned = CONTACT_ASSIGNED;
-					tableViewHeader.nv.assignButton.title = L('contact_unassigned');
+					if (assigned == CONTACT_UNASSIGNED) {
+						assigned = CONTACT_ASSIGNED_TO_ME;
+					}
+					else if (assigned == CONTACT_ASSIGNED_TO_ME) {
+						assigned = CONTACT_UNASSIGNED;
+					}
+					tableViewHeader.nv.assignButton.enabled = true;
+					updateAssignment(true);
 				}
 				
 				var assignErrorCallback = function () {
 					debug('assignErrorCallback()');
+					tableViewHeader.nv.assignButton.enabled = true;
+					alert({
+						title: L('contact_assignment_error'),
+						message: L('contact_assignment_error_msg'),
+						buttonNames: ['Ok']
+					});
 				}
 				
 				var dataForRequest = {
 					ids: person.id,
 					assign_to: mh.app.getPerson().id,
-					org_id: mh.app.getOrgID()	
+					org_id: mh.app.orgID()
 				};
 				
 				var optionsForRequest = {
 					successCallback: assignSuccessCallback,
 					errorCallback: assignErrorCallback
-				}
+				};
 
-				mh.api.createContactAssignment(dataForRequest, optionsForRequest); 			
-		}
+				if(assigned == CONTACT_UNASSIGNED) {
+					mh.api.createContactAssignment(dataForRequest, optionsForRequest);					
+				}
+				else if(assigned == CONTACT_ASSIGNED_TO_ME) {
+					mh.api.deleteContactAssignment(dataForRequest.ids, optionsForRequest);
+				}
+				tableViewHeader.nv.assignButton.enabled = false;
+			}
 
 
 			tableViewHeader.nv.assignButton.addEventListener('click',onAssignButtonClick);
@@ -539,6 +575,56 @@
 			getComments(true)
 		};
 		
+		var updateAssignment = function(when) {
+			debug("updateAssignment");
+			debug("assignment: " + assigned);
+			
+			if (!when) { //if when == true, means that new status has already been set
+				determineAssignmentStatus();
+			}
+
+			debug("assignment: " + assigned);
+			
+			if (assigned == CONTACT_ASSIGNED_TO_ME) {
+				tableViewHeader.nv.assignButton.title = L('contact_unassign');
+				tableViewHeader.nv.assignButton.show();
+			}
+			else if(assigned == CONTACT_UNASSIGNED) {
+				tableViewHeader.nv.assignButton.title = L('contact_assign_to_me');
+				tableViewHeader.nv.assignButton.show();
+			}
+			else if(assigned == CONTACT_ASSIGNED_TO_OTHER) {
+				tableViewHeader.nv.assignButton.visible = false;
+				tableViewHeader.nv.assignedToOtherLabel.text = L('contact_assigned_to') + ': ' + assignedName;
+				tableViewHeader.nv.assignedToOtherLabel.visible = true;
+			}
+			debug("assignment at end of updateAssignment" + assigned);
+		}
+		
+		var determineAssignmentStatus = function() {
+			if (person.assignment) {
+				if (person.assignment.person_assigned_to) {
+					if (person.assignment.person_assigned_to.length == 0) {
+						debug("contact is unassigned");
+						assigned = CONTACT_UNASSIGNED;
+						return;
+					}
+					for (var y = 0; y < person.assignment.person_assigned_to.length; y++) {
+						if (person.assignment.person_assigned_to[y].id == mh.app.getPerson().id) {
+							debug("contact is mine");
+							assigned = CONTACT_ASSIGNED_TO_ME;
+							return;
+						} else {
+							debug("contact is not mine");
+							assigned = CONTACT_ASSIGNED_TO_OTHER;
+							assignedName = person.assignment.person_assigned_to[y].name
+						}
+					}
+				}
+			}
+		
+		}
+		
 		var updateHeader = function() { /* Update The Header Content */
 			debug('mh.ui.window.contact.updateHeader');
 			if (person.picture) {
@@ -551,17 +637,7 @@
 				tableViewHeader.statusButton.title = L('contact_status_' + person.status);
 			}
 			
-			var person_assigned_to_ids = [];
-			
-			if (person.assignment) {
-				if (person.assignment.person_assigned_to) {
-					for (var y = 0; y < person.assignment.person_assigned_to.length; y++) {
-						if (person.assignment.person_assigned_to[y].id == person.id) {
-							assigned = CONTACT_ASSIGNED;
-						}
-					}
-				}
-			}
+
 
 			var showPhone = true;
 			var showSMS = true;
@@ -673,7 +749,7 @@
 				}
 				var data = {
 					followup_comment: {
-						organization_id: person.request_org_id,
+						organization_id: mh.app.orgID(),
 						contact_id: person.id,
 						commenter_id: mh.app.getPerson().id,
 						status: status,
@@ -738,7 +814,8 @@
 				},
 				errorCallback: function(e) {
 					onContactError(e);
-				}
+				},
+				org_id: mh.app.orgID()
 			};
 			if (fresh) {
 				mh.api.getContacts(person.id, mh.util.mergeJSON(options, {fresh: true}));
@@ -751,6 +828,7 @@
 			contact = e;
 			person = e.people[0].person;
 			updateHeader();
+			updateAssignment(false);
 			updateStatus();
 			createInfoRows();
 			createQuestionnaireRows();
@@ -777,7 +855,8 @@
 				},
 				errorCallback: function(e) {
 					onCommentError(e);
-				}
+				},
+				org_id: mh.app.orgID()
 			};
 			if (fresh) {
 				mh.api.getFollowupComments(person.id, mh.util.mergeJSON(options,{fresh: true}));

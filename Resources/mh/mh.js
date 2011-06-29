@@ -61,7 +61,7 @@ var mh = {};
 	
 	mh.app.setOrgID = function(o) {
 		orgID = o;
-		calculateRoles();
+//		calculateRoles();
 	};
 	
 	function calculateRoles() {

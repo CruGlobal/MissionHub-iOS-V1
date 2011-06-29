@@ -44,6 +44,9 @@
 	<string name="contact_questionnaire">Questionnaire</string>
 	<string name="contact_assign_to_me">Assign to Me</string>
 	<string name="contact_unassign">Unassign</string>
+	<string name="contact_assigned_to">Assigned to</string>
+	<string name="contact_assignment_error">Assignment Error</string>
+	<string name="contact_assignment_error_msg">MissionHub failed to change your assignment status. Try again.</string>
 	
 	<!-- Profile -->
 	<string name="profile_title">My Profile</string>
@@ -54,6 +57,7 @@
 	<string name="profile_contacts_button">Contacts</string>
 	<string name="profile_about_button">About</string>
 	<string name="profile_current_organization">Current Organization</string>
+
 	<!-- Information page -->
 	<string name="info_title">Information</string>
 	

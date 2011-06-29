@@ -30,6 +30,9 @@
 		
 		var queryParams = sortFilterAssign(options);
 		queryParams.access_token = mh.auth.oauth.getToken();
+		if (options.org_id) {
+			queryParams.org_id = options.org_id;
+		}
 	
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
@@ -62,6 +65,9 @@
 		idString = generateIDString(ids);
 		var queryParams = {};
 		queryParams.access_token = mh.auth.oauth.getToken();
+		if (options.org_id) {
+			queryParams.org_id = options.org_id;
+		}
 		var queryString = buildQueryParams(queryParams);
 		var requestURL = mh.config.api_url + '/contacts/' + idString + '.json?' + queryString;
 		if (!options.fresh) {
@@ -84,6 +90,9 @@
 		idString = generateIDString(ids);
 		var queryParams = {};
 		queryParams.access_token = mh.auth.oauth.getToken();
+		if (options.org_id) {
+			queryParams.org_id = options.org_id;
+		}
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
 
@@ -110,6 +119,10 @@
 		
 		var queryParams = {};
 		queryParams.access_token = mh.auth.oauth.getToken();
+		
+		if (options.org_id) {
+			queryParams.org_id = options.org_id;
+		}
 		//now we actually build the query string
 		var queryString = buildQueryParams(queryParams);
 
@@ -140,6 +153,7 @@
 	mh.api.postFollowupComment = function (data, options) {
 		realData = { json: JSON.stringify(data) };
 		realData.access_token = mh.auth.oauth.getToken();
+		
 		var requestURL = mh.config.api_url + '/followup_comments.json';
 		return firePostRequest(requestURL, options, realData);
 	};
