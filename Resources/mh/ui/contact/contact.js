@@ -304,15 +304,19 @@
 			tableViewHeader.nv.assignedToOtherLabel = Ti.UI.createLabel({
 				height: 40,
 				width: 177,
-				top: 8 + tableViewHeader.name.height + 47 + 20,
+				top: 8 + tableViewHeader.name.height + 47 + 5,
 				left: 0,
 				font: {
-					fontSize: 12,
+					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
 				},
 				text: L('contact_assigned_to') + ': ' + assignedName,
-				visible: false
+				color: '#ccc',
+				visible: false,
+				zindex: 200
 			});
+			
+			tableViewHeader.nv.add(tableViewHeader.nv.assignedToOtherLabel);
 			
 			var onAssignButtonClick = function() {
 				var assignSuccessCallback = function () {
@@ -611,7 +615,7 @@
 						} else {
 							debug("contact is not mine");
 							assigned = CONTACT_ASSIGNED_TO_OTHER;
-							assignedName = person.assignment.person_assigned_to[y].id
+							assignedName = person.assignment.person_assigned_to[y].name
 						}
 					}
 				}
