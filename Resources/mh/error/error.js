@@ -1,6 +1,6 @@
 /*!
  * MissionHub
- * http://hub.ccci.us
+ * https://www.missionhub.com
  *
  * Copyright 2011, Campus Crusade for Christ International
  * 

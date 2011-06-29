@@ -1,10 +1,10 @@
 /*!
- * MissionHub
- * http://hub.ccci.us
+ * MissionHub API
+ * https://www.missionhub.com
  *
  * Copyright 2011, Campus Crusade for Christ International
- * 
- * Description: MissionHub iPhone
+ *
+ * Description: MissionHub API
  * Author: Matt Webb <matt.webb@cojourners.com>
  * Date: Fri, 24 Jun 2011 23:16:47 -0400
  */

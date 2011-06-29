@@ -1,3 +1,14 @@
+/*!
+ * MissionHub OAuth Handler
+ * https://www.missionhub.com
+ *
+ * Copyright 2011, Campus Crusade for Christ International
+ *
+ * Description: Handles OAuth Requests
+ * Author: Chris Roemmich <chris.roemmich@cojourners.com>
+ * Date: Wed, 29 Jun 2011 14:28:31 -0400
+ */
+
 (function(){
 	
 	mh.auth = {};

@@ -1,3 +1,14 @@
+/*!
+ * MissionHub Login Window
+ * https://www.missionhub.com
+ *
+ * Copyright 2011, Campus Crusade for Christ International
+ * 
+ * Description: Builds and Controls Login Window and Processes
+ * Author: Chris Roemmich <chris.roemmich@cojourners.com>
+ * Date: Wed, 29 Jun 2011 14:29:42 -0400
+ */
+
 (function() {
 
 	mh.ui.login = {};

@@ -1,3 +1,14 @@
+/*!
+ * MissionHub Utilities
+ * https://www.missionhub.com
+ *
+ * Copyright 2011, Campus Crusade for Christ International
+ * 
+ * Description: MissionHub Utilities
+ * Author: Chris Roemmich <chris.roemmich@cojourners.com>
+ * Date: Wed, 29 Jun 2011 14:29:42 -0400
+ */
+
 (function(){
 	
 	mh.util = {};
@@ -99,13 +110,13 @@ if (Titanium.Platform.osname == 'android') {
 
 /* Easy Log */
 function debug(msg) {
-	Ti.API.debug(msg);
+	//Ti.API.debug(msg);
 }
 
 function info(msg) {
-	Ti.API.info(msg);
+	//Ti.API.info(msg);
 }
 
 function error(msg) {
-	Ti.API.error(msg);
+	//Ti.API.error(msg);
 }

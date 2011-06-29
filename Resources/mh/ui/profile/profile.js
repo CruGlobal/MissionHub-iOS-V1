@@ -1,3 +1,14 @@
+/*!
+ * MissionHub Profile
+ * https://www.missionhub.com
+ *
+ * Copyright 2011, Campus Crusade for Christ International
+ * 
+ * Description: Shows logged in person profile and allows changing org
+ * Author: Matt Webb <matt.webb@cojourners.com>
+ * Date: Wed, 29 Jun 2011 14:29:42 -0400
+ */
+
 (function() {
 
 	mh.ui.profile = {};

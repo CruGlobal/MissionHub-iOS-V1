@@ -1,10 +1,10 @@
 /*!
- * MissionHub
- * http://hub.ccci.us
+ * MissionHub Application Loader
+ * https://www.missionhub.com
  *
  * Copyright 2011, Campus Crusade for Christ International
  *
- * Description: Application Loader
+ * Description: Application Bootstrap File
  * Author: Chris Roemmich <chris.roemmich@cojourners.com>
  * Date: Thu, 16 Jun 2011 12:48:32 -0400
  */

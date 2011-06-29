@@ -1,3 +1,14 @@
+/*!
+ * MissionHub Contacts View
+ * https://www.missionhub.com
+ *
+ * Copyright 2011, Campus Crusade for Christ International
+ * 
+ * Description: Contacts View
+ * Author: Chris Roemmich <chris.roemmich@cojourners.com>
+ * Date: Wed, 29 Jun 2011 14:29:42 -0400
+ */
+
 (function(){
 	
 	mh.ui.contacts = {};

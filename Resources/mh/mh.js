@@ -1,10 +1,10 @@
 /*!
  * MissionHub
- * http://hub.ccci.us
+ * https://www.missionhub.com
  *
  * Copyright 2011, Campus Crusade for Christ International
  * 
- * Description: MissionHub Main
+ * Description: MissionHub Main Application
  * Author: Chris Roemmich <chris.roemmich@cojourners.com>
  * Date: Thu, 16 Jun 2011 12:48:32 -0400
  */
