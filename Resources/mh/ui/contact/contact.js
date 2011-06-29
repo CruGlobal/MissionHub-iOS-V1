@@ -1077,7 +1077,10 @@
 			
 			if (person.first_contact_date) {
 				var date = mh.util.dateFromString(person.first_contact_date);
-				var contactDate = createSimpleRow(L('contact_info_date', 'First Contact Date'), date.toDateString());
+				
+				info(date);
+				
+				var contactDate = createSimpleRow(L('contact_info_date', 'First Contact Date'), date.toLocaleDateString());
 				moreInfoData.push(contactDate);
 			}
 			

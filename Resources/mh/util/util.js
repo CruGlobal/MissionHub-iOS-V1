@@ -74,8 +74,10 @@
 	
 	mh.util.dateFromString = function(utcString) {
 		var r = /^\s*(\d{4})-(\d\d)-(\d\d)\s+(\d\d):(\d\d):(\d\d)\s+UTC\s*$/;
-		var m = (""+dateStr).match(r);
-		return (m) ? Date.UTC(m[1], m[2]-1, m[3], m[4], m[5], m[6]) : undefined;
+		var m = (""+utcString).match(r);
+		var now = new Date();
+		var utc = Date.UTC(m[1], m[2]-1, m[3], m[4], m[5], m[6]) - now.getTimezoneOffset();
+		return (m) ? new Date(utc) : undefined;
 	};
 	
 })();
