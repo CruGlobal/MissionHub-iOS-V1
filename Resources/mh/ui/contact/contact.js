@@ -143,7 +143,8 @@
 							successCallback: function() {
 							},
 							errorCallback: function() {
-							}
+							},
+							org_id: mh.app.orgID()
 						});
 					}
 				}
@@ -742,7 +743,7 @@
 				}
 				var data = {
 					followup_comment: {
-						organization_id: person.request_org_id,
+						organization_id: mh.app.orgID(),
 						contact_id: person.id,
 						commenter_id: mh.app.getPerson().id,
 						status: status,
@@ -807,7 +808,8 @@
 				},
 				errorCallback: function(e) {
 					onContactError(e);
-				}
+				},
+				org_id: mh.app.orgID()
 			};
 			if (fresh) {
 				mh.api.getContacts(person.id, mh.util.mergeJSON(options, {fresh: true}));
@@ -847,7 +849,8 @@
 				},
 				errorCallback: function(e) {
 					onCommentError(e);
-				}
+				},
+				org_id: mh.app.orgID()
 			};
 			if (fresh) {
 				mh.api.getFollowupComments(person.id, mh.util.mergeJSON(options,{fresh: true}));
