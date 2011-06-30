@@ -215,8 +215,18 @@
 		
 		xhr.onerror = function(e) {
 			debug("whoops... in mh.api.firePostRequest.xhr.onerror");
-			debug("response: " + this.responseText);
-			mh.error.handleResponse(this.responseText,options);
+			if (!options.trys || options.trys < 3 ) {
+				if (!options.trys) {
+					options.trys = 1;
+				} else {
+					options.trys++;
+				}
+				debug('retrying post... try ' + options.trys);
+				firePostRequest(requestURL, options, data);
+			} else {
+				debug("response: " + this.responseText);
+				mh.error.handleResponse(this.responseText,options);
+			}
 		};
 		
 		xhr.open('POST',requestURL);
@@ -266,7 +276,18 @@
 
 			xhr.onerror = function(e) {
 				debug("whoops... mh.api.fireGetRequest.xhr.onerror");
-				mh.error.handleResponse(this.responseText,options);
+				if (!options.trys || options.trys < 3 ) {
+					if (!options.trys) {
+						options.trys = 1;
+					} else {
+						options.trys++;
+					}
+					debug('retrying post... try ' + options.trys);
+					firePostRequest(requestURL, options, data);
+				} else {
+					debug("response: " + this.responseText);
+					mh.error.handleResponse(this.responseText,options);
+				}
 			};
 
 		xhr.open('GET', requestURL);
