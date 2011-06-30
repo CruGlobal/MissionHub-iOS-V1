@@ -48,11 +48,12 @@
 		var open = function() {
 			debug('running mh.ui.main.window.open');
 			
-			var win = Titanium.UI.createWindow();
+			var win = Titanium.UI.createWindow({
+				orientationModes: [Titanium.UI.PORTRAIT, Titanium.UI.UPSIDE_PORTRAIT]
+			});
 			
 			mainWindow = Titanium.UI.createWindow({
 				backgroundImage: mh.util.getBackgroundImage('/images/MH_Background3.png'),
-				orientationModes: [Ti.UI.PORTRAIT],
 				navBarHidden: true
 			});			
 			mainWindow.add(mh.ui.main.indicator);
