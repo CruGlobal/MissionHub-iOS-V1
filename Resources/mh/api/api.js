@@ -282,8 +282,8 @@
 					} else {
 						options.trys++;
 					}
-					debug('retrying post... try ' + options.trys);
-					firePostRequest(requestURL, options, data);
+					debug('retrying get... try ' + options.trys);
+					fireGetRequest(requestURL, options);
 				} else {
 					debug("response: " + this.responseText);
 					mh.error.handleResponse(this.responseText,options);

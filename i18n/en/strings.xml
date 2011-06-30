@@ -7,6 +7,8 @@
 	<string name="alert_btn_cancel">Cancel</string>
 	<string name="alert_openlink_title">Open link</string>
 	<string name="alert_openlink_message">Open page in web browser?</string>
+	<string name="alert_btn_close">Close</string>
+	<string name="alert_btn_dont_show">Don't Show Again</string>
 	
 	<!-- Main -->
 	<string name="main_sign_in">sign in</string>
@@ -30,7 +32,9 @@
 	<string name="contacts_status_do_not_contact">Do Not Contact</string>
 	
 	<!-- Contact -->
-	<string name="contact_title">Contact</string>
+	<string name="contact_title_contact">Contact</string>
+	<string name="contact_title_more_info">More Contact Info</string>
+	<string name="contact_title_surveys">Contact Surveys</string>
 	<string name="contact_btn_done">Back</string>
 	<string name="contact_contact">Contact</string>
 	<string name="contact_more_info">More Info</string>
@@ -39,8 +43,9 @@
 	<string name="contact_status_contacted">Contacted</string>
 	<string name="contact_status_completed">Completed</string>
 	<string name="contact_status_do_not_contact">Do Not Contact</string>
-	<string name="contact_cannot_post">Cannot Post</string>
-	<string name="contact_cannot_post_msg">You must provide a message, change contact status, or add a rejoicable before posting!</string>
+	<string name="contact_cannot_post">Cannot Save</string>
+	<string name="contact_post">Save</string>
+	<string name="contact_cannot_post_msg">You must provide a message, change contact status, or add a rejoicable before saving!</string>
 	<string name="contact_questionnaire">Surveys</string>
 	<string name="contact_assign_to_me">Assign to Me</string>
 	<string name="contact_unassign">Unassign</string>
@@ -113,4 +118,12 @@
 	<string name='retry'>Retry</string>
 	<string name="loading">Loading...</string>
 	<string name="logout">Logout</string>
+	
+	<!-- Guide -->
+	<string name='guide_contacts'>My Contacts</string>
+	<string name='guide_contacts_msg'>This view shows all contacts that have been assigned to you for follow-up. If the list is empty, you need your leader to assign contacts to you or go to ‘Unassigned’ in the lower right corner and assign contacts to yourself.</string>
+	<string name='guide_contacts_unassigned'>Unassigned Contacts</string>
+	<string name='guide_contacts_unassigned_msg'>This view shows all contacts that have been collected but not assigned. All designated leaders can access this page and can self-assign contacts. If you tap ‘Assign to me’, this contact will move to ‘My Contacts’.</string>
+	<string name='guide_contact'>Contact Information</string>
+	<string name='guide_contact_msg'>You can learn about a contact and record your interactions with that person on this page. If you mark a contact as ‘Completed’, it will move to ‘My Completed’. Tap the rejoicing icon to add  Rejoicables to your interaction.</string>
 </resources>

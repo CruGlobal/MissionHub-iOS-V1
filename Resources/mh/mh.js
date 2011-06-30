@@ -22,8 +22,9 @@ var mh = {};
 		return 'en';
 	};
 	
-	var person, orgID;
+	var person;
 	var roles = {};
+	var privledgedRoles = {};
 	
 	mh.app.ROLE_NONE = -1;
 	mh.app.ROLE_ADMIN = 0;
@@ -41,10 +42,10 @@ var mh = {};
 	};
 	
 	mh.app.getRole = function(org) {
-		if (org) {
+		if (org && roles.length > 0) {
 			return roles[org].role;
 		} else {
-			return roles[orgID].role;
+			return roles[Ti.App.Properties.getInt('orgid', 0)].role;
 		}
 	};
 	
@@ -55,23 +56,31 @@ var mh = {};
 	
 	mh.app.orgID = function() {
 		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
-			return orgID;
+			var roleid = Ti.App.Properties.getInt('orgid', -1);
+			info('stored role id: ' + roleid);
+			if (roleid >= 0 && privledgedRoles[roleid]) {
+				return roleid;
+			} else if (roles.length > 0 && privledgedRoles[0]) {
+				return roles[0].org_id;
+			} else {
+				return;
+			}
 		}
 	};
 	
 	mh.app.setOrgID = function(o) {
-		orgID = o;
-//		calculateRoles();
+		info('set stored role id = ' + o);
+		Ti.App.Properties.setInt('orgid', o);
 	};
 	
 	function calculateRoles() {
 		roles = {};
+		var primaryOrg = -1;
 		for (var index in person.organization_membership) {
 			var org_membership = person.organization_membership[index];
 			roles[org_membership.org_id] = {name: org_membership.name};
-			
 			if (org_membership.primary == 'true' || org_membership.primary === 'true') {
-				orgID = org_membership.org_id;
+				primaryOrg = org_membership.org_id;
 				roles[org_membership.org_id].primary = true;
 			} else {
 				roles[org_membership.org_id].primary = false;
@@ -83,13 +92,19 @@ var mh = {};
 			var role = person.organizational_roles[index];
 			if (role.role == 'admin') {
 				roles[role.org_id].role = mh.app.ROLE_ADMIN;
+				privledgedRoles[role.org_id] = true;
 			} else if (role.role == 'leader') {
+				privledgedRoles[role.org_id] = true;
 				roles[role.org_id].role = mh.app.ROLE_LEADER;
 			} else if (role.role == 'contact') {
 				roles[role.org_id].role = mh.app.ROLE_CONTACT;
 			} else {
 				roles[role.org_id].role = mh.app.ROLE_NONE;
 			}
+		}
+		
+		if (Ti.App.Properties.getInt('orgid', -1) < 0) {
+			Ti.App.Properties.setInt('orgid', primaryOrg)
 		}
 	}
 	

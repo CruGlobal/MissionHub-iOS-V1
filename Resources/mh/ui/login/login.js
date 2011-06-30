@@ -51,7 +51,7 @@
 					width: Ti.Platform.displayCaps.platformWidth-10,
 					height: Ti.Platform.displayCaps.platformHeight-30,
 					border: 5,
-					backgroundColor: 'white',
+					backgroundColor: '#e4e4e4',
 					borderColor: '#333',
 					borderRadius: 5,
 					borderWidth: 5,

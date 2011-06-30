@@ -27,7 +27,7 @@
 	mh.ui.main.processes = [];
 	
 	mh.ui.main.showIndicator = function(process) {
-		mh.ui.main.indicator.width = 140;
+		mh.ui.main.indicator.width = 160;
 		mh.ui.main.processes.push(process);
 		mh.ui.main.indicator.show();
 	};
@@ -102,7 +102,6 @@
 			} else {
 				mh.auth.oauth.setToken(e.token);
 				mh.app.setPerson(response[0]);
-				mh.app.setOrgID(response[0].request_org_id);
 				info("Logged in with access token: " + e.token);
 				refresh();
 			}
@@ -345,7 +344,7 @@
 				mh.ui.openLink({
 					title: L('home_about_alert_title'),
 					message: L('home_about_alert_message'),
-					url: 'http://www.missionhub.com'
+					url: 'http://www.missionhub.com?mobile=0'
 				});
 			});
 			loggedOutView.add(tryNowButton);

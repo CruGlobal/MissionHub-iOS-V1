@@ -21,51 +21,42 @@
 		var button;
 		var animateOrgPickerViewUp;
 		var animateOrgPickerViewDown;
-		var currentPickerOrgID;
-		var orgPickerPosition = 0;
-		var currentPickerOrgName;
+		var orgPickerPosition;
+		var currentPickerRole;
 		var orgChanged = false;
-		var initialOrgID;
 		var orgPickerViewShown = false;
 		var profilePicView;
 		var orgOptions = [];
 		var signOutLabel;
 		var options;
-		var nonDefaultOrg;
 
 		var orgPickerView;
 
 		var open = function() {
 			debug('running mh.ui.profile.window.open');
-			
 			person = mh.app.getPerson();
-			
-			options = {		
-				successCallback: function(e) {
-					var response = mh.util.makeValid(e);
-					if (response.error) {
-						profileWindow.close();
-						mh.error.handleError(response.error, {errorCallback: function() {}});
-					} else {
-						person = e[0];
-						mh.app.setPerson(person);
-						if (mh.app.orgID() !== null) {
-							currentPickerOrgID = mh.app.orgID();
-						} else {
-							currentPickerOrgID = person.request_org_id;
-						}
-					}
-				},
-				errorCallback: function(e) {
-					profileWindow.close();
-					var response = mh.util.makeValid(e);
-					mh.error.handleError(response.error, {errorCallback: function() {}});
-				},
-				fresh: true,
-				org_id: mh.app.orgID()
+			options = {
+				successCallback: onPersonLoad,
+				errorCallback: function() {mh.ui.main.hideIndicator('openperson');},
+				fresh: true
 			};
-
 			mh.api.getPeople(mh.app.getPerson().id,options);
+			mh.ui.main.indicator.message = "Loading Person";
+			mh.ui.main.showIndicator('openperson');
+		};
+		
+		var onPersonLoad = function(e) {
+			mh.ui.main.hideIndicator('openperson');
+			if (e.error) {
+				mh.error.handleError(e.error, {errorCallback: function() {}});
+			} else {
+				person = e[0];
+				mh.app.setPerson(person);
+				openWindow();
+			}
+		}	
+		
+		var openWindow = function() {
 			profileWindow = Ti.UI.createWindow({
 				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png'),
 				height: Ti.Platform.displayCaps.platformHeight,
@@ -81,19 +72,12 @@
 				zindex: 101
 			});
 
-			orgPicker = Ti.UI.createPicker();
-			orgPicker.selectionIndicator = true;
-
+			orgPicker = Ti.UI.createPicker({
+				selectionIndicator: true
+			});
+			
 			orgPicker.addEventListener('change', function(e) {
-				debug("onChange : " + JSON.stringify(e));
-				//Ti.API.info("You selected row: "+e.row+", column: "+e.column+", custom_item: "+e.row.org_id);
-				currentPickerOrgID = e.row.org_id;
-				currentPickerOrgName = e.row.title;
-				if (e.row.org_id != initialOrgID) {
-					orgChanged = true;
-					orgPickerPosition = e.row.index;
-				}
-
+				currentPickerRole = e.row.role;
 			});
 			
 			getOrgOptions();
@@ -108,40 +92,41 @@
 				duration: 250,
 				left: 0
 			});
+			
+			shakes = 0;
+			Titanium.Gesture.addEventListener('shake', shakeFunction);
 		};
-		//draw the picker with vars
 
 		var getOrgOptions = function() {
+			orgOptions = [];
 			var roles = mh.app.getRoles();
 			var counter = 0;
-
-			for (var org in roles) {
-				if (roles[org].role == mh.app.ROLE_ADMIN || roles[org].role == mh.app.ROLE_LEADER ) {
-					if (nonDefaultOrg && (roles[org].org_id == mh.app.orgID())) {
-						orgPickerPosition = counter;
-						currentPickerOrgName = roles[org].name;
-					} else {
-						if (roles[org].primary === true && !nonDefaultOrg) {
-							orgPickerPosition = counter;
-							currentPickerOrgName = roles[org].name;
-						}
-					}
-					orgOptions[counter] = Ti.UI.createPickerRow({
-						title: roles[org].name,
-						org_id: roles[org].org_id,
-						index: counter
+			for (var i in roles) {
+				var role = roles[i];
+				if (role.role == mh.app.ROLE_ADMIN || roles.role == mh.app.ROLE_LEADER ) {
+					var row = Ti.UI.createPickerRow({
+						title: role.name,
+						role: role
 					});
+					if ((role.org_id == mh.app.orgID()) || (!orgPickerPosition && role.primary == true)) {
+						orgPickerPosition = counter;
+					}
+					orgOptions.push(row);
 					counter++;
 				}
 			}
-			updateOrgPicker();
-		};
-		var updateOrgPicker = function() {
+			
+			if (!orgPickerPosition) {
+				orgPickerPosition = 0;
+			}
+			
 			if (orgOptions.length > 0) {
 				orgPicker.add(orgOptions);
+				orgPicker.setSelectedRow(0,orgPickerPosition,true);
 			}
 			orgPickerView.add(orgPicker);
 		};
+		
 		var createHeader = function() {
 
 			var defaultImage = '/images/facebook_question.gif';
@@ -178,6 +163,7 @@
 				});
 				mh.auth.oauth.logout( function() {
 					animation.addEventListener('complete', function() {
+						Titanium.Gesture.removeEventListener('shake', shakeFunction);
 						profileWindow.close();
 					});
 					profileWindow.animate(animation);
@@ -271,44 +257,19 @@
 				orgPicker.setSelectedRow(0,orgPickerPosition,true);
 				orgPickerViewShown = true;
 				orgPickerView.bottom = -10;
-				orgChanged = false;
 				button.title = L('profile_close_org');
-
-				if(mh.app.orgID != person.request_org_id) {
-					nonDefaultOrg = true;
-				}
-
-				if (mh.app.orgID != null) {
-					initialOrgID = mh.app.orgID();
-				} else {
-					initialOrgID = person.request_org_id;
-				}
-
-				// orgPickerView.animate({
-				// bottom: 120,
-				// height: 'auto',
-				// duration: 250
-				// });
 			}
 			animateOrgPickerViewDown = function() {
 				orgPickerViewShown = false;
 				orgPickerView.bottom = -675;
 				button.title = L('profile_change_org');
-				debug("hoeuaoe" + currentPickerOrgID);
-				mh.app.setOrgID(currentPickerOrgID);
-				info("just set orgid = " + mh.app.orgID());
-				if (orgChanged) {
-					currentOrgNameLabel.text = currentPickerOrgName;
+				if (currentPickerRole.org_id != mh.app.orgID()) {
+					mh.app.setOrgID(currentPickerRole.org_id);
+					currentOrgNameLabel.text = currentPickerRole.name;
 					orgPicker.setSelectedRow(0,orgPickerPosition,true);
-					alert("You successfully changed your current organization to: " + currentPickerOrgName);
+					alert("You successfully changed your current organization to: " + currentPickerRole.name);
 					orgChanged = false;
 				}
-
-				// orgPickerView.animate({
-				// bottom: -675,
-				// height: 'auto',
-				// duration: 250
-				// });
 			}
 			var profileLabel = Ti.UI.createLabel({
 				text: L('profile_title'),
@@ -347,6 +308,7 @@
 					left: -(Ti.Platform.displayCaps.platformWidth)
 				});
 				animation.addEventListener('complete', function() {
+					Titanium.Gesture.removeEventListener('shake', shakeFunction);
 					profileWindow.close();
 				});
 				profileWindow.animate(animation);
@@ -366,9 +328,18 @@
 				}
 			});
 			profileWindow.add(versionLabel);
+			
+			var correct = -1;
+			versionLabel.addEventListener('touchstart', function(e) {
+				if (shakes < 5) { return };
+				correct++;
+				if (correct < 10) { return };
+				correct = 0;
+				shakes = 0;
+				showEgg();
+			});
 
 			var currentOrgNameLabel = Ti.UI.createLabel({
-				text: currentPickerOrgName,
 				backgroundColor: 'transparent',
 				color: '#CCC',
 				top: 125,
@@ -381,8 +352,36 @@
 					fontFamily: 'Helvetica-Bold'
 				}
 			});
+			var roles = mh.app.getRoles();
+			if (roles[mh.app.orgID()]) {
+				currentOrgNameLabel.text = roles[mh.app.orgID()].name;
+			}
+			
 			profileWindow.add(currentOrgNameLabel);
 		};
+		
+		var shakes = 0;
+		var shakeFunction = function(e) {
+			shakes++;
+		};
+		
+		var showEgg = function() {
+			var win = Ti.UI.createWindow({
+				title: 'Rejoicables 4TW',
+				navBarHidden: false,
+				backButtonTitle: 'Home',
+				barColor: mh.config.colors.blue
+			});
+			
+			var image = Ti.UI.createImageView({
+				image: mh.util.getBackgroundImage('images/egg.png'),
+			});
+			win.add(image);
+			
+			profileWindow.close();
+			mh.ui.nav.open(win);
+		};
+		
 		return {
 			open: open
 		};

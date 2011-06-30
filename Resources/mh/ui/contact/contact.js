@@ -39,6 +39,19 @@
 			refresh();
 			
 			mh.ui.nav.open(contactWindow);
+			
+			if (!Ti.App.Properties.hasProperty('guide_contact')) {
+				mh.ui.alert({
+					buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
+					title: L('guide_contact'),
+					message: L('guide_contact_msg'),
+					onClick: function(e) {
+						if (e.index === 1) {
+							Ti.App.Properties.setBool('guide_contact', true);
+						}
+					}
+				});
+			}
 		};
 		
 		var createHeader = function() { /* Create The View Header And Back Button */
@@ -51,8 +64,8 @@
 			});
 			contactWindow.add(contactBar);
 
-			var contactLabel = Ti.UI.createLabel({
-				text: L('contact_title'),
+			contactWindow.contactLabel = Ti.UI.createLabel({
+				text: L('contact_title_contact'),
 				color: 'white',
 				height: 22,
 				top: 8,
@@ -64,7 +77,7 @@
 					fontFamily: 'Helvetica-Bold'
 				}
 			});
-			contactBar.add(contactLabel);
+			contactBar.add(contactWindow.contactLabel);
 
 			var doneButton = Ti.UI.createButton({
 				top: 4,
@@ -393,20 +406,31 @@
 				value: '',
 				opacity: 0.8,
 				font: {
-					fontSize: 14,
-					fontFamily: 'Helvetica-Bold'
+					fontSize: 14
 				},
-				color:'black',
+				color:'#555',
 				suppressReturn:true,
-				hintText: 'comment',
+				value: 'add comment here...',
 				appearance: Ti.UI.KEYBOARD_APPEARANCE_ALERT,
 			    returnKeyType:Titanium.UI.RETURNKEY_DONE
 			});
 			tableViewHeader.commentView.add(tableViewHeader.commentField);
+			
+			tableViewHeader.commentField.addEventListener('blur', function() {
+				if (tableViewHeader.commentField.value == '') {
+					tableViewHeader.commentField.color = '#555';
+					tableViewHeader.commentField.value = 'add comment here...';
+				}
+			});
+			tableViewHeader.commentField.addEventListener('focus', function() {
+				if (tableViewHeader.commentField.value == 'add comment here...') {
+					tableViewHeader.commentField.color = '#000';
+					tableViewHeader.commentField.value = '';
+				}
+			});
 
 			tableViewHeader.rejoicables = Ti.UI.createButton({
-				backgroundImage: mh.util.getBackgroundImage('images/rejoicables_button.png'),
-				title: 'R',
+				backgroundImage: mh.util.getBackgroundImage('images/icons/rejoicable_icon.png'),
 				font: {
 					fontSize:16,
 					fontFamily: 'Helvetica-Bold'
@@ -426,7 +450,7 @@
 			});
 			tableViewHeader.postButton = Ti.UI.createButton({
 				backgroundImage: mh.util.getBackgroundImage('images/post_button.png'),
-				title: 'Post',
+				title: L('contact_post','Save'),
 				top: 8 + 46 + 4,
 				right: 8,
 				width: 60,
@@ -473,8 +497,7 @@
 				tableViewHeader.statusButton.title = L(options[e.index]);
 			});
 			var rejoiceDone = Ti.UI.createButton({
-				backgroundImage: mh.util.getBackgroundImage('images/rejoicables_button.png'),
-				title: 'R',
+				backgroundImage: mh.util.getBackgroundImage('images/icons/rejoicable_icon.png'),
 				font: {
 					fontSize:16,
 					fontFamily: 'Helvetica-Bold'
@@ -494,11 +517,12 @@
 			});
 			tableViewHeader.rejoicablesView.rejoiceSc = Ti.UI.createButton({
 				backgroundImage: mh.util.getBackgroundImage('images/status_button.png'),
+				image:  mh.util.getBackgroundImage('images/icons/icon-s-convo-white.png'),
 				font: {
 					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
 				},
-				title: 'Spiritual Conversation',
+				title: '  Spiritual Conversation  ',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
 				top: 7,
@@ -507,20 +531,21 @@
 			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceSc);
 			tableViewHeader.rejoicablesView.rejoiceSc.addEventListener('click', function() {
 				if (this.on) {
-					this.image = '';
+					this.image = mh.util.getBackgroundImage('images/icons/icon-s-convo-white.png');
 					this.on = false;
 				} else {
-					this.image = mh.util.getBackgroundImage('/images/check.png');
+					this.image = mh.util.getBackgroundImage('images/icons/icon-s-convo.png'),
 					this.on = true;
 				}
 			});
 			tableViewHeader.rejoicablesView.rejoiceChrist = Ti.UI.createButton({
 				backgroundImage: mh.util.getBackgroundImage('images/status_button.png'),
+				image: mh.util.getBackgroundImage('images/icons/icon-r-christ-white.png'),
 				font: {
 					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
 				},
-				title: 'Prayed To Receive Christ',
+				title: '  Prayed To Receive Christ  ',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
 				top: 7 + 24 + 5,
@@ -529,20 +554,21 @@
 			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceChrist);
 			tableViewHeader.rejoicablesView.rejoiceChrist.addEventListener('click', function() {
 				if (this.on) {
-					this.image = '';
+					this.image = mh.util.getBackgroundImage('images/icons/icon-r-christ-white.png');
 					this.on = false;
 				} else {
-					this.image = mh.util.getBackgroundImage('/images/check.png');
+					this.image = mh.util.getBackgroundImage('images/icons/icon-r-christ.png');
 					this.on = true;
 				}
 			});
 			tableViewHeader.rejoicablesView.rejoiceGospel = Ti.UI.createButton({
 				backgroundImage: mh.util.getBackgroundImage('images/status_button.png'),
+				image: mh.util.getBackgroundImage('images/icons/icon-g-present-white.png'),
 				font: {
 					fontSize: 14,
 					fontFamily: 'Helvetica-Bold'
 				},
-				title: 'Gospel Presentation',
+				title: '  Gospel Presentation  ',
 				left: 8 + 32 + 8,
 				width: Ti.Platform.displayCaps.platformWidth - 8 - 32 - 8 - 8,
 				top: 7 + 24 + 5 + 24 + 5,
@@ -551,10 +577,10 @@
 			tableViewHeader.rejoicablesView.add(tableViewHeader.rejoicablesView.rejoiceGospel);
 			tableViewHeader.rejoicablesView.rejoiceGospel.addEventListener('click', function() {
 				if (this.on) {
-					this.image = '';
+					this.image =  mh.util.getBackgroundImage('images/icons/icon-g-present-white.png');
 					this.on = false;
 				} else {
-					this.image = mh.util.getBackgroundImage('/images/check.png');
+					this.image = mh.util.getBackgroundImage('images/icons/icon-g-present.png');
 					this.on = true;
 				}
 			});
@@ -646,8 +672,6 @@
 			if (person.status) {
 				tableViewHeader.statusButton.title = L('contact_status_' + person.status);
 			}
-			
-
 
 			var showPhone = true;
 			var showSMS = true;
@@ -744,7 +768,7 @@
 				canPost = true;
 			}
 
-			if (tableViewHeader.commentField.value.length > 0) {
+			if (tableViewHeader.commentField.value.length > 0 && tableViewHeader.commentField.value!='add comment here...') {
 				hasMessage = true;
 				canPost = true;
 			}
@@ -758,13 +782,19 @@
 					case L('contact_status_completed'): status='completed';	break;
 					case L('contact_status_do_not_contact'): status='do_not_contact'; break;
 				}
+				
+				var comment = tableViewHeader.commentField.value;
+				if (comment == 'add comment here...') {
+					comment = '';
+				}
+				
 				var data = {
 					followup_comment: {
 						organization_id: mh.app.orgID(),
 						contact_id: person.id,
 						commenter_id: mh.app.getPerson().id,
 						status: status,
-						comment: tableViewHeader.commentField.value,
+						comment: comment,
 					},
 					rejoicables: rejoicables
 				};
@@ -776,7 +806,7 @@
 						postError(e)
 					}
 				};
-
+				
 				showIndicator('post');
 				tableViewHeader.postButton.enabled = false;
 				debug("about to post followup comment:" + JSON.stringify(data));
@@ -792,13 +822,14 @@
 		};
 		var postSuccess = function(e) { /* On Successful Post */
 			tableViewHeader.postButton.enabled = true;
-			tableViewHeader.commentField.value = '';
+			tableViewHeader.commentField.color = '#555';
+			tableViewHeader.commentField.value = 'add comment here...';
 			tableViewHeader.rejoicablesView.rejoiceSc.on = false;
-			tableViewHeader.rejoicablesView.rejoiceSc.image = '';
+			tableViewHeader.rejoicablesView.rejoiceSc.image = mh.util.getBackgroundImage('images/icons/icon-s-convo-white.png');
 			tableViewHeader.rejoicablesView.rejoiceChrist.on = false;
-			tableViewHeader.rejoicablesView.rejoiceChrist.image = '';
+			tableViewHeader.rejoicablesView.rejoiceChrist.image = mh.util.getBackgroundImage('images/icons/icon-r-christ-white.png');
 			tableViewHeader.rejoicablesView.rejoiceGospel.on = false;
-			tableViewHeader.rejoicablesView.rejoiceGospel.image = '';
+			tableViewHeader.rejoicablesView.rejoiceGospel.image = mh.util.getBackgroundImage('images/icons/icon-g-present-white.png');
 			switch(tableViewHeader.statusButton.title) {
 				case L('contact_status_uncontacted'): person.status='uncontacted'; break;
 				case L('contact_status_attempted_contact'):	person.status='attempted_contact'; break;
@@ -1074,7 +1105,7 @@
 			}
 			
 			if (person.fb_id) {
-				var fbRow = createSimpleRow(L('contact_info_facebook', 'Facebook'), 'http://facebook.com/profile.php?id='+person.fb_id);
+				var fbRow = createSimpleRow(L('contact_info_facebook', 'Facebook'), L('contact_open_facebook', 'Open Facebook Profile In Browser'));
 				fbRow.addEventListener('click', function(e){
 					mh.ui.openLink({ url: 'http://facebook.com/profile.php?id='+person.fb_id });
 				});
@@ -1136,7 +1167,7 @@
 				for (var i in person.interests) {
 					 var interest = person.interests[i];
 					 interests += interest.name;
-					 if (i+1 < person.interests) {
+					 if (i+1 < person.interests.length) {
 					 	interests += ', ';
 					 }
 				}
@@ -1294,6 +1325,7 @@
 					width:Ti.Platform.displayCaps.platformWidth
 				});
 				if (index == 0) {
+					contactWindow.contactLabel.text = L('contact_title_contact');
 					tableView.editable = true;
 					tableView.allowsSelectionDuringEditing = true;
 					tableView.allowsSelection = false;
@@ -1312,9 +1344,11 @@
 						tableView.headerView = contactCard
 					}
 					if (index == 1) {
+						contactWindow.contactLabel.text = L('contact_title_more_info');
 						tableView.allowsSelection = true;
 						tableView.setData(moreInfoData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 					} else {
+						contactWindow.contactLabel.text = L('contact_title_surveys');
 						tableView.allowsSelection = false;
 						tableView.setData(questionnaireData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 					}

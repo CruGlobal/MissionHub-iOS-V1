@@ -38,7 +38,7 @@
 			Ti.App.Properties.setString(property, t);
 		};
 		
-		var logout = function(callback) {
+		var logout = function(callback, safe) {
 			
 			var win = Ti.UI.createWindow();
 
@@ -61,15 +61,20 @@
 			wv.addEventListener('load', function(e) {
 				indicator.hide();
 				win.close();
-				token = null;
-				Ti.App.Properties.removeProperty(property);
+				if (!safe) {
+					token = null;
+					Ti.App.Properties.removeProperty(property);
+				}
 				callback();
 			});
 			
 			wv.addEventListener('error', function(e) {
 				indicator.hide();
 				win.close();
-				//TODO:
+				mh.error.handleResponse(e, {
+					buttonNames: [L('alert_btn_close')],
+					onClick: function() {}
+				});
 			});
 			win.open();
 			indicator.show();
@@ -175,9 +180,15 @@
 		var attachLogin = function(attachFunction, callback) {
 			attachFunction(function() {
 				if (token) {
-					callback();
+					logout(function() {
+						callback();
+					}, true);
 				} else {
-					loginWindow.show(callback);
+					logout(function() {
+						setTimeout(function(){
+							loginWindow.show(callback);
+						}, 200);
+					});
 				}
 			});
 		};

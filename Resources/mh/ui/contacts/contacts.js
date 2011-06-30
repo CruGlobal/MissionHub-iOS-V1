@@ -276,10 +276,22 @@
 			
 			if (noresults) {
 				var row = Ti.UI.createTableViewRow();
-				row.add(Ti.UI.createLabel({
-					text: 'No Contacts',
-					textAlign: 'center'
-				}));
+				if (curTab == 0) {
+					row.add(Ti.UI.createLabel({
+						text: 'No Assigned Contacts',
+						textAlign: 'center'
+					}));
+				} else if (curTab == 1) {
+					row.add(Ti.UI.createLabel({
+						text: 'No Completed Assigned Contacts',
+						textAlign: 'center'
+					}));
+				} else if (curTab == 2) {
+					row.add(Ti.UI.createLabel({
+						text: 'No Unassigned Contacts',
+						textAlign: 'center'
+					}));
+				}
 				tableView.data =[row];
 			}
 			
@@ -386,6 +398,34 @@
 							removeFilter('status');
 							contactsWindow.contactsLabel.text = L('contacts_title_unassigned');
 							break;
+				}
+				if (index == 0) {
+					if (!Ti.App.Properties.hasProperty('guide_contacts')) {
+						mh.ui.alert({
+							buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
+							title: L('guide_contacts'),
+							message: L('guide_contacts_msg'),
+							onClick: function(e) {
+								if (e.index === 1) {
+									Ti.App.Properties.setBool('guide_contacts', true);
+								}
+							}
+						});
+					}
+				}
+				if (index == 2) {
+					if (!Ti.App.Properties.hasProperty('guide_contacts_unassigned')) {
+						mh.ui.alert({
+							buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
+							title: L('guide_contacts_unassigned'),
+							message: L('guide_contacts_unassigned_msg'),
+							onClick: function(e) {
+								if (e.index === 1) {
+									Ti.App.Properties.setBool('guide_contacts_unassigned', true);
+								}
+							}
+						});
+					}
 				}
 				onGetMore(force);
 			}
