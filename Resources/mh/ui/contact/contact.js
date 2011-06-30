@@ -168,11 +168,14 @@
 					if (e.row.comment) {
 						mh.api.deleteComment(e.row.comment.comment.id, {
 							successCallback: function() {
+								hideIndicator('delete'+e.row.comment.comment.id);
 							},
 							errorCallback: function() {
+								hideIndicator('delete'+e.row.comment.comment.id);
 							},
 							org_id: mh.app.orgID()
 						});
+						showIndicator('delete'+e.row.comment.comment.id);
 					}
 				}
 			});
@@ -350,6 +353,8 @@
 			tableViewHeader.nv.add(tableViewHeader.nv.assignedToOtherLabel);
 			
 			var onAssignButtonClick = function() {
+				showIndicator('assignment');
+				
 				var assignSuccessCallback = function () {
 					debug('assignSuccessCallback()');
 					if (assigned == CONTACT_UNASSIGNED) {
@@ -360,11 +365,13 @@
 					}
 					tableViewHeader.nv.assignButton.enabled = true;
 					updateAssignment(true);
+					hideIndicator('assignment');
 				}
 				
 				var assignErrorCallback = function () {
 					debug('assignErrorCallback()');
 					tableViewHeader.nv.assignButton.enabled = true;
+					hideIndicator('assignment');
 				}
 				
 				var dataForRequest = {

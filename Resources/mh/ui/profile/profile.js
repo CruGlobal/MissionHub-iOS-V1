@@ -78,6 +78,7 @@
 			
 			orgPicker.addEventListener('change', function(e) {
 				currentPickerRole = e.row.role;
+				orgPickerPosition = e.rowIndex;
 			});
 			
 			getOrgOptions();
@@ -266,7 +267,6 @@
 				if (currentPickerRole.org_id != mh.app.orgID()) {
 					mh.app.setOrgID(currentPickerRole.org_id);
 					currentOrgNameLabel.text = currentPickerRole.name;
-					orgPicker.setSelectedRow(0,orgPickerPosition,true);
 					alert("You successfully changed your current organization to: " + currentPickerRole.name);
 					orgChanged = false;
 				}
