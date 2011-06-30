@@ -375,7 +375,8 @@
 				
 				var optionsForRequest = {
 					successCallback: assignSuccessCallback,
-					errorCallback: assignErrorCallback
+					errorCallback: assignErrorCallback,
+					org_id: mh.app.orgID()
 				};
 
 				if(assigned == CONTACT_UNASSIGNED) {
@@ -925,7 +926,12 @@
 		/* Table View Content */
 		var createCommentRows = function() { /* Create The TableView Content For Comments Tab */
 			if(comments.length == 0) {
-				commentData = [{title: '', editable:false}];
+				var row = Ti.UI.createTableViewRow();
+				row.add(Ti.UI.createLabel({
+					text: 'No Previous Comments',
+					textAlign: 'center'
+				}));
+				commentData = [row];
 			} else {
 				commentData = [];
 				for (var index in comments) {

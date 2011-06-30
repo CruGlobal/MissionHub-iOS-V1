@@ -183,6 +183,9 @@
 	mh.api.deleteContactAssignment = function (id, options) {
 		var data = {};
 		data['_method'] = 'delete';
+		if (options.org_id) {
+			data['org_id'] = options.org_id;
+		}
 		var requestURL = mh.config.api_url + '/contact_assignments/' + id + '.json?access_token=' + mh.auth.oauth.getToken();
 		return firePostRequest(requestURL, options, data);
 	};
@@ -194,6 +197,9 @@
 	mh.api.deleteComment = function (id, options) {
 		var data = {};
 		data['_method'] = 'delete';
+		if (options.org_id) {
+			data['org_id'] = options.org_id;
+		}
 		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?access_token=' + mh.auth.oauth.getToken();
 		return firePostRequest(requestURL, options, data);
 	};

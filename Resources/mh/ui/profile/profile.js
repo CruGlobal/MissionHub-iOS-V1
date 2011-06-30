@@ -94,7 +94,6 @@
 			});
 			
 			shakes = 0;
-			Titanium.Gesture.addEventListener('shake', shakeFunction);
 		};
 
 		var getOrgOptions = function() {
@@ -163,7 +162,6 @@
 				});
 				mh.auth.oauth.logout( function() {
 					animation.addEventListener('complete', function() {
-						Titanium.Gesture.removeEventListener('shake', shakeFunction);
 						profileWindow.close();
 					});
 					profileWindow.animate(animation);
@@ -252,6 +250,7 @@
 				}
 			});
 			debug('running mh.ui.profile.window.createHeader4');
+			var buttonPushes = 0;
 			animateOrgPickerViewUp = function() {
 				debug("orgPickerPosition onViewUp" + orgPickerPosition);
 				orgPicker.setSelectedRow(0,orgPickerPosition,true);
@@ -260,6 +259,7 @@
 				button.title = L('profile_close_org');
 			}
 			animateOrgPickerViewDown = function() {
+				buttonPushes++;
 				orgPickerViewShown = false;
 				orgPickerView.bottom = -675;
 				button.title = L('profile_change_org');
@@ -308,7 +308,6 @@
 					left: -(Ti.Platform.displayCaps.platformWidth)
 				});
 				animation.addEventListener('complete', function() {
-					Titanium.Gesture.removeEventListener('shake', shakeFunction);
 					profileWindow.close();
 				});
 				profileWindow.animate(animation);
@@ -329,13 +328,13 @@
 			});
 			profileWindow.add(versionLabel);
 			
-			var correct = -1;
+			var touches = -1;
 			versionLabel.addEventListener('touchstart', function(e) {
-				if (shakes < 5) { return };
-				correct++;
-				if (correct < 10) { return };
-				correct = 0;
-				shakes = 0;
+				if (buttonPushes < 5) { return };
+				touches++;
+				if (touches < 15) { return };
+				touches = 0;
+				buttonPushes = 0;
 				showEgg();
 			});
 
@@ -358,11 +357,6 @@
 			}
 			
 			profileWindow.add(currentOrgNameLabel);
-		};
-		
-		var shakes = 0;
-		var shakeFunction = function(e) {
-			shakes++;
 		};
 		
 		var showEgg = function() {
