@@ -200,7 +200,6 @@
 	
 	
 	function firePostRequest(requestURL, options, data) {
-		//TODO: PUT LOADING INDICATOR HERE w.indicator.show();
 		debug("running mh.api.firePostRequest");
 		info("requestURL: " + requestURL);
 				
@@ -227,7 +226,6 @@
 	};
 	
 	function fireGetRequest(requestURL, options) {
-		//TODO: PUT LOADING INDICATOR HERE   w.indicator.show();
 		var xhr;
 		var cacheSeconds = 11;
 		if (options.cacheSeconds) {

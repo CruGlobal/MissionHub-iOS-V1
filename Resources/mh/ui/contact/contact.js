@@ -352,11 +352,6 @@
 				var assignErrorCallback = function () {
 					debug('assignErrorCallback()');
 					tableViewHeader.nv.assignButton.enabled = true;
-					alert({
-						title: L('contact_assignment_error'),
-						message: L('contact_assignment_error_msg'),
-						buttonNames: ['Ok']
-					});
 				}
 				
 				var dataForRequest = {

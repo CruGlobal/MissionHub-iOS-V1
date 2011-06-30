@@ -100,6 +100,7 @@
 	<string name="error_no_access_token">No Access Token</string>
 	<string name="error_no_access_token_msg">You could not be authenticated because no access token was returned from MissionHub servers.</string>
 	<string name="error_access_token_fetch">No Access Token</string>
+	<string name="error_access_token_fetch_msg">Could not validate your access token. Please make sure you are connected to the internet and try again.</string>
 	<string name="error_no_access_token_fetch_msg">You cannot make data requests because an access token was not returned from MissionHub servers.</string>
 	
 	<string name="home_about_alert_title">Learn More</string>
