@@ -172,6 +172,9 @@
 							},
 							errorCallback: function() {
 								hideIndicator('delete'+e.row.comment.comment.id);
+								if (Ti.Network.online) {
+									getComments(true);
+								}
 							},
 							org_id: mh.app.orgID()
 						});
