@@ -367,8 +367,9 @@
 			});
 			
 			var image = Ti.UI.createImageView({
-				image: mh.util.getBackgroundImage('images/egg.png'),
+				image: mh.util.getBackgroundImage('images/planking.jpg'),
 			});
+			
 			win.add(image);
 			
 			profileWindow.close();
