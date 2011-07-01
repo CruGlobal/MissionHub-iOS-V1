@@ -7,7 +7,7 @@
         <target device="blackberry">false</target>
         <target device="android">false</target>
     </deployment-targets>
-<id>com.missionhub.iphone</id>
+<id>com.missionhub</id>
 <name>MissionHub</name>
 <version>1.0</version>
 <publisher>Campus Crusade for Christ Inc</publisher>
