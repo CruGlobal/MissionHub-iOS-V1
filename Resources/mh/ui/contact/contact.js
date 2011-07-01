@@ -1180,12 +1180,13 @@
 				moreInfoData.push(birthday);
 			}
 			
-			if (person.interests.length > 0) {
+			var numInterests = person.interests.length;
+			if (numInterests > 0) {
 				var interests = '';
 				for (var i in person.interests) {
 					 var interest = person.interests[i];
 					 interests += interest.name;
-					 if (i+1 < person.interests.length) {
+					 if (parseInt(i)+1 < numInterests) {
 					 	interests += ', ';
 					 }
 				}
