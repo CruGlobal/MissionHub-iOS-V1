@@ -505,7 +505,9 @@
 				statusSelector.show();
 			});
 			statusSelector.addEventListener('click', function(e) {
-				tableViewHeader.statusButton.title = L(options[e.index]);
+				if (e.index > 0) {
+					tableViewHeader.statusButton.title = L(options[e.index]);
+				}
 			});
 			var rejoiceDone = Ti.UI.createButton({
 				backgroundImage: mh.util.getBackgroundImage('images/icons/rejoicable_icon.png'),
@@ -1121,7 +1123,7 @@
 			}
 			
 			if (person.fb_id) {
-				var fbRow = createSimpleRow(L('contact_info_facebook', 'Facebook'), L('contact_open_facebook', 'Open Facebook Profile In Browser'));
+				var fbRow = createSimpleRow(L('contact_info_facebook', 'Facebook'), L('contact_open_facebook', 'Tap here to open Facebook profile in browser'));
 				fbRow.addEventListener('click', function(e){
 					mh.ui.openLink({ url: 'http://facebook.com/profile.php?id='+person.fb_id });
 				});
