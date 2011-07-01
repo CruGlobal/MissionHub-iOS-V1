@@ -10,10 +10,10 @@
 <id>com.missionhub.iphone</id>
 <name>MissionHub</name>
 <version>1.0</version>
-<publisher>Campus Crusade for Christ International</publisher>
+<publisher>Campus Crusade for Christ Inc</publisher>
 <url>https://www.missionhub.com</url>
 <description>No description provided</description>
-<copyright>Campus Crusade for Christ International</copyright>
+<copyright>2011 Campus Crusade for Christ Inc</copyright>
 <icon>default_app_logo.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
