@@ -78,7 +78,7 @@
 		if (date.getHours()>=12) {
 			datestr+=' '+(date.getHours()==12 ? date.getHours() : date.getHours()-12)+':'+mh.util.pad(date.getMinutes(), 0, 2)+' PM';
 		} else {
-			datestr+=' '+date.getHours()+':'+date.getMinutes()+' AM';
+			datestr+=' '+(date.getHours()==0 ? 12 : date.getHours())+':'+mh.util.pad(date.getMinutes(), 0, 2)+' AM';
 		}
 		return datestr;
 	};
