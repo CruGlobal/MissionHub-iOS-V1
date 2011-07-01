@@ -165,7 +165,6 @@
 				
 				if (params.authorization) {
 					destroy();
-					mh.ui.main.indicator.message = "    Logging In...  ";
 					mh.ui.main.showIndicator('grantAccess'); 
 					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
 				}
@@ -221,7 +220,6 @@
 					mh.error.handleError('', options, 'authentication');
 				}
 			} else {
-				mh.ui.main.indicator.message = "    Logging In...  ";
 				mh.ui.main.showIndicator('getToken');
 				mh.auth.oauth.getTokenFromCode(response.code, getTokenOnLoad, getTokenOnError);
 			}

@@ -41,7 +41,6 @@
 				fresh: true
 			};
 			mh.api.getPeople(mh.app.getPerson().id,options);
-			mh.ui.main.indicator.message = "Loading Person";
 			mh.ui.main.showIndicator('openperson');
 		};
 		

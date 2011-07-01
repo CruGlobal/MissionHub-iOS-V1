@@ -17,17 +17,15 @@
 		backgroundColor: "black",
 		borderRadius: 4,
 		height: 50,
-		width: 'auto',
-		color: '#fff',
+		width: 50,
 		zIndex: 90,
 		style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
-		font: {fontFamily:'Helvetica Neue', fontSize:15,fontWeight:'bold'}
+		visible: false
 	});
 	
 	mh.ui.main.processes = [];
 	
 	mh.ui.main.showIndicator = function(process) {
-		mh.ui.main.indicator.width = 160;
 		mh.ui.main.processes.push(process);
 		mh.ui.main.indicator.show();
 	};
@@ -70,7 +68,6 @@
 			
 			refresh();
 			
-			mh.ui.main.indicator.message = " Logging In... ";
 			if (mh.auth.oauth.checkToken(checkTokenOnLoad, checkTokenOnError)){
 				mh.ui.main.showIndicator('checkToken');
 			}
