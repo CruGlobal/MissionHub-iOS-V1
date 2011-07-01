@@ -505,7 +505,7 @@
 				statusSelector.show();
 			});
 			statusSelector.addEventListener('click', function(e) {
-				if (e.index > 0) {
+				if (e.index >= 0) {
 					tableViewHeader.statusButton.title = L(options[e.index]);
 				}
 			});
