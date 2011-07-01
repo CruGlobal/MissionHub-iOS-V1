@@ -53,7 +53,7 @@
 				mh.app.setPerson(person);
 				openWindow();
 			}
-		}	
+		};
 		
 		var openWindow = function() {
 			profileWindow = Ti.UI.createWindow({
@@ -257,7 +257,7 @@
 				orgPickerViewShown = true;
 				orgPickerView.bottom = -10;
 				button.title = L('profile_close_org');
-			}
+			};
 			animateOrgPickerViewDown = function() {
 				buttonPushes++;
 				orgPickerViewShown = false;
@@ -269,7 +269,7 @@
 					alert("You successfully changed your current organization to: " + currentPickerRole.name);
 					orgChanged = false;
 				}
-			}
+			};
 			var profileLabel = Ti.UI.createLabel({
 				text: L('profile_title'),
 				color: 'white',
@@ -329,9 +329,9 @@
 			
 			var touches = -1;
 			versionLabel.addEventListener('touchstart', function(e) {
-				if (buttonPushes < 5) { return };
+				if (buttonPushes < 5) { return; }
 				touches++;
-				if (touches < 15) { return };
+				if (touches < 15) { return; }
 				touches = 0;
 				buttonPushes = 0;
 				showEgg();
@@ -367,7 +367,7 @@
 			});
 			
 			var image = Ti.UI.createImageView({
-				image: mh.util.getBackgroundImage('images/planking.jpg'),
+				image: mh.util.getBackgroundImage('images/planking.jpg')
 			});
 			
 			win.add(image);

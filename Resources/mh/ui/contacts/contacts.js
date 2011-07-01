@@ -355,7 +355,7 @@
 				height: 20,
 				width: Ti.Platform.displayCaps.platformWidth - 60,
 				font: { fontSize: 18, fontFamily: 'Helvetica' }
-			})
+			});
 			row.add(name);
 			
 			var status = Ti.UI.createLabel({
@@ -366,7 +366,7 @@
 				height: 20,
 				width: Ti.Platform.displayCaps.platformWidth - 60,
 				font: { fontSize: 13, fontFamily: 'Helvetica' }
-			})
+			});
 			row.add(status);
 			
 			row.person = person;
@@ -377,7 +377,7 @@
 			if (e.row.person) {
 				mh.ui.contact.window.open(e.row.person);
 			}
-		}
+		};
 		
 		var curTab = 0;
 		var changeTab = function(index, force) {
@@ -433,7 +433,7 @@
 		
 		var addOption = function(name, value) {
 			options[name] = value;
-		}
+		};
 		
 		var removeOption = function(name) {
 			delete options[name];
@@ -448,7 +448,7 @@
 				}
 			}
 			filters.push({name: name, value: value});
-		}
+		};
 		
 		var removeFilter = function(name) {
 			for (var i=0; i<filters.length; i++) {

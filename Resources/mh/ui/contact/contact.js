@@ -375,7 +375,7 @@
 					debug('assignErrorCallback()');
 					tableViewHeader.nv.assignButton.enabled = true;
 					hideIndicator('assignment');
-				}
+				};
 				
 				var dataForRequest = {
 					ids: person.id,
@@ -396,7 +396,7 @@
 					mh.api.deleteContactAssignment(dataForRequest.ids, optionsForRequest);
 				}
 				tableViewHeader.nv.assignButton.enabled = false;
-			}
+			};
 
 
 			tableViewHeader.nv.assignButton.addEventListener('click',onAssignButtonClick);
@@ -547,7 +547,7 @@
 					this.image = mh.util.getBackgroundImage('images/icons/icon-s-convo-white.png');
 					this.on = false;
 				} else {
-					this.image = mh.util.getBackgroundImage('images/icons/icon-s-convo.png'),
+					this.image = mh.util.getBackgroundImage('images/icons/icon-s-convo.png');
 					this.on = true;
 				}
 			});
