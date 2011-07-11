@@ -324,7 +324,11 @@
 			});
 			
 			surveyButton.addEventListener('click', function() {
-				mh.ui.surveys.window.open();
+				mh.auth.oauth.logout(function() {
+					setTimeout(function(){
+						mh.ui.surveys.window.open();
+					}, 200);
+				}, true);
 			});
 			
 			loggedInView.add(surveyButton);
