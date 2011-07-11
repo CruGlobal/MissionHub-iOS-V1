@@ -260,9 +260,9 @@
 			showLogoutBar = function() {
 				logoutBarView.animate({ top: 0 });
 				if (ipad) {
-					logoView.animate({ top: 280 });
+					logoView.animate({ top: 240 });
 				} else {
-					logoView.animate({ top: 140 });
+					logoView.animate({ top: 85 });
 				}
 			};
 
@@ -287,7 +287,7 @@
 				top: Ti.Platform.displayCaps.platformHeight,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110
+				height: 220
 			});
 			mainWindow.add(loggedInView);
 			
@@ -309,6 +309,25 @@
 			});
 			
 			loggedInView.add(contactsButton);
+			
+			var surveyButton = Titanium.UI.createButton({
+				left: 0,
+				top: contactsButton.height,
+				width: Ti.Platform.displayCaps.platformWidth, 
+				height: 110,
+				title: L('main_surveys'),
+				backgroundImage: mh.util.getBackgroundImage('/images/MH_Button.png'),
+				shadowColor: 'black',
+				shadowOffset: {x: -2, y: 2},				
+				color: 'white',
+				font: { fontSize: 36, fontFamily: 'Helvetica', fontWeight: 'Bold' }
+			});
+			
+			surveyButton.addEventListener('click', function() {
+				mh.ui.surveys.window.open();
+			});
+			
+			loggedInView.add(surveyButton);
 
 			configureLoggedInView = function() {
 				configureLogoutBar();

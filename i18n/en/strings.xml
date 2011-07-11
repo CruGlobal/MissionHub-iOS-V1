@@ -14,6 +14,7 @@
 	<string name="main_sign_in">sign in</string>
 	<string name="main_sign_out">sign out</string>
 	<string name="main_signed_in_as">you are signed in as</string>
+	<string name="main_surveys">Surveys</string>
 	
 	<!-- Contacts -->
 	<string name="contacts_title">Contacts</string>
@@ -30,6 +31,9 @@
 	<string name="contacts_status_contacted">Contacted</string>
 	<string name="contacts_status_completed">Completed</string>
 	<string name="contacts_status_do_not_contact">Do Not Contact</string>
+	
+	<!-- Surveys -->
+	<string name="surveys_title">MHub Survey</string>
 	
 	<!-- Contact -->
 	<string name="contact_title_contact">Contact</string>

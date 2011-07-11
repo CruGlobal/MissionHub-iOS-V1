@@ -140,6 +140,18 @@
 			authWebView = null;
 		};
 		
+		var errorOptions = {
+			errorCallback: function(click) {
+				if (click.index === 0) {
+					authWebView.url = mh.auth.wvUrl;								
+				}
+				if (click.index === 1) {
+					destroy();
+				}
+			},
+			buttonNames: [L('retry'),L('cancel')]						
+		};
+		
 		var webViewOnLoad = function (e) {
 			debug('running mh.ui.login.window.webViewOnLoad');
 			if (e.url) {
@@ -147,19 +159,7 @@
 				
 				if (params.error) {
 					debug("params.error : " + params.error);
-
-					var options = {
-						errorCallback: function(click) {
-							if (click.index === 0) {
-								authWebView.url = mh.auth.wvUrl;								
-							}
-							if (click.index === 1) {
-								destroy();
-							}
-						},
-						buttonNames: [L('retry'),L('cancel')]						
-					};
-					mh.error.handleError('', options, params.error);
+					mh.error.handleError('', errorOptions, params.error);
 					return;
 				}
 				
@@ -170,33 +170,17 @@
 				}
 			}
 			else {
-				var options = {
-					errorCallback: function() {}
-				};
-				mh.error.handleError('', options, 'unknown');
+				mh.error.handleError('', errorOptions, 'unknown');
 			}
 			indicator.hide();
 			mh.ui.main.hideIndicator('webViewLoad');
-
 		};
 		
 		var webViewOnError = function(e) {
 			debug('running mh.ui.login.window.webViewOnError');
 			indicator.hide();
 			mh.ui.main.hideIndicator('webViewLoad');
-
-			var options = {
-				errorCallback: function(click) {
-					if (click.index === 0) {
-						authWebView.url = mh.auth.wvUrl;
-					}
-					if (click.index === 1) {
-						destroy();
-					}
-				},
-				buttonNames: [L('retry'),L('cancel')]
-			};
-			mh.error.handleError('', options, 'no_data');
+			mh.error.handleError('', errorOptions, 'no_data');
 		};
 		
 		var grantAccessOnLoad = function (e) {

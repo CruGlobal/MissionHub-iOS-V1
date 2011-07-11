@@ -57,3 +57,4 @@ Ti.include('/mh/ui/contacts/contacts.js');
 Ti.include('/mh/ui/login/login.js');
 Ti.include('/mh/ui/main/main.js');
 Ti.include('/mh/ui/profile/profile.js');
+Ti.include('/mh/ui/surveys/surveys.js');
