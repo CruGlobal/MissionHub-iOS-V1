@@ -17,7 +17,7 @@
 		
 		var surveysWindow, webview, indicator;
 		
-		var surveyUrl = 'https://www.missionhub.com/c/cru';
+		var surveyUrl = mh.api.getSurveysUrl();
 		
 		var open = function() {
 			debug('running mh.ui.surveys.window.open');
@@ -25,6 +25,11 @@
 				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png'),
 				height: Ti.Platform.displayCaps.platformHeight,
 				width: Ti.Platform.displayCaps.platformWidth
+			});
+			
+			surveyUrl = mh.api.getSurveysUrl({
+				access_token: mh.auth.oauth.getToken(),
+				org_id: mh.app.orgID()
 			});
 			
 			createHeader();

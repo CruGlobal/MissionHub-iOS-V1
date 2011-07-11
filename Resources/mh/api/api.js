@@ -205,6 +205,10 @@
 		return firePostRequest(requestURL, options, data);
 	};
 	
+	mh.api.getSurveysUrl = function(options) {
+		var url = mh.config.base_url + '/surveys';
+		return url + '?' + mh.api.buildQueryParams(options)
+	};
 	
 	function firePostRequest(requestURL, options, data) {
 		debug("running mh.api.firePostRequest");
@@ -354,6 +358,9 @@
 	}
 	
 	function addLoggingParams(hash) {
+		if (!hash) {
+			hash = {};
+		}
 		hash.platform = Titanium.Network.encodeURIComponent(Ti.Platform.name);
 		hash.platform_product = Titanium.Network.encodeURIComponent(Ti.Platform.model);
 		hash.platform_release = Titanium.Network.encodeURIComponent(Ti.Platform.version);
