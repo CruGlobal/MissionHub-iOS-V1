@@ -35,7 +35,7 @@
 		}
 	
 		//now we actually build the query string
-		var queryString = buildQueryParams(queryParams);
+		var queryString = mh.api.buildQueryParams(queryParams);
 		
 		//figure out the request URL we want to use
 		var requestURL;
@@ -68,7 +68,7 @@
 		if (options.org_id) {
 			queryParams.org_id = options.org_id;
 		}
-		var queryString = buildQueryParams(queryParams);
+		var queryString = mh.api.buildQueryParams(queryParams);
 		var requestURL = mh.config.api_url + '/contacts/' + idString + '.json?' + queryString;
 		if (!options.fresh) {
 			options.cacheKey = mh.util.stripBadCharacters(requestURL);
@@ -94,7 +94,7 @@
 			queryParams.org_id = options.org_id;
 		}
 		//now we actually build the query string
-		var queryString = buildQueryParams(queryParams);
+		var queryString = mh.api.buildQueryParams(queryParams);
 
 		//figure out the request URL we want to use
 		var requestURL = mh.config.api_url + '/people/' + idString + '.json?' + queryString;
@@ -124,7 +124,7 @@
 			queryParams.org_id = options.org_id;
 		}
 		//now we actually build the query string
-		var queryString = buildQueryParams(queryParams);
+		var queryString = mh.api.buildQueryParams(queryParams);
 
 		//figure out the request URL we want to use
 		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?' + queryString;
@@ -154,7 +154,7 @@
 		realData = { json: JSON.stringify(data) };
 		realData.access_token = mh.auth.oauth.getToken();
 		
-		var requestURL = mh.config.api_url + '/followup_comments.json' + '?' + buildQueryParams({});
+		var requestURL = mh.config.api_url + '/followup_comments.json' + '?' + mh.api.buildQueryParams({});
 		
 		return firePostRequest(requestURL, options, realData);
 	};
@@ -172,7 +172,7 @@
 	//  errorCallback:     function fired when request fails
 	mh.api.createContactAssignment = function (data, options) {
 		data.access_token = mh.auth.oauth.getToken();
-		var requestURL = mh.config.api_url + '/contact_assignments.json' + '?' + buildQueryParams({});
+		var requestURL = mh.config.api_url + '/contact_assignments.json' + '?' + mh.api.buildQueryParams({});
 		return firePostRequest(requestURL, options, data);
 	};
 
@@ -187,7 +187,7 @@
 		if (options.org_id) {
 			data['org_id'] = options.org_id;
 		}
-		var requestURL = mh.config.api_url + '/contact_assignments/' + id + '.json?access_token=' + mh.auth.oauth.getToken()  + '&' + buildQueryParams({});
+		var requestURL = mh.config.api_url + '/contact_assignments/' + id + '.json?access_token=' + mh.auth.oauth.getToken()  + '&' + mh.api.buildQueryParams({});
 		return firePostRequest(requestURL, options, data);
 	};
 	
@@ -201,7 +201,7 @@
 		if (options.org_id) {
 			data['org_id'] = options.org_id;
 		}
-		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?access_token=' + mh.auth.oauth.getToken() + '&' + buildQueryParams({});
+		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?access_token=' + mh.auth.oauth.getToken() + '&' + mh.api.buildQueryParams({});
 		return firePostRequest(requestURL, options, data);
 	};
 	
@@ -362,7 +362,7 @@
 	}
 	
 	
-	function buildQueryParams(hash) {
+	mh.api.buildQueryParams = function(hash) {
 		hash = addLoggingParams(hash);
 		
 		var query = '';

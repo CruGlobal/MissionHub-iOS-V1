@@ -54,7 +54,7 @@
 						
 			var wv = Ti.UI.createWebView({
 				opacity: 0,
-				url: mh.config.base_url + '/auth/facebook/logout'
+				url: mh.config.base_url + '/auth/facebook/logout' + '?' + mh.api.buildQueryParams({})
 			});
 			win.add(wv);
 			
@@ -113,8 +113,8 @@
 				});
 			};
 			
-			xhr.open('GET', mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()));
-			info(mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()));
+			xhr.open('GET', mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()) + '&' + mh.api.buildQueryParams({}));
+			info(mh.config.api_url+'/people/me.json?access_token='+Titanium.Network.encodeURIComponent(getStoredToken()) + '&' + mh.api.buildQueryParams({}));
 			xhr.send();
 			
 			return true;
@@ -141,7 +141,7 @@
 				});
 			};
 			
-			xhr.open('POST',mh.config.oauth_url+'/access_token');
+			xhr.open('POST',mh.config.oauth_url+'/access_token' + '?' + mh.api.buildQueryParams({}));
 			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			xhr.send({
 				client_id:mh.config.oauth_client_id,
@@ -173,7 +173,7 @@
 				});
 			};
 			
-			xhr.open('GET',mh.config.oauth_url+'/grant.json?authorization='+Titanium.Network.encodeURIComponent(authorization));
+			xhr.open('GET',mh.config.oauth_url+'/grant.json?authorization='+Titanium.Network.encodeURIComponent(authorization) + '&' + mh.api.buildQueryParams({}));
 			xhr.send();			
 		};
 		
