@@ -154,7 +154,8 @@
 		realData = { json: JSON.stringify(data) };
 		realData.access_token = mh.auth.oauth.getToken();
 		
-		var requestURL = mh.config.api_url + '/followup_comments.json';
+		var requestURL = mh.config.api_url + '/followup_comments.json' + '?' + buildQueryParams({});
+		
 		return firePostRequest(requestURL, options, realData);
 	};
 
@@ -171,7 +172,7 @@
 	//  errorCallback:     function fired when request fails
 	mh.api.createContactAssignment = function (data, options) {
 		data.access_token = mh.auth.oauth.getToken();
-		var requestURL = mh.config.api_url + '/contact_assignments.json';
+		var requestURL = mh.config.api_url + '/contact_assignments.json' + '?' + buildQueryParams({});
 		return firePostRequest(requestURL, options, data);
 	};
 
@@ -186,7 +187,7 @@
 		if (options.org_id) {
 			data['org_id'] = options.org_id;
 		}
-		var requestURL = mh.config.api_url + '/contact_assignments/' + id + '.json?access_token=' + mh.auth.oauth.getToken();
+		var requestURL = mh.config.api_url + '/contact_assignments/' + id + '.json?access_token=' + mh.auth.oauth.getToken()  + '&' + buildQueryParams({});
 		return firePostRequest(requestURL, options, data);
 	};
 	
@@ -200,7 +201,7 @@
 		if (options.org_id) {
 			data['org_id'] = options.org_id;
 		}
-		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?access_token=' + mh.auth.oauth.getToken();
+		var requestURL = mh.config.api_url + '/followup_comments/' + id + '.json?access_token=' + mh.auth.oauth.getToken() + '&' + buildQueryParams({});
 		return firePostRequest(requestURL, options, data);
 	};
 	
@@ -352,8 +353,18 @@
 		return queryParams;
 	}
 	
+	function addLoggingParams(hash) {
+		hash.platform = Titanium.Network.encodeURIComponent(Ti.Platform.name);
+		hash.platform_product = Titanium.Network.encodeURIComponent(Ti.Platform.model);
+		hash.platform_release = Titanium.Network.encodeURIComponent(Ti.Platform.version);
+		hash.app = Titanium.Network.encodeURIComponent(Ti.App.version);
+		return hash;
+	}
+	
 	
 	function buildQueryParams(hash) {
+		hash = addLoggingParams(hash);
+		
 		var query = '';
 		var numParams = hash.length;
 		for (var paramName in hash) {
