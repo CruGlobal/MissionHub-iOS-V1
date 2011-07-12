@@ -145,11 +145,7 @@
 				height: bottomView.height-36 //tabbar
 			}, startReloadCallback);
 			bottomView.add(tableView);
-			
-			tableView.addEventListener('click', function(e){
-				tableViewClick(e);
-			});
-			
+						
 			tableView.addEventListener('nearbottom', function(e) {
 				onGetMore();
 			});
@@ -370,12 +366,101 @@
 			row.add(status);
 			
 			row.person = person;
+			
+			var touched = false;
+			var longclick = false;
+			row.addEventListener('click', function(e)	{
+			    touched = false;
+			    if (!longclick) {
+					tableViewClick(row);
+				} else {
+					longclick = false;
+				}
+			});
+			row.addEventListener('touchstart', function(e) {
+			    touched = true;
+			    setTimeout(function(){
+			        if (touched) {
+						longclick = true;
+						tableViewLongClick(row);
+			        } else {
+						longclick = false;
+			        }
+			        touched = false;
+			    },800);
+			});
+			row.addEventListener('touchmove', function(e){
+			    touched = false;
+			});
+			row.addEventListener('touchend', function(e){
+			    touched = false;
+			});
+			
 			return row;
 		};
 		
-		var tableViewClick = function(e) {
-			if (e.row.person) {
-				mh.ui.contact.window.open(e.row.person);
+		var tableViewClick = function(row) {
+			if (row.person) {
+				mh.ui.contact.window.open(row.person);
+			}
+		};
+		
+		var tableViewLongClick = function(row) {
+			if (mh.app.getRole() == mh.app.ROLE_ADMIN && row.person.organizational_roles) {
+				var contactRole = 'contact';
+				for (var index in row.person.organizational_roles) {
+					var role = row.person.organizational_roles[index];
+					if (role.org_id == mh.app.orgID()) {
+						if (role.role == 'admin') {
+							contactRole = 'admin';
+						} else if (role.role == 'leader') {
+							contactRole = 'leader';
+							
+						} else if (role.role == 'contact') {
+							contactRole = 'contact';
+						}
+						break;
+					}
+				}
+				
+				var options = {
+				    title: L('contacts_actions'),
+				    cancel:1
+				}
+				
+				var callbackOpts = {
+					org_id:mh.app.orgID(),
+					errorCallback: function(e) {
+						indicator.hide();
+					},
+					successCallback: function(e) {
+						indicator.hide();
+						resetTableView();
+						onGetMore(true);
+					}
+				}
+				
+				if (contactRole == 'contact') {
+					options.options = [L('contacts_promote_to_leader'),L('cancel')];
+					var dialog = Titanium.UI.createOptionDialog(options);
+					dialog.show();
+					dialog.addEventListener('click', function(e){
+						if (e.index == 0) {
+							indicator.show();
+							mh.api.changeRole(row.person.id, "leader", callbackOpts);
+						}
+					});
+				} else if (contactRole == 'leader') {
+					options.options = [L('contacts_demote_to_contact'),L('cancel')];
+					var dialog = Titanium.UI.createOptionDialog(options);
+					dialog.show();
+					dialog.addEventListener('click', function(e){
+						if (e.index == 0) {
+							indicator.show();
+							mh.api.changeRole(row.person.id, "contact", callbackOpts);
+						}
+					});
+				}
 			}
 		};
 		

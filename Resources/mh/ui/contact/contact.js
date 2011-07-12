@@ -891,7 +891,6 @@
 		};
 		var onContactError= function(e) { /* On Contact Load Error */
 			debug('running mh.ui.window.contact.onContactError');
-			//TODO:
 			hideIndicator('contact');
 		};
 		
@@ -931,8 +930,47 @@
 		};
 		var onCommentError = function(e) { /* On Comments Load Error */
 			debug('running mh.ui.window.contact.onCommentError');
-			//TODO;
 			hideIndicator('comments');
+		};
+		
+		var onChangeRole = function(e) {
+			hideIndicator('role');
+			getContact(true);
+		}
+		
+		var onChangeRoleError = function(e) {
+			hideIndicator('role');
+		}
+		
+		var changeRole = function(role, id) {
+			var options = {
+				buttonNames: [L('yes'), L('no')]
+			};
+			
+			var apiOpts = {
+				org_id:mh.app.orgID(),
+				successCallback: onChangeRole,
+				errorCallback: onChangeRoleError
+			}
+			
+			if (role == "leader") {
+				options.title = L('contact_promote');
+				options.onClick = function(e) {
+					if (e.index == 0) {
+						showIndicator('role');
+						mh.api.changeRole(id, "leader", apiOpts);
+					}
+				}
+			} else if (role == "contact") {
+				options.title = L('contact_demote');
+				options.onClick = function(e) {
+					if (e.index == 0) {
+						showIndicator('role');
+						mh.api.changeRole(id, "contact", apiOpts);
+					}
+				}
+			}
+			mh.ui.alert(options);
 		};
 		
 		/* Table View Content */
@@ -1128,6 +1166,41 @@
 					mh.ui.openLink({ url: 'http://facebook.com/profile.php?id='+person.fb_id });
 				});
 				moreInfoData.push(fbRow);
+			}
+			
+			if (person.organizational_roles && mh.app.getRole() == mh.app.ROLE_ADMIN) {
+				var contactRole = 'contact';
+				for (var index in person.organizational_roles) {
+					var role = person.organizational_roles[index];
+					if (role.org_id == mh.app.orgID()) {
+						if (role.role == 'admin') {
+							contactRole = 'admin';
+						} else if (role.role == 'leader') {
+							contactRole = 'leader';
+							
+						} else if (role.role == 'contact') {
+							contactRole = 'contact';
+						}
+						break;
+					}
+				}
+				
+				var roleRow;
+				if (contactRole == 'contact') {
+					roleRow = createSimpleRow(L('contact_role'), L('contact_role_promote'));
+					roleRow.addEventListener('click', function(e) {
+						changeRole("leader", person.id);
+					});
+				} else if (contactRole == 'leader') {
+					roleRow = createSimpleRow(L('contact_role'), L('contact_role_demote'));
+					roleRow.addEventListener('click', function(e) {
+						changeRole("contact", person.id);
+					});
+				} else if (contactRole == 'admin') {
+					roleRow = createSimpleRow(L('contact_role'), L('contact_role_admin'));
+				}
+				
+				moreInfoData.push(roleRow);
 			}
 			
 			if (person.assignment.person_assigned_to.length > 0) {	

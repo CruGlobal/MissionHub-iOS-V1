@@ -31,6 +31,9 @@
 	<string name="contacts_status_contacted">Contacted</string>
 	<string name="contacts_status_completed">Completed</string>
 	<string name="contacts_status_do_not_contact">Do Not Contact</string>
+	<string name="contacts_actions">Contact Actions</string>
+	<string name="contacts_promote_to_leader">Promote to Leader</string>
+	<string name="contacts_demote_to_contact">Demote to Contact</string>
 	
 	<!-- Surveys -->
 	<string name="surveys_title">MHub Survey</string>
@@ -56,6 +59,12 @@
 	<string name="contact_assigned_to">Assigned to</string>
 	<string name="contact_assignment_error">Assignment Error</string>
 	<string name="contact_assignment_error_msg">MissionHub failed to change your assignment status. Try again.</string>
+	<string name="contact_role">Organization Role</string>
+    <string name="contact_role_promote">Contact - Tap here to promote to leader</string>
+    <string name="contact_role_demote">Leader - Tap here to demote to contact</string>
+    <string name="contact_role_admin">Admin</string>
+    <string name="contact_promote">Promote to Leader?</string>
+    <string name="contact_demote">Demote to contact?</string>
 	
 	<!-- Profile -->
 	<string name="profile_title">My Profile</string>
@@ -122,6 +131,8 @@
 	<string name='retry'>Retry</string>
 	<string name="loading">Loading...</string>
 	<string name="logout">Logout</string>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
 	
 	<!-- Guide -->
 	<string name='guide_contacts'>My Contacts</string>

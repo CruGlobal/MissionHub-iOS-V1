@@ -205,6 +205,22 @@
 		return firePostRequest(requestURL, options, data);
 	};
 	
+	//mh.api.changeRole -- change a contacts role
+	// required in options object: 
+	//  successCallback:   function fired when request succeeds
+	//  errorCallback:     function fired when request fails
+	mh.api.changeRole = function (id, newRole, options) {
+		var data = {};
+		data['_method'] = 'put';
+		data['role'] = newRole;
+		if (options.org_id) {
+			data['org_id'] = options.org_id;
+		}
+		
+		var requestURL = mh.config.api_url + '/roles/' + id + '.json?access_token=' + mh.auth.oauth.getToken()  + '&' + mh.api.buildQueryParams({});
+		return firePostRequest(requestURL, options, data);
+	};
+	
 	mh.api.getSurveysUrl = function(options) {
 		var url = mh.config.base_url + '/surveys';
 		return url + '?' + mh.api.buildQueryParams(options)

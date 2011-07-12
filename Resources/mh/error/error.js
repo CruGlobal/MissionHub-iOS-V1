@@ -69,6 +69,7 @@
 	//OPTIONAL:  alt -- alternate code to look up in Locale i18n file
 	mh.error.handleError = function(code, options, alt) {
 		var hash = {};
+		var title = '';
 		var error_code='';
 		var message='Unknown Error.';
 		debug("in handleError: " + JSON.stringify(code));
@@ -83,12 +84,15 @@
 			error_code = code.code;
 			message = code.message;
 		}
+		if (code.title) {
+			title = code.title;
+		}
 		
 		if (alt) {
 			hash.title = L('error_'+error_code, L('error_'+alt));
 			hash.message = L('error_'+error_code+'_msg', L('error_'+alt+'_msg'));
 		} else {
-			hash.title =  L('error_'+error_code, L('error_unknown'));
+			hash.title =  L('error_'+error_code, title);
 			hash.message = L('error_'+error_code+'_msg', message);
 		}
 		mh.ui.alert(hash);
