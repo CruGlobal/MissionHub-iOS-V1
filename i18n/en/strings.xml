@@ -144,5 +144,5 @@
 	<string name='guide_contact_moreinfo'>More Info - Admin</string>
 	<string name='guide_contact_moreinfo_msg'>The more info tab displays additional information about a contact. As an admin in your organization you can promote a contact to a leader from here. You can also do this by longpressing the contact in the contacts view.</string>
 	<string name='guide_surveys'>Surveys</string>
-	<string name='guide_surveys_msg'>The surveys section allows you to quickly collect a survey from someone you meet, and it adds them to your organization's contacts. To collect a survey, simply select the appropriate keyword and hand your device to the person you wish to survey. The survey will reset when they are finished to allow you to survey multiple people.</string>
+	<string name='guide_surveys_msg'>The surveys section allows you to quickly collect a survey from someone you meet and add them to your organization's contacts. To collect a survey, simply select the appropriate keyword and hand your device to the person you wish to survey. The survey will reset when they are finished to allow you to survey multiple people.</string>
 </resources>
