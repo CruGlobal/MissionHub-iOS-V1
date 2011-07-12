@@ -36,6 +36,19 @@
 			createWebView();
 			
 			mh.ui.nav.open(surveysWindow);
+			
+			if (!Ti.App.Properties.hasProperty('guide_surveys')) {
+				mh.ui.alert({
+					buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
+					title: L('guide_surveys'),
+					message: L('guide_surveys_msg'),
+					onClick: function(e) {
+						if (e.index === 1) {
+							Ti.App.Properties.setBool('guide_surveys', true);
+						}
+					}
+				});
+			}
 		};
 
 		var createHeader = function() {

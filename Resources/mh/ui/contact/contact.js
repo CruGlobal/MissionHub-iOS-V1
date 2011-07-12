@@ -1436,6 +1436,18 @@
 						tableView.headerView = contactCard
 					}
 					if (index == 1) {
+						if (!Ti.App.Properties.hasProperty('guide_contact_moreinfo') && mh.app.getRole() == mh.app.ROLE_ADMIN) {
+							mh.ui.alert({
+								buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
+								title: L('guide_contact_moreinfo'),
+								message: L('guide_contact_moreinfo_msg'),
+								onClick: function(e) {
+									if (e.index === 1) {
+										Ti.App.Properties.setBool('guide_contact_moreinfo', true);
+									}
+								}
+							});
+						}
 						contactWindow.contactLabel.text = L('contact_title_more_info');
 						tableView.allowsSelection = true;
 						tableView.setData(moreInfoData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
