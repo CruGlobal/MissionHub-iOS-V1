@@ -69,7 +69,7 @@
 	//OPTIONAL:  alt -- alternate code to look up in Locale i18n file
 	mh.error.handleError = function(code, options, alt) {
 		var hash = {};
-		var title = '';
+		var title = 'Error';
 		var error_code='';
 		var message='Unknown Error.';
 		debug("in handleError: " + JSON.stringify(code));
