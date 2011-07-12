@@ -27,8 +27,8 @@ var mh = {};
 	var privledgedRoles = {};
 	
 	mh.app.ROLE_NONE = -1;
-	mh.app.ROLE_ADMIN = 0;
-	mh.app.ROLE_LEADER = 1;
+	mh.app.ROLE_ADMIN = 1;
+	mh.app.ROLE_LEADER = 4;
 	mh.app.ROLE_CONTACT = 2;
 	
 	mh.app.getPerson = function() {

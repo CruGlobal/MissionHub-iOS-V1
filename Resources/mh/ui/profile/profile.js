@@ -102,7 +102,7 @@
 			var counter = 0;
 			for (var i in roles) {
 				var role = roles[i];
-				if (role.role == mh.app.ROLE_ADMIN || roles.role == mh.app.ROLE_LEADER ) {
+				if (role.role == mh.app.ROLE_ADMIN || role.role == mh.app.ROLE_LEADER ) {
 					var row = Ti.UI.createPickerRow({
 						title: role.name,
 						role: role

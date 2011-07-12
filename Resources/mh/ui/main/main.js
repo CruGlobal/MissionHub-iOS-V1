@@ -287,7 +287,7 @@
 				top: Ti.Platform.displayCaps.platformHeight,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 220
+				height: 212
 			});
 			mainWindow.add(loggedInView);
 			
@@ -295,7 +295,7 @@
 				left: 0,
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110,
+				height: 106,
 				title: L('profile_contacts_button'),
 				backgroundImage: mh.util.getBackgroundImage('/images/MH_Button.png'),
 				shadowColor: 'black',
@@ -314,7 +314,7 @@
 				left: 0,
 				top: contactsButton.height,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110,
+				height: 106,
 				title: L('main_surveys'),
 				backgroundImage: mh.util.getBackgroundImage('/images/MH_Button.png'),
 				shadowColor: 'black',
@@ -344,7 +344,7 @@
 				top: Ti.Platform.displayCaps.platformHeight,
 				left: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 220
+				height: 212
 			});
 			mainWindow.add(loggedOutView);
 			
@@ -352,7 +352,7 @@
 				left: 0,
 				top: 0,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110,
+				height: 106,
 				title: L('profile_about_button'),
 				shadowColor: 'black',
 				shadowOffset: {x: -2, y: 2},
@@ -371,9 +371,9 @@
 
 			var signInButton = Titanium.UI.createButton({
 				left: 0,
-				top: 110,
+				top: tryNowButton.height,
 				width: Ti.Platform.displayCaps.platformWidth, 
-				height: 110,
+				height: 106,
 				title: 'Sign-In',
 				font:{fontFamily:'Helvetica Neue', fontSize:24,fontWeight:'bold'},
 				backgroundImage: mh.util.getBackgroundImage('/images/MH_Button.png')
