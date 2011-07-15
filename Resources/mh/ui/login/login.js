@@ -167,6 +167,10 @@
 					destroy();
 					mh.ui.main.showIndicator('grantAccess'); 
 					mh.auth.oauth.grantAccess(params.authorization, grantAccessOnLoad, grantAccessOnError);
+				} else if (params.code) {
+					destroy();
+					mh.ui.main.showIndicator('getToken');
+					mh.auth.oauth.getTokenFromCode(params.code, getTokenOnLoad, getTokenOnError);
 				}
 			}
 			else {
