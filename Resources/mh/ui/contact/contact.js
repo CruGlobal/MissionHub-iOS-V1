@@ -36,6 +36,10 @@
 			
 			tab = TAB_COMMENTS;
 			
+			commentData = [{title: '', editable:false}]; // Empty row to fix keyboard bug
+			moreInfoData = [{title: '', editable:false}]; // Empty row to fix keyboard bug
+			questionnaireData = [{title: '', editable:false}]; // Empty row to fix keyboard bug
+			
 			refresh();
 			
 			mh.ui.nav.open(contactWindow);
