@@ -272,7 +272,7 @@
 				width: 47,
 				height: 38,
 				left: 0,
-				top: 70,
+				top: 71,
 				visible: false
 			});
 
@@ -288,7 +288,7 @@
 				height: 38,
 				width: 47,
 				//left: 50 + 5,
-				top: 70,
+				top: 71,
 				visible: false
 			});
 
@@ -304,7 +304,7 @@
 				height: 38,
 				width: 47,
 				//left: 100 + 10,
-				top: 70,
+				top: 71,
 				visible: false
 			});
 			tableViewHeader.nv.email.addEventListener('click', function(e) {
@@ -315,7 +315,7 @@
 			tableViewHeader.nv.add(tableViewHeader.nv.email);
 
 			tableViewHeader.name = Ti.UI.createLabel({
-				height: 44,
+				height: 49,
 				text: person.name,
 				color: mh.config.colors.headerNameTxt,
 				font: {
