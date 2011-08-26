@@ -88,8 +88,12 @@ var mh = {};
 			roles[org_membership.org_id].role = mh.app.ROLE_NONE;
 			roles[org_membership.org_id].org_id = org_membership.org_id;
 		}
+		
 		for (var index in person.organizational_roles) {
 			var role = person.organizational_roles[index];
+			if (roles[role.org_id] == null) {
+				continue;
+			}
 			if (role.role == 'admin') {
 				roles[role.org_id].role = mh.app.ROLE_ADMIN;
 				privledgedRoles[role.org_id] = true;
@@ -104,7 +108,7 @@ var mh = {};
 		}
 		
 		if (Ti.App.Properties.getInt('orgid', -1) < 0) {
-			Ti.App.Properties.setInt('orgid', primaryOrg)
+			Ti.App.Properties.setInt('orgid', primaryOrg);
 		}
 	}
 	
