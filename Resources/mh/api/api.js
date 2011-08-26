@@ -153,9 +153,12 @@
 	mh.api.postFollowupComment = function (data, options) {
 		realData = { json: JSON.stringify(data) };
 		realData.access_token = mh.auth.oauth.getToken();
+		if (options.org_id) {
+			realData.org_id = options.org_id;
+		}
 		
 		var requestURL = mh.config.api_url + '/followup_comments.json' + '?' + mh.api.buildQueryParams({});
-		
+		Ti.API.info(requestURL);
 		return firePostRequest(requestURL, options, realData);
 	};
 
