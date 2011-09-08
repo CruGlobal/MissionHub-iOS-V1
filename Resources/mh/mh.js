@@ -42,10 +42,10 @@ var mh = {};
 	};
 	
 	mh.app.getRole = function(org) {
-		if (org && roles.length > 0) {
+		if (org >= 0 && roles[org]) {
 			return roles[org].role;
 		} else {
-			return roles[Ti.App.Properties.getInt('orgid', 0)].role;
+			return roles[Ti.App.Properties.getInt('orgid', -1)].role;
 		}
 	};
 	
@@ -57,7 +57,6 @@ var mh = {};
 	mh.app.orgID = function() {
 		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
 			var roleid = Ti.App.Properties.getInt('orgid', -1);
-			info('stored role id: ' + roleid);
 			if (roleid >= 0 && privledgedRoles[roleid]) {
 				return roleid;
 			} else if (roles.length > 0 && privledgedRoles[0]) {
@@ -69,7 +68,6 @@ var mh = {};
 	};
 	
 	mh.app.setOrgID = function(o) {
-		info('set stored role id = ' + o);
 		Ti.App.Properties.setInt('orgid', o);
 	};
 	
@@ -104,6 +102,14 @@ var mh = {};
 				roles[role.org_id].role = mh.app.ROLE_CONTACT;
 			} else {
 				roles[role.org_id].role = mh.app.ROLE_NONE;
+			}
+		}
+		
+		if (primaryOrg < 0) {
+			for (var k in privledgedRoles) {
+				primaryOrg = k;
+				roles[k].primary = true;
+				break;
 			}
 		}
 		
