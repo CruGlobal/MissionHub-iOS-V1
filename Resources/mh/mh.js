@@ -108,7 +108,7 @@ var mh = {};
 			if (!organizations[role.org_id]) {
 				organizations[role.org_id] = {name: role.name, org_id: role.org_id};
 			}
-			if (role.primary == true || mh.app.getPrimaryOrganizationID() < 0) {
+			if (role.primary === true || mh.app.getPrimaryOrganizationID() < 0) {
 				if (role.role == "leader" || role.role == "admin") {
 					mh.app.setPrimaryOrganizationID(role.org_id);
 				}
