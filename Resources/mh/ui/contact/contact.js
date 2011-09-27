@@ -98,7 +98,7 @@
 			});
 			
 			doneButton.addEventListener('click', function() {
-				mh.ui.nav.pop();
+				mh.ui.nav.close(contactWindow);
 			});
 			contactBar.add(doneButton);
 

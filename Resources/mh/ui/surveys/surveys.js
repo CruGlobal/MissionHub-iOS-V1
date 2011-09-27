@@ -87,7 +87,7 @@
 			doneButton.addEventListener('click', function() {
 				var animation = Ti.UI.createAnimation({duration: 250, left: Ti.Platform.displayCaps.platformWidth});
 				animation.addEventListener('complete', function() {
-					mh.ui.nav.pop();
+					mh.ui.nav.close(surveysWindow);
 				});
 				surveysWindow.animate(animation);
 				mh.ui.main.window.show();
