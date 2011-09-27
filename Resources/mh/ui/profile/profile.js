@@ -143,7 +143,7 @@
 
 			signOutLabel = Ti.UI.createLabel({
 				top: 10,
-				left: 9,
+				right: 9,
 				height: 31,
 				width: 'auto',
 				color: mh.config.colors.blue,
@@ -288,7 +288,7 @@
 
 			var doneButton = Ti.UI.createButton({
 				top: 4,
-				right: 5,
+				left: 5,
 				height: 30,
 				width: 60,
 				zindex: 41,
