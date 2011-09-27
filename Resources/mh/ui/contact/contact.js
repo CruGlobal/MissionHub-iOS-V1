@@ -705,16 +705,19 @@
 			if (!person.email_address) {
 				showEmail = false;
 			}
-
-			if (!Titanium.Platform.canOpenURL('tel:' + person.phone_number)) {
-				showPhone = false;
+			
+			if (!mh.config.demo_mode) {
+				if (!Titanium.Platform.canOpenURL('tel:' + person.phone_number)) {
+					showPhone = false;
+				}
+				if (!Titanium.Platform.canOpenURL('sms:' + person.phone_number)) {
+					showSMS = false;
+				}
+				if (!Titanium.Platform.canOpenURL('mailto:' + person.email_address)) {
+					showEmail = false;
+				}
 			}
-			if (!Titanium.Platform.canOpenURL('sms:' + person.phone_number)) {
-				showSMS = false;
-			}
-			if (!Titanium.Platform.canOpenURL('mailto:' + person.email_address)) {
-				showEmail = false;
-			}
+			
 			debug("showPhone = " + showPhone);
 			debug("showSMS = " + showSMS);
 			debug("showEmail = " + showEmail);

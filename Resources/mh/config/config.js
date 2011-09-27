@@ -18,11 +18,11 @@
 		oauth_client_secret: '',
 		oauth_scope: '',
 		api_url: '',
-
 		cache: {
 			disable: false,
 			cache_expiration_interval: 15
-		}
+		},
+		demo_mode: false
 	};
 	
 })();
