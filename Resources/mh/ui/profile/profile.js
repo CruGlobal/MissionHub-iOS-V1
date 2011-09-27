@@ -23,7 +23,6 @@
 		var animateOrgPickerViewDown;
 		var orgPickerPosition;
 		var currentPickerRole;
-		var orgChanged = false;
 		var orgPickerViewShown = false;
 		var profilePicView;
 		var orgOptions = [];
@@ -81,6 +80,7 @@
 			});
 			
 			getOrgOptions();
+			
 			createHeader();
 
 			profileWindow.add(button);
@@ -102,12 +102,14 @@
 			var counter = 0;
 			for (var i in roles) {
 				var role = roles[i];
-				if (role.role == mh.app.ROLE_ADMIN || role.role == mh.app.ROLE_LEADER ) {
+				if (role.indexOf('admin') > -1 || role.indexOf('leader') > -1) {
+					var orgs = mh.app.getOrganizations();
+					var org = orgs[i];
 					var row = Ti.UI.createPickerRow({
-						title: role.name,
-						role: role
+						title: org.name,
+						role: {org_id: org.org_id, name: org.name}
 					});
-					if ((role.org_id == mh.app.orgID()) || (!orgPickerPosition && role.primary == true)) {
+					if (org.org_id == mh.app.getOrganizationID()) {
 						orgPickerPosition = counter;
 					}
 					orgOptions.push(row);
@@ -263,11 +265,11 @@
 				orgPickerViewShown = false;
 				orgPickerView.bottom = -675;
 				button.title = L('profile_change_org');
-				if (currentPickerRole.org_id != mh.app.orgID()) {
-					mh.app.setOrgID(currentPickerRole.org_id);
+				
+				if (currentPickerRole.org_id != mh.app.getOrganizationID()) {
+					mh.app.setOrganizationID(currentPickerRole.org_id);
 					currentOrgNameLabel.text = currentPickerRole.name;
 					alert("You successfully changed your current organization to: " + currentPickerRole.name);
-					orgChanged = false;
 				}
 			};
 			var profileLabel = Ti.UI.createLabel({
@@ -350,9 +352,9 @@
 					fontFamily: 'Helvetica-Bold'
 				}
 			});
-			var roles = mh.app.getRoles();
-			if (roles[mh.app.orgID()]) {
-				currentOrgNameLabel.text = roles[mh.app.orgID()].name;
+			var orgs = mh.app.getOrganizations();
+			if (orgs[mh.app.getOrganizationID()]) {
+				currentOrgNameLabel.text = orgs[mh.app.getOrganizationID()].name;
 			}
 			
 			profileWindow.add(currentOrgNameLabel);

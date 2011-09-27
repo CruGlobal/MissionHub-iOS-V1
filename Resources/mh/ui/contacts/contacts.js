@@ -406,11 +406,11 @@
 		};
 		
 		var tableViewLongClick = function(row) {
-			if (mh.app.getRole() == mh.app.ROLE_ADMIN && row.person.organizational_roles) {
+			if (mh.app.hasRole("admin") && row.person.organizational_roles) {
 				var contactRole = 'contact';
 				for (var index in row.person.organizational_roles) {
 					var role = row.person.organizational_roles[index];
-					if (role.org_id == mh.app.orgID()) {
+					if (role.org_id == mh.app.getOrganizationID()) {
 						if (role.role == 'admin') {
 							contactRole = 'admin';
 						} else if (role.role == 'leader') {
@@ -429,7 +429,7 @@
 				}
 				
 				var callbackOpts = {
-					org_id:mh.app.orgID(),
+					org_id:mh.app.getOrganizationID(),
 					errorCallback: function(e) {
 						indicator.hide();
 					},
@@ -466,7 +466,7 @@
 		
 		var curTab = 0;
 		var changeTab = function(index, force) {
-			addOption('org_id', mh.app.orgID());
+			addOption('org_id', mh.app.getOrganizationID());
 			if (index !== curTab || force) {
 				curTab = index;
 				resetTableView();

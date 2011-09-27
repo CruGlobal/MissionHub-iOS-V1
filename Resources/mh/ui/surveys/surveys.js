@@ -29,7 +29,7 @@
 			
 			surveyUrl = mh.api.getSurveysUrl({
 				access_token: mh.auth.oauth.getToken(),
-				org_id: mh.app.orgID()
+				org_id: mh.app.getOrganizationID()
 			});
 			
 			createHeader();

@@ -180,7 +180,7 @@
 									getComments(true);
 								}
 							},
-							org_id: mh.app.orgID()
+							org_id: mh.app.getOrganizationID()
 						});
 						showIndicator('delete'+e.row.comment.comment.id);
 					}
@@ -384,13 +384,13 @@
 				var dataForRequest = {
 					ids: person.id,
 					assign_to: mh.app.getPerson().id,
-					org_id: mh.app.orgID()
+					org_id: mh.app.getOrganizationID()
 				};
 				
 				var optionsForRequest = {
 					successCallback: assignSuccessCallback,
 					errorCallback: assignErrorCallback,
-					org_id: mh.app.orgID()
+					org_id: mh.app.getOrganizationID()
 				};
 
 				if(assigned == CONTACT_UNASSIGNED) {
@@ -810,7 +810,7 @@
 				
 				var data = {
 					followup_comment: {
-						organization_id: mh.app.orgID(),
+						organization_id: mh.app.getOrganizationID(),
 						contact_id: person.id,
 						commenter_id: mh.app.getPerson().id,
 						status: status,
@@ -819,7 +819,7 @@
 					rejoicables: rejoicables
 				};
 				var options = {
-					org_id: mh.app.orgID(),
+					org_id: mh.app.getOrganizationID(),
 					successCallback: function(e) {
 						postSuccess(e)
 					},
@@ -878,7 +878,7 @@
 				errorCallback: function(e) {
 					onContactError(e);
 				},
-				org_id: mh.app.orgID()
+				org_id: mh.app.getOrganizationID()
 			};
 			if (fresh) {
 				mh.api.getContacts(person.id, mh.util.mergeJSON(options, {fresh: true}));
@@ -918,7 +918,7 @@
 				errorCallback: function(e) {
 					onCommentError(e);
 				},
-				org_id: mh.app.orgID()
+				org_id: mh.app.getOrganizationID()
 			};
 			if (fresh) {
 				mh.api.getFollowupComments(person.id, mh.util.mergeJSON(options,{fresh: true}));
@@ -956,7 +956,7 @@
 			};
 			
 			var apiOpts = {
-				org_id:mh.app.orgID(),
+				org_id:mh.app.getOrganizationID(),
 				successCallback: onChangeRole,
 				errorCallback: onChangeRoleError
 			}
@@ -1020,9 +1020,9 @@
 				editable: false
 			});
 			
-			if (mh.app.getRole() == mh.app.ROLE_ADMIN) {
+			if (mh.app.hasRole("admin")) {
 				row.editable = true;
-			} else if (mh.app.getRole() == mh.app.ROLE_LEADER) {
+			} else if (mh.app.hasRole("leader")) {
 				if (followupComment.comment.commenter.id == mh.app.getPerson().id) {
 					row.editable = true;
 				}
@@ -1176,16 +1176,15 @@
 				moreInfoData.push(fbRow);
 			}
 			
-			if (person.organizational_roles && mh.app.getRole() == mh.app.ROLE_ADMIN) {
+			if (person.organizational_roles && mh.app.hasRole("admin")) {
 				var contactRole = 'contact';
 				for (var index in person.organizational_roles) {
 					var role = person.organizational_roles[index];
-					if (role.org_id == mh.app.orgID()) {
+					if (role.org_id == mh.app.getOrganizationID()) {
 						if (role.role == 'admin') {
 							contactRole = 'admin';
 						} else if (role.role == 'leader') {
 							contactRole = 'leader';
-							
 						} else if (role.role == 'contact') {
 							contactRole = 'contact';
 						}
@@ -1444,7 +1443,7 @@
 						tableView.headerView = contactCard
 					}
 					if (index == 1) {
-						if (!Ti.App.Properties.hasProperty('guide_contact_moreinfo') && mh.app.getRole() == mh.app.ROLE_ADMIN) {
+						if (!Ti.App.Properties.hasProperty('guide_contact_moreinfo') && mh.app.hasRole("admin")) {
 							mh.ui.alert({
 								buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
 								title: L('guide_contact_moreinfo'),

@@ -23,13 +23,10 @@ var mh = {};
 	};
 	
 	var person;
+	var organizations = {};
+	var organizationID = -1;
+	var primaryOrganizationID = -1;
 	var roles = {};
-	var privledgedRoles = {};
-	
-	mh.app.ROLE_NONE = -1;
-	mh.app.ROLE_ADMIN = 1;
-	mh.app.ROLE_LEADER = 4;
-	mh.app.ROLE_CONTACT = 2;
 	
 	mh.app.getPerson = function() {
 		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
@@ -37,84 +34,95 @@ var mh = {};
 		}
 	};
 	
+	mh.app.setPerson = function(p) {
+		person = p;
+		initOrgsRoles();
+	};
+	
+	mh.app.getOrganizations = function() {
+		return organizations;
+	};
+	
+	mh.app.getOrganizationID = function() {
+		if (organizationID > -1) {
+			return organizationID;
+		} else {
+			return Ti.App.Properties.getInt('orgid', mh.app.getPrimaryOrganizationID());
+		}
+	};
+	
+	mh.app.setOrganizationID = function(orgID) {
+		if (organizations[orgID]) {
+			organizationID = orgID;
+			Ti.App.Properties.setInt('orgid', orgID);
+		}
+	};
+	
+	mh.app.getPrimaryOrganizationID = function() {
+		return primaryOrganizationID;
+	};
+	
+	mh.app.setPrimaryOrganizationID = function(orgID) {
+		if (organizations[orgID]) {
+			primaryOrganizationID = orgID;
+		}
+	};
+	
 	mh.app.getRoles = function() {
 		return roles;
 	};
 	
-	mh.app.getRole = function(org) {
-		if (org >= 0 && roles[org]) {
-			return roles[org].role;
+	mh.app.getOrganizationRoles = function(orgID) {
+		if (orgID) {
+			return roles[orgID];
 		} else {
-			return roles[Ti.App.Properties.getInt('orgid', -1)].role;
+			return roles[mh.app.getOrganizationID()];
 		}
 	};
 	
-	mh.app.setPerson = function(p) {
-		person = p;
-		calculateRoles();
+	mh.app.hasMembership = function(orgID) {
+		if (organizations[orgID]) {
+			return true;
+		}
+		return false;
 	};
 	
-	mh.app.orgID = function() {
-		if (mh.auth.oauth && mh.auth.oauth.isLoggedIn() && person) {
-			var roleid = Ti.App.Properties.getInt('orgid', -1);
-			if (roleid >= 0 && privledgedRoles[roleid]) {
-				return roleid;
-			} else if (roles.length > 0 && privledgedRoles[0]) {
-				return roles[0].org_id;
-			} else {
-				return;
+	mh.app.hasRole = function(role, orgID) {
+		if (!orgID) { orgID = mh.app.getOrganizationID(); }
+		try {
+			var orgRoles = roles[orgID];
+			if (orgRoles.indexOf(role) > -1) {
+				return true;
 			}
-		}
+		} catch (e) {}
+		return false;
 	};
 	
-	mh.app.setOrgID = function(o) {
-		Ti.App.Properties.setInt('orgid', o);
-	};
-	
-	function calculateRoles() {
+	function initOrgsRoles() {
+		organizations = {};
 		roles = {};
-		var primaryOrg = -1;
-		for (var index in person.organization_membership) {
-			var org_membership = person.organization_membership[index];
-			roles[org_membership.org_id] = {name: org_membership.name};
-			if (org_membership.primary == 'true' || org_membership.primary === 'true') {
-				primaryOrg = org_membership.org_id;
-				roles[org_membership.org_id].primary = true;
-			} else {
-				roles[org_membership.org_id].primary = false;
-			}
-			roles[org_membership.org_id].role = mh.app.ROLE_NONE;
-			roles[org_membership.org_id].org_id = org_membership.org_id;
-		}
+		primaryOrganizationID = -1;
 		
 		for (var index in person.organizational_roles) {
 			var role = person.organizational_roles[index];
-			if (roles[role.org_id] == null) {
-				continue;
+			if (!organizations[role.org_id]) {
+				organizations[role.org_id] = {name: role.name, org_id: role.org_id};
 			}
-			if (role.role == 'admin') {
-				roles[role.org_id].role = mh.app.ROLE_ADMIN;
-				privledgedRoles[role.org_id] = true;
-			} else if (role.role == 'leader') {
-				privledgedRoles[role.org_id] = true;
-				roles[role.org_id].role = mh.app.ROLE_LEADER;
-			} else if (role.role == 'contact') {
-				roles[role.org_id].role = mh.app.ROLE_CONTACT;
-			} else {
-				roles[role.org_id].role = mh.app.ROLE_NONE;
+			if (role.primary == true || mh.app.getPrimaryOrganizationID() < 0) {
+				if (role.role == "leader" || role.role == "admin") {
+					mh.app.setPrimaryOrganizationID(role.org_id);
+				}
 			}
+			if (!roles[role.org_id]) {
+				roles[role.org_id] = [];
+			}
+			roles[role.org_id].push(role.role);
 		}
 		
-		if (primaryOrg < 0) {
-			for (var k in privledgedRoles) {
-				primaryOrg = k;
-				roles[k].primary = true;
-				break;
+		if (organizationID > 0) {
+			if (!organizations[organizationID]) {
+				organizationID = -1;
 			}
-		}
-		
-		if (Ti.App.Properties.getInt('orgid', -1) < 0) {
-			Ti.App.Properties.setInt('orgid', primaryOrg);
 		}
 	}
 	
