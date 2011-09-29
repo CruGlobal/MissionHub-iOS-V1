@@ -47,7 +47,11 @@ var mh = {};
 		if (organizationID > -1) {
 			return organizationID;
 		} else {
-			return Ti.App.Properties.getInt('orgid', mh.app.getPrimaryOrganizationID());
+			if (organizations[Ti.App.Properties.getInt('orgid', mh.app.getPrimaryOrganizationID())]) {
+				return Ti.App.Properties.getInt('orgid', mh.app.getPrimaryOrganizationID());
+			} else {
+				return mh.app.getPrimaryOrganizationID();
+			}
 		}
 	};
 	
