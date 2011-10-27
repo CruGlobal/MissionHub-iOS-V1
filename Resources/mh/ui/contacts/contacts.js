@@ -150,7 +150,7 @@
 				onGetMore();
 			});
 			
-			tabbedBar = Ti.UI.createTabbedBar({
+			tabbedBar = Ti.UI.iOS.createTabbedBar({
 				labels:[L('contacts_my_contacts'), L('contacts_my_completed'), L('contacts_my_unassigned')],
 				backgroundColor:'#333',
 			    top:tableView.height,

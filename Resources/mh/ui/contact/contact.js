@@ -1402,7 +1402,7 @@
 		}
 		
 		var createFooter = function() { /* Create The Footer Bar */
-			tabbedBar = Ti.UI.createTabbedBar({
+			tabbedBar = Ti.UI.iOS.createTabbedBar({
 				labels:[L('contact_contact'), L('contact_more_info'), L('contact_questionnaire')],
 				backgroundColor:mh.config.colors.commentFooterBg,
 				top:tableView.top+tableView.height,
