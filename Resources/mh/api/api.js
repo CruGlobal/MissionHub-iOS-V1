@@ -224,7 +224,7 @@
 	
 	mh.api.getSurveysUrl = function(options) {
 		var url = mh.config.base_url + '/surveys';
-		return url + '?' + mh.api.buildQueryParams(options)
+		return url + '?' + mh.api.buildQueryParams(options);
 	};
 	
 	function firePostRequest(requestURL, options, data) {
@@ -395,7 +395,7 @@
 			query += paramName + '=' + hash[paramName] + '&';
 		}
 		return query;
-	}
+	};
 	
 	
 	function generateIDString(ids) {
