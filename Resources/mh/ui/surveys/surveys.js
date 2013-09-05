@@ -22,9 +22,7 @@
 		var open = function() {
 			debug('running mh.ui.surveys.window.open');
 			surveysWindow = Ti.UI.createWindow({
-				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png'),
-				height: Ti.Platform.displayCaps.platformHeight,
-				width: Ti.Platform.displayCaps.platformWidth
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png')
 			});
 			
 			surveyUrl = mh.api.getSurveysUrl({
@@ -85,12 +83,7 @@
 				color: mh.config.colors.navButton
 			});
 			doneButton.addEventListener('click', function() {
-				var animation = Ti.UI.createAnimation({duration: 250, left: Ti.Platform.displayCaps.platformWidth});
-				animation.addEventListener('complete', function() {
-					mh.ui.nav.close(surveysWindow);
-				});
-				surveysWindow.animate(animation);
-				mh.ui.main.window.show();
+				mh.ui.nav.close(surveysWindow);
 			});
 			surveysBar.add(doneButton);
 						

@@ -23,10 +23,7 @@
 			person = p;
 			
 			contactWindow = Ti.UI.createWindow({
-				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png'),
-				height: Ti.Platform.displayCaps.platformHeight,
-				width: Ti.Platform.displayCaps.platformWidth,
-				left: Ti.Platform.displayCaps.platformWidth
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png')
 			});
 			
 			createHeader();

@@ -20,10 +20,7 @@
 		var open = function() {
 			debug('running mh.ui.contacts.window.open');
 			contactsWindow = Ti.UI.createWindow({
-				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png'),
-				height: Ti.Platform.displayCaps.platformHeight,
-				width: Ti.Platform.displayCaps.platformWidth,
-				left: Ti.Platform.displayCaps.platformWidth
+				backgroundImage: mh.util.getBackgroundImage('images/MH_Background.png')
 			});
 			
 			createHeader();
@@ -67,12 +64,7 @@
 				color: mh.config.colors.navButton
 			});
 			doneButton.addEventListener('click', function() {
-				var animation = Ti.UI.createAnimation({duration: 250, left: Ti.Platform.displayCaps.platformWidth});
-				animation.addEventListener('complete', function() {
-					mh.ui.nav.close(contactsWindow);
-				});
-				contactsWindow.animate(animation);
-				mh.ui.main.window.show();
+				mh.ui.nav.close(contactsWindow);
 				resetTableView();
 				delete options.term;
 			});
@@ -544,13 +536,8 @@
 			}
 		};
 		
-		var show = function() {
-			contactsWindow.animate({left: 0, duration: 250});
-		};
-		
 		return {
-			open: open,
-			show: show
+			open: open
 		};
 	}();
 	
