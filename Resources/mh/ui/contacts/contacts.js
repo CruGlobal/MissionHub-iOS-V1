@@ -426,7 +426,7 @@
 				var options = {
 				    title: L('contacts_actions'),
 				    cancel:1
-				}
+				};
 				
 				var callbackOpts = {
 					org_id:mh.app.orgID(),
@@ -438,7 +438,7 @@
 						resetTableView();
 						onGetMore(true);
 					}
-				}
+				};
 				
 				if (contactRole == 'contact') {
 					options.options = [L('contacts_promote_to_leader'),L('cancel')];

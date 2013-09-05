@@ -373,7 +373,7 @@
 					tableViewHeader.nv.assignButton.enabled = true;
 					updateAssignment(true);
 					hideIndicator('assignment');
-				}
+				};
 				
 				var assignErrorCallback = function () {
 					debug('assignErrorCallback()');
@@ -625,7 +625,7 @@
 		var refresh = function() { /* Refresh The Entire View */
 			debug('running mh.ui.window.contact.refresh');			
 			getContact(true);
-			getComments(true)
+			getComments(true);
 		};
 		
 		var updateAssignment = function(when) {
@@ -652,7 +652,7 @@
 				tableViewHeader.nv.assignedToOtherLabel.visible = true;
 			}
 			debug("assignment at end of updateAssignment" + assigned);
-		}
+		};
 		
 		var determineAssignmentStatus = function() {
 			if (person.assignment) {
@@ -670,13 +670,13 @@
 						} else {
 							debug("contact is not mine");
 							assigned = CONTACT_ASSIGNED_TO_OTHER;
-							assignedName = person.assignment.person_assigned_to[y].name
+							assignedName = person.assignment.person_assigned_to[y].name;
 						}
 					}
 				}
 			}
 		
-		}
+		};
 		
 		var updateHeader = function() { /* Update The Header Content */
 			debug('mh.ui.window.contact.updateHeader');
@@ -747,7 +747,7 @@
 			}
 		};
 		var updateStatus = function() { /* Update The Status Selector */
-			if (ipad) { return }
+			if (ipad) { return; }
 			switch(person.status) {
 				case 'uncontacted':	statusSelector.cancel = 0; break;
 				case 'attempted_contact': statusSelector.cancel = 1; break;
@@ -821,10 +821,10 @@
 				var options = {
 					org_id: mh.app.orgID(),
 					successCallback: function(e) {
-						postSuccess(e)
+						postSuccess(e);
 					},
 					errorCallback: function(e) {
-						postError(e)
+						postError(e);
 					}
 				};
 				
@@ -944,11 +944,11 @@
 		var onChangeRole = function(e) {
 			hideIndicator('role');
 			getContact(true);
-		}
+		};
 		
 		var onChangeRoleError = function(e) {
 			hideIndicator('role');
-		}
+		};
 		
 		var changeRole = function(role, id) {
 			var options = {
@@ -959,7 +959,7 @@
 				org_id:mh.app.orgID(),
 				successCallback: onChangeRole,
 				errorCallback: onChangeRoleError
-			}
+			};
 			
 			if (role == "leader") {
 				options.title = L('contact_promote');
@@ -968,7 +968,7 @@
 						showIndicator('role');
 						mh.api.changeRole(id, "leader", apiOpts);
 					}
-				}
+				};
 			} else if (role == "contact") {
 				options.title = L('contact_demote');
 				options.onClick = function(e) {
@@ -976,7 +976,7 @@
 						showIndicator('role');
 						mh.api.changeRole(id, "contact", apiOpts);
 					}
-				}
+				};
 			}
 			mh.ui.alert(options);
 		};
@@ -1093,7 +1093,7 @@
 				color: '#666',
 				font: {	fontSize: 12, fontFamily: 'Helvetica' },
 				text: followupComment.comment.created_at_words
-			})
+			});
 			bottomBar.add(time);
 			
 			if (followupComment.rejoicables) {
@@ -1112,7 +1112,7 @@
 						height: 16,
 						right: index * 20,
 						top: 0,
-					})
+					});
 					bottomBar.add(icon);
 				}
 			}
@@ -1126,7 +1126,7 @@
 					width: Ti.Platform.displayCaps.platformWidth - 60 - 5,
 					text: followupComment.comment.comment,
 					left: 60
-				})
+				});
 				comment.height += 2;
 				bottomBar.top = comment.height + comment.top;
 				row.add(comment);
@@ -1150,7 +1150,7 @@
 					width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
 					height: 'auto',
 					color: mh.config.colors.blue
-				})
+				});
 				row.add(t);
 				
 				var v = Ti.UI.createLabel({
@@ -1361,7 +1361,7 @@
 			if (tab == TAB_QUESTIONNAIRE) {
 				tableView.setData(questionnaireData, {animationStyle:Titanium.UI.iPhone.RowAnimationStyle.FADE});
 			}
-		}
+		};
 		var createQuestionnaireRow = function(question) {			
 			var row = Ti.UI.createTableViewRow({editable: false, className: 'questionanswer', height: 'auto'});
 			
@@ -1373,7 +1373,7 @@
 				width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
 				height: 'auto',
 				color: mh.config.colors.blue
-			})
+			});
 			row.add(q);
 			
 			var answerText = question.answer;
@@ -1399,7 +1399,7 @@
 			a.height += 5;
 			
 			return row;
-		}
+		};
 		
 		var createFooter = function() { /* Create The Footer Bar */
 			tabbedBar = Ti.UI.iOS.createTabbedBar({
@@ -1441,7 +1441,7 @@
 						tableView.headerView = x;
 						tableViewHeader.remove(contactCard);
 						contactCard.backgroundImage = mh.util.getBackgroundImage('images/MH_Contact_Very_Top_BG.png');
-						tableView.headerView = contactCard
+						tableView.headerView = contactCard;
 					}
 					if (index == 1) {
 						if (!Ti.App.Properties.hasProperty('guide_contact_moreinfo') && mh.app.getRole() == mh.app.ROLE_ADMIN) {
