@@ -1153,28 +1153,34 @@
 			function createSimpleRow(title, value) {
 				var row = Ti.UI.createTableViewRow({editable: false, className: 'moreinfo', height: 'auto'});
 				
-				var t = Ti.UI.createLabel({
-					left: 5,
+				var layout = Ti.UI.createView({
+					width: Ti.UI.FILL,
+					height: Ti.UI.SIZE,
 					top: 5,
+					bottom: 5,
+					left: 5,
+					right: 5,
+					layout: 'vertical'
+				});
+				row.add(layout);
+				
+				var t = Ti.UI.createLabel({
+					width: Ti.UI.FILL,
+					height: Ti.UI.SIZE,
 					text: title,
 					font: {	fontSize: 14, fontFamily: 'Helvetica-Bold' },
-					width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
-					height: 'auto',
 					color: mh.config.colors.blue
 				});
-				row.add(t);
+				layout.add(t);
 				
 				var v = Ti.UI.createLabel({
-					left: 5,
+					width: Ti.UI.FILL,
+					height: Ti.UI.SIZE,
 					color: '#555',
-					top: t.top + t.height,
 					text: value,
 					font: {	fontSize: 14, fontFamily: 'Helvetica' },
-					width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
-					height: 'auto'
 				});
-				row.add(v);
-				v.height += 5;
+				layout.add(v);
 				
 				return row;
 			}
@@ -1376,16 +1382,25 @@
 		var createQuestionnaireRow = function(question) {			
 			var row = Ti.UI.createTableViewRow({editable: false, className: 'questionanswer', height: 'auto'});
 			
-			var q = Ti.UI.createLabel({
-				left: 5,
+			var layout = Ti.UI.createView({
+				width: Ti.UI.FILL,
+				height: Ti.UI.SIZE,
 				top: 5,
+				bottom: 5,
+				left: 5,
+				right: 5,
+				layout: 'vertical'
+			});
+			row.add(layout);
+			
+			var q = Ti.UI.createLabel({
+				width: Ti.UI.FILL,
+				height: Ti.UI.SIZE,
 				text: question.label,
 				font: {	fontSize: 14, fontFamily: 'Helvetica-Bold' },
-				width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
-				height: 'auto',
 				color: mh.config.colors.blue
 			});
-			row.add(q);
+			layout.add(q);
 			
 			var answerText = question.answer;
 			if (answerText == '') {
@@ -1393,21 +1408,18 @@
 			}
 			
 			var a = Ti.UI.createLabel({
-				left: 5,
-				top: q.top + q.height,
+				width: Ti.UI.FILL,
+				height: Ti.UI.SIZE,
 				text: answerText,
 				font: {	fontSize: 14, fontFamily: 'Helvetica' },
-				width: Ti.Platform.displayCaps.platformWidth - 5 - 5,
-				height: 'auto'
 			});
-			row.add(a);
+			layout.add(a);
 			
 			if (question.answer == '') {
 				a.color = '#999';
 			} else {
 				a.color = '#333';
 			}
-			a.height += 5;
 			
 			return row;
 		};
