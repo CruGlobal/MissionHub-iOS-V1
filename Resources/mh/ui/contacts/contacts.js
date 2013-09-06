@@ -66,6 +66,7 @@
 			doneButton.addEventListener('click', function() {
 				mh.ui.nav.close(contactsWindow);
 				resetTableView();
+				previousGuides = [];
 				delete options.term;
 			});
 			contactsBar.add(doneButton);
@@ -457,6 +458,7 @@
 		};
 		
 		var curTab = 0;
+		var previousGuides = [];
 		var changeTab = function(index, force) {
 			addOption('org_id', mh.app.orgID());
 			if (index !== curTab || force) {
@@ -477,7 +479,7 @@
 							break;
 				}
 				if (index == 0) {
-					if (!Ti.App.Properties.hasProperty('guide_contacts')) {
+					if (!Ti.App.Properties.hasProperty('guide_contacts') && previousGuides.indexOf('guide_contacts') == -1) {
 						mh.ui.alert({
 							buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
 							title: L('guide_contacts'),
@@ -488,10 +490,11 @@
 								}
 							}
 						});
+						previousGuides.push('guide_contacts');
 					}
 				}
 				if (index == 2) {
-					if (!Ti.App.Properties.hasProperty('guide_contacts_unassigned')) {
+					if (!Ti.App.Properties.hasProperty('guide_contacts_unassigned') && previousGuides.indexOf('guide_contacts_unassigned') == -1) {
 						mh.ui.alert({
 							buttonNames: [L('alert_btn_close'), L('alert_btn_dont_show')],
 							title: L('guide_contacts_unassigned'),
@@ -502,6 +505,7 @@
 								}
 							}
 						});
+						previousGuides.push('guide_contacts_unassigned');
 					}
 				}
 				onGetMore(force);

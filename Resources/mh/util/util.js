@@ -137,6 +137,10 @@ function info(msg) {
 	//Ti.API.info(msg);
 }
 
+function warn(msg) {
+	//Ti.API.warn(msg);
+}
+
 function error(msg) {
 	//Ti.API.error(msg);
 }
