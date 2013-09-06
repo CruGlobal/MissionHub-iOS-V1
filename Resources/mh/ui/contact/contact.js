@@ -1004,7 +1004,9 @@
 			}
 		};
 		var createCommentRow = function(followupComment) { /* Create A Comment TableView Row */
-			//debug('mh.ui.window.contacts.createCommentRow');
+			// debug('mh.ui.window.contacts.createCommentRow');
+			
+			// create the row
 			var row = Ti.UI.createTableViewRow({
 				className:"comment",
 				color: mh.config.colors.ctvTxt,
@@ -1016,82 +1018,110 @@
 				height: 'auto',
 				editable: false
 			});
+			row.comment = followupComment;
 			
-			if (mh.app.getRole() == mh.app.ROLE_ADMIN) {
+			// make editable if commenter
+			if (followupComment.comment.commenter.id == mh.app.getPerson().id) {
 				row.editable = true;
-			} else if (mh.app.getRole() == mh.app.ROLE_LEADER) {
-				if (followupComment.comment.commenter.id == mh.app.getPerson().id) {
-					row.editable = true;
-				}
 			}
-
+			
+			// commenter profile picture
 			var image;
 			if (followupComment.comment.commenter.picture) {
 				image = followupComment.comment.commenter.picture+'?type=square';
 			} else {
 				image = '/images/default_contact.jpg';
 			}
-
-			var minSize = Ti.UI.createView({
-				left: 0,
-				top: 0,
-				height: 60,
-				width: Ti.Platform.displayCaps.platformWidth,
-			});
-			row.add(minSize);
-
+			
 			var img = Ti.UI.createImageView({
 				defaultImage: '/images/default_contact.jpg',
 				image: image,
 				top: 5,
+				bottom: 5,
 				left: 5,
 				width: 50,
 				height: 50
 			});
-			row.image = img;
 			row.add(img);
+			
+			// the vertical layout
+			var layout = Ti.UI.createView({
+				width: Ti.Platform.displayCaps.platformWidth - 60 - 5,
+				height: Ti.UI.SIZE,
+				top: 5,
+				bottom: 5,
+				left: 60,
+				layout: 'vertical'
+			});
+			row.add(layout);
+			
+			// row header
+			var header = Ti.UI.createView({
+				height: Ti.UI.SIZE,
+				width: Ti.UI.FILL
+			});
+			layout.add(header);
 
 			var name = Ti.UI.createLabel({
 				color: mh.config.colors.commentRowTxt,
 				text: followupComment.comment.commenter.name,
-				top: 5,
-				left: 60,
-				height: 14,
-				width: 140,
+				left: 0,
+				width: Ti.UI.SIZE,
+				height: Ti.UI.SIZE,
 				font: {	fontSize: 14, fontFamily: 'Helvetica' }
 			});
-			row.add(name);
+			header.add(name);
 
 			var status = Ti.UI.createLabel({
-				top: 5,
-				left: 60 + 130 + 10,
-				height: 13,
-				textAlign: 'right',
+				right: 0,
+				width: Ti.UI.SIZE,
+				height: Ti.UI.SIZE,
 				color: '#666',
 				text: L('contact_status_'+followupComment.comment.status),
 				font: {	fontSize: 13, fontFamily: 'Helvetica' },
-				width: Ti.Platform.displayCaps.platformWidth - 60 - 130 - 10 - 5
 			});
-			//status.width = status.width - 5;
-			row.add(status);
+			header.add(status);
 			
+			// the comment
+			var footerTop = 0;
+			if (followupComment.comment.comment && followupComment.comment.comment != '') {
+				var comment = Ti.UI.createLabel({
+					color: mh.config.colors.commentRowCommentTxt,
+					left: 1,
+					right: 1,
+					height: Ti.UI.SIZE,
+					width: Ti.UI.FILL,
+					font: {	fontSize: 13, fontFamily: 'Helvetica' },
+					text: followupComment.comment.comment
+				});
+				layout.add(comment);
+			} else {
+				footerTop = 15;
+			}
 			
-			var bottomBar = Ti.UI.createView({
-				top: 5 + 33,
-				left: 60,
-				height: 16+5,
-				width: Ti.Platform.displayCaps.platformWidth - 60 - 5
+			// the row footer
+			var footer = Ti.UI.createView({
+				height: Ti.UI.SIZE,
+				width: Ti.UI.FILL,
+				top: footerTop
 			});
-			row.add(bottomBar);
+			layout.add(footer);
+			
+			var createdAt = moment.utc(followupComment.comment.created_at);
+			if (createdAt.isBefore(moment().subtract('weeks', 1))) {
+				createdAt = createdAt.format('llll');
+			} else {
+				createdAt = createdAt.fromNow();
+			}
 			
 			var time = Ti.UI.createLabel({
 				left: 0,
 				top: 0,
 				color: '#666',
 				font: {	fontSize: 12, fontFamily: 'Helvetica' },
-				text: followupComment.comment.created_at_words
+				text: createdAt
 			});
-			bottomBar.add(time);
+			footer.add(time);
 			
 			if (followupComment.rejoicables) {
 				for (var index in followupComment.rejoicables) {
@@ -1110,26 +1140,10 @@
 						right: index * 20,
 						top: 0,
 					});
-					bottomBar.add(icon);
+					footer.add(icon);
 				}
 			}
 			
-			if (followupComment.comment.comment && followupComment.comment.comment != '') {
-				var comment = Ti.UI.createLabel({
-					color: mh.config.colors.commentRowCommentTxt,
-					top: status.top + status.height + 2,
-					height: 'auto',
-					font: {	fontSize: 13, fontFamily: 'Helvetica' },
-					width: Ti.Platform.displayCaps.platformWidth - 60 - 5,
-					text: followupComment.comment.comment,
-					left: 60
-				});
-				comment.height += 2;
-				bottomBar.top = comment.height + comment.top;
-				row.add(comment);
-			}
-
-			row.comment = followupComment;
 			return row;
 		};
 		var createInfoRows = function() { /* Create TableView Content For More Info Tab */

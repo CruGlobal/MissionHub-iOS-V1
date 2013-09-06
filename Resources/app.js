@@ -9,5 +9,6 @@
  * Date: Thu, 16 Jun 2011 12:48:32 -0400
  */
 
+Ti.include('/vendor/moment.min.js');
 Ti.include('/mh/mh.js');
 mh.ui.main.window.open();
