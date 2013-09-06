@@ -12,17 +12,17 @@
 (function() {
 	
 	mh.config = {	
-		base_url: '',
-		oauth_url: '',
+		base_url: 'https://www.missionhub.com',
+		oauth_url: 'https://www.missionhub.com/oauth',
 		oauth_client_id: '',
 		oauth_client_secret: '',
-		oauth_scope: '',
-		api_url: '',
+		oauth_scope: 'userinfo,contacts,contact_assignment,followup_comments,roles',
+		api_url: 'https://www.missionhub.com/api/v1',
 		cache: {
-			disable: false,
+			disable: true,
 			cache_expiration_interval: 15
 		},
-		demo_mode: false
+		demo_mode: true
 	};
 	
 })();

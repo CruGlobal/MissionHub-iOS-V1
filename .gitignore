@@ -4,3 +4,4 @@ tmp
 /build.log
 /.fastdev.lock
 /build
+/Resources/mh/config/config.js
